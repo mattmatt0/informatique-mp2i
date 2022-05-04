@@ -1,0 +1,146 @@
+\newcommand\PATH{/home/matthieu/Documents/Ecole/Informatique/cours/annexe-ocaml-imperatif.latex}
+\RequirePackage{fix-cm}
+\documentclass{scrartcl}
+
+\input{\PATH/include/preamble.tex}
+\input{\PATH/include/math-tools.tex}
+
+\usepackage{lmodern}
+
+\newcommand{\ocaml}[1]{\mintinline{ocaml}{#1}}
+\newcommand{\unit}{\textcolor{purple}{\texttt{unit}}\,}
+\newcommand{\codetrue}{\textcolor{green}{\texttt{true}}}
+\newcommand{\codefalse}{\textcolor{red}{\texttt{false}}}
+
+\title{Programmation impérative en OCaml}
+\author{}
+\date{}
+
+\begin{document}
+	\maketitle
+	\begin{center}\textsl{En Ocaml, ce que l'on appellera instructions sont des expressions de type \texttt{unit}.}\end{center}
+	\section{Expression de type \unit}
+		On rappelle que le type \texttt{unit} a une unique valeur, \texttt{()}. 
+		Les expressions de type \unit ne portent donc aucune information mais sont intéressantes pour l'effet que produit leur évaluation,
+		appelé \textbf{effet de bord}.
+
+		\exemple
+		\begin{code}{ocaml} 
+			assert (1 == 2);
+			print_string "Hello world!";
+		\end{code}
+
+		\rem \texttt{let} n'est pas une expression de type \unit.
+
+		\rem On ne peut pas juxtaposer des expressions de type \unit. Il faut les séparer par points-virgules.
+
+		\exemple \texttt{e1;e2} est une expression de type et de valeur qui sont ceux de \texttt{e2}.
+		L'évaluation de cette expression consiste en l'évaluation de \texttt{e1} puis l'évaluation de \texttt{e2}. 
+		C'est équivalent à \ocaml{let _ = e1 in e2}. Le ";" est appelé \textbf{séquence}.
+
+		\rem Attention: si \texttt{e1} n'est pas du type \unit, cela déclenche un avertissement qui indique que la valeur de e1 a été perdue.
+	
+		\rem Bien sûr, on peut généraliser à plus de 2 expressions...
+
+		Pour gagner en lisibilité, il est possible d'utiliser les mots-clés \ocaml{begin} et \ocaml{end} à la place
+		des parenthèses.
+
+	\section{Références}
+		Jusque là, nous avions appelé (à tort) \textsl{variables} des \textbf{valeurs nommées} dont la valeur ne changeait pas au cours du temps.
+		En Ocaml, lorsque l'on veut une "vraie" variable, c'est à dire une case mémoire dont on va pouvoir modifier la valeur, il faut le préciser
+		grâce au mot-clé \ocaml{ref}.	
+		
+		\exemple 
+		\begin{code}{ocaml}
+			let i = ref 1 in while (!i<3) do (print_int !i; i := !i+1) done;;
+		\end{code}
+
+		\verb|ref e|, où \verb|e| est une expression de type \verb|t| de valeur \verb|v|, est une expression de type \verb|t ref|,
+		et de valeur \verb|{contents = v}|, c'est à dire une case mémoire contenant \verb|v| la valeur de \verb|e|.
+
+		L'évalulation de cette expression consiste en:
+		\begin{itemize}
+			\item L'évaluation de \verb|e| en une valeur \verb|v|.
+			\item La réservation d'une case mémoire pouvant stocker une donnée de type \verb|t|.
+			\item L'initialisation de la donnée stockée dans cette case mémoire à \verb|v|.
+		\end{itemize}
+
+		\rem On ne peut pas déclarer/créer une variable sans lui donner de valeur! La création d'une nouvelle variable se fait comme suit:
+		
+		\plabel{Déclaration d'une variable:} Pour déclarer une variable en Ocaml, la syntaxe est la suivante:
+		\begin{code}{ocaml}
+			let var = ref e
+		\end{code}
+		où \verb|var| est un indentificateur et \verb|e| est une expression de type \verb|t| et de valeur \verb|v|
+
+		\plabel{Accès à la valeur d'une variable:} Attention, dans l'expression précédente, \verb|var| est un identificateur! Si l'on s'intéresse
+		à la valeur identifiée, il faut utiliser l'opérateur \texttt{![nom de la variable]}, équivalent au \texttt{*[nom de la variable]} en C:
+		\begin{code}{ocaml}
+			!var
+		\end{code}
+		où \verb|var| est une expression de type \verb|t ref|, est une expression de type \verb|t| et de valeur la valeur enregistrée dans la référence \verb|var|.
+
+		\plabel{Modification de la valeur d'une variable:} Il faut utiliser \texttt{:=} à la place de \texttt{=}
+		\begin{code}{ocaml}
+			var := e
+		\end{code}
+		où \verb|var| est une expression du type \verb|t ref|, \verb|e| est une expression de type \verb|t|, est une expression de type \unit (et donc de valeur \verb|()|).
+		Son évaluation consiste en l'évaluation de \verb|e| en une valeur \verb|v|,
+		puis la modification de la valeur contenue dans la référence \verb|var| en \verb|v|. 
+
+		\rem Attention, n'écrivez pas \verb|a := a+2|.
+
+		\rem Attention, pour copier la valeur d'une variable dans une nouvelle variable, il faut faire une création de variable avec \verb|ref|.
+		Le "\verb|=|" teste l'égalité entre valeurs, le "\verb|==|" teste l'égalité entre adresses mémoires. 
+
+		\begin{code}{ocaml}
+			var1 = var2
+		\end{code}
+		où \verb|var1| et \verb|var2| sont des expressions de type \verb|t ref| est une expression de type bool 
+		et de valeur \verb|true| si \verb|var1| et \verb|var2| contiennent la même valeur (i.e \verb|(!var1) = (!var2)|)
+
+	\section{Boucles}
+		\subsection{Boucle \texttt{while}}
+			\begin{code}{ocaml}
+				while CONDITION do
+					CORPS
+				done
+			\end{code}
+			où \verb|CONDITION| est de type \verb|bool|, \verb|CORPS| est une expression de type \unit.
+			Son évaluation consiste en l'évaluation de \verb|CONDITION|, puis:
+			\begin{itemize}
+				\item Si la valeur obtenue est \codefalse, l'évaluation est terminée
+				\item sinon, on évalue \verb|CORPS|, et on recommence.
+			\end{itemize}
+
+			En pratique:
+			\begin{itemize}
+				\item On crée d'abord une référence (au moins), disons \verb|x|.
+				\item \verb|CONDITION| fait apparaître \verb|!x|.
+				\item \verb|CORPS| modifie la valeur de la référence \verb|x| (via \texttt{x:=...}).
+			\end{itemize}
+		\subsection{Boucle \texttt{for}}
+			\begin{code}{ocaml}
+				for i = INIT to FINAL do
+					CORPS
+				done
+			\end{code}
+			où \verb|i| est un identificateur (\textbf{attention}: et pas une référence),
+			\verb|INIT| et \verb|FINAL| sont de type \textcolor{purple}{\texttt{int}}, et \verb|CORPS| une expression de type \unit, dans laquelle peut apparaître \verb|i|.
+			Son évaluation consiste en l'évaluation de \verb|INIT| et \verb|FINAL| en $d \in \mathbb{Z}$ et $f \in \mathbb{Z}$,
+			puis pour chaque $k \in \intset{d,f}$, l'évaluation de \verb|CORPS| où \verb|i| est évaluée à $k$.
+
+			\rem Pour un comptage décroissant, on pourra utiliser \textcolor{teal}{\texttt{downto}} à la place de \textcolor{teal}{\texttt{to}}.
+
+		\subsection{Tableaux}
+			Les \texttt{array} sont en Ocaml la même chose que les tableaux en C. Ils permettent de stocker un nombre fini d'éléments de même type
+			\plabel{Création d'un tableau à une dimension:}
+			\begin{code}{ocaml}
+				Array.make <taille du tableau> <valeur>
+			\end{code}
+
+			\plabel{Création d'un tableau à deux dimensions}
+			\begin{code}{ocaml}
+				Array.make_matrix <nombre de lignes/tableaux> <nombre de colonnes/taille des tableaux> <valeur>
+			\end{code}
+\end{document}

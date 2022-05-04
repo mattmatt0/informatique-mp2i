@@ -1,0 +1,87 @@
+\newcommand\PATH{/home/matthieu/Documents/Ecole/Informatique/cours/1-formalisme-des-preuves.latex}
+
+\RequirePackage{fix-cm}
+\documentclass{scrartcl}
+
+\usepackage{tgbonum}
+\input{\PATH/include/preamble.tex}
+\input{\PATH/include/math-tools.tex}
+
+\title{Schémas de preuves}
+\author{}
+\date{}
+
+\begin{document}
+	\maketitle
+	\section{Raisonnements usuels}
+		\subsection{Implications / Équivalences}
+			Si l'on veut prouver une implication (si $A$, alors $B$), 
+			on peut utiliser d'autres implications déjà connues. 
+			Ainsi pour prouver que $A$ implique $C$, on commencera par supposer $A$,
+			puis on rappelera que $A$ implique $B$, et donc que $B$ est vraie. 
+			Ensuite, on dira que $B$ implique $C$, donc comme $B$ est vraie, $C$ l'est aussi.
+
+		\subsection{Absurde}
+			Le but ici est de montrer que quelque chose est faux.
+			Pour ce faire, on commence par supposer l'assertion à infirmer, 
+			et en utilisant certains raisonnements, on en déduit qu'une assertion que l'on sait vraie est fausse,
+			ou réciproquement. On dit alors qu'il y a contradiction, ou absurdité,
+			et on conclut en disant que l'assertion initialement supposée est fausse.
+
+			\rem C'est un cas particulier du raisonnement par contraposée: si $A$ implique quelque chose de faux,
+			cela signifie que quelque chose de vrai implique non $A$.
+
+		\subsection{Récurrence}
+			La récurrence permet de montrer une propriété $P$ dépendant d'un entier naturel $n$ 
+			(on note la propriété au rang $n$ $P(n)$ ou $P_n$) 
+			sur une partie de $\mathbb{N}$.
+			Le cas général est la récurrence forte, 
+			qui permet de démontrer la propriété sur $\mathbb{N}$.
+			Elle consiste en:
+			\begin{enumerate}
+				\item Démontrer $P(0)$ (initialisation)
+				\item Fixer un entier naturel $n$
+				\item Supposer, pour tout $k \in \intset{0,n}$, que $P(k)$ est vraie
+				\item En déduire que $P(n+1)$ est vraie (hérédité).
+			\end{enumerate}
+
+			\rem La récurrence forte est le \textsl{cas général}. 
+			On utilisera plus souvent la récurrence simple, 
+			qui suppose uniquement $P(n)$ et non $P(k)$ pour tout $k \in \intset{0,n}$.
+			Il existe aussi la récurrence finie 
+			(le $n$ pour lequel on suppose $P(n)$ est compris dans un certain intervalle $\intset{a,b}$ d'entiers fini, 
+			et on prouve $P(a)$ à l'initialisation plutôt que $P(0)$), 
+			ainsi que la récurrence descendante 
+			(une récurrence finie, mais on prouve $P(b)$ à l'initialisation
+			puis $P(n-1)$ à l'hérédité, jusqu'à $P(a)$).
+
+			\rem La récurrence peut être encore généralisée à l'induction, qui sera évoquée ultérieurement dans le programme.
+
+		\subsection{Analyse-synthèse}
+			Le raisonnement par analyse synthèse permet de trouver toutes les solutions à un problème.
+			On commence par considérer une solution quelconque d'un problème donné. 
+			En raisonnant sur les propriétés qu'elle doit alors avoir, on en déduit qu'elle doit avoir une forme donnée: 
+			c'est l'\textbf{analyse}. Ensuite, on considère un objet ayant cette forme, et on montre qu'alors il est solution:
+			c'est la \textbf{synthèse}.
+
+		\subsection{Disjonction des cas}
+			La disjonction des cas consiste à partitionner l'ensemble des objets vérifiant les hypothèses afin d'en faire
+			émerger de nouvelles. On montre alors la propriété sur chacune des parties.
+
+			\rem Attention: on parle bien de \underline{partition}: les objets traités dans chaque cas sont différents,
+			et une fois réunis, il reforment l'ensemble de départ!
+
+			\exemple Montrons que la somme de deux entiers de même parité est paire par disjonction de cas.
+			Soient $m$ et $n$ deux entiers naturels de même parité.
+			\begin{itemize}
+				\item Soit $m$ et $n$ sont tous les deux pairs, et alors il existe deux entiers $p$ et $q$
+				tels que $m=2p$ et $n=2q$. Alors $m+n = 2p+2q = 2(p+q)$ est un entier pair.
+				\item Soit $m$ et $n$ sont tous les deux impairs, et alors il existe deux entiers $p$ et $q$
+				tels que $m=2p+1$ et $n=2q+1$. Alors $m+n = 2p+1+2q+1 = 2(p+q+1)$ est un entier pair.
+			\end{itemize}
+
+	\section{Preuves sur une fonction}
+		\subsection{Boucles}
+		\subsection{Terminaison d'une fonction}
+		\subsection{Correction d'une fonction}
+\end{document}

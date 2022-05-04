@@ -1,0 +1,664 @@
+\newcommand\PATH{/home/matthieu/Documents/Ecole/Informatique/cours/3-logique-propositionnelle.latex/obj}
+\documentclass{scrartcl}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage[cache=false,outputdir=\PATH]{minted}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{ltablex}
+\usepackage{cancel}
+\usepackage{graphicx}
+\usepackage{mathrsfs}
+\usepackage{ulem}
+\usepackage{mathtools}
+
+\usepackage{multirow}
+\usepackage{stmaryrd}
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{adjustbox}
+\usepackage[french]{babel}
+\frenchbsetup{StandardLists=true}
+\usepackage[a4paper,
+top=1cm,
+bottom=1cm,
+includefoot,
+left=1.5cm,
+right=1.5cm,
+footskip=1cm]{geometry}
+\usepackage{scrlayer-scrpage}
+\rofoot*{\pagemark}
+\cofoot*{}
+\pagestyle{scrheadings}
+
+\definecolor{codebg}{gray}{0.9}
+
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\setlist[itemize]{topsep=1pt}
+
+\newenvironment{code}[1]
+{\VerbatimEnvironment\begin{minted}[autogobble,linenos,bgcolor=codebg,tabsize=4,mathescape=true]{#1}}
+{\end{minted}}
+
+\newcounter{compteurExos}
+\setcounter{compteurExos}{0}
+\newcommand{\prop}[1]{\paragraph{Propriété : } \textsl{#1}\\}
+\newcommand{\rem}[1]{\paragraph{Remarque : } #1\\}
+\newcommand{\exemple}[1]{\paragraph{Exemple : } #1\\}
+\newcommand{\exo}[1]{\stepcounter{compteurExos} \paragraph{Exercice \thecompteurExos : } #1\\}
+\newenvironment{demo}{\begin{itemize}[label=$\triangleright$]\item }{\end{itemize}}
+\newcommand{\fpq}{\mathbb{F}_p(Q)}
+\newcommand{\set}[1]{\{#1\}}
+\newcommand{\tq}{\, \big| \,}
+\newcommand{\intset}[1]{\llbracket #1 \rrbracket}
+\newcommand{\card}{\text{card }}
+\newcommand{\corrpar}{\vspace{-20pt}}
+\newcommand{\definition}[1]{{\parindent0pt #1}}
+
+
+
+\title{Logique propositionnelle}
+\author{}
+\date{}
+
+\begin{document}
+	\maketitle
+	\textsl{Dans ce chapitre, on étudie les outils mathématiques permettant de modéliser les expressions booléeenes, sans entrer dans le détail des sous-expressions non booléennes.}
+	\textsl{On fera bien la distinction entre ce qui relève de la syntaxe des formules, c'est à dire comment une formule est écrite, et ce qui relève de leur sémantique, c'est à dire la valeur qu'on leur donne.}
+	\section{Syntaxe de la logique propositionnelle}
+		\begin{center}\textsl{Pour toute cette partie, on fixe $Q$ un ensemble non vide de symboles, appelées \textbf{variables propositionnelles}.}\end{center}
+		\subsection{Définition inductive des formules}
+			\subsubsection{Avec des règles de construction}
+				L'ensemble des formules de la logique propositionnelle $\fpq$ est construit par induction à partir des règles suivantes:
+				
+				\begin{multicols}{2}
+				\begin{itemize}
+					\item $\text{Var}\big|_Q^0$
+					\item $\top\big|_{\{\_\}}^0$ correspondant à vrai.
+					\item $\bot\big|_{\{\_\}}^0$ correspondant à faux.
+					\item $\neg\big|_{\{\_\}}^1$ correspondant à la négation.
+					\item $\wedge\big|_{\{\_\}}^2$ correspondant à la conjonction (et).
+					\item $\vee\big|_{\{\_\}}^2$ correspondant à la disjonction (ou).
+					\item $\rightarrow\big|_{\{\_\}}^2$ correspondant à l'implication.
+					\item $\leftrightarrow\big|_{\{\_\}}^2$ correspondant à l'équivalence.
+				\end{itemize}
+				\end{multicols}
+
+				\rem{Cet ensemble de règles de construction n'est pas minimal. On pourrait ne garder que Var, $\top$, $\bot$, $\neg$ et $\vee$.}
+				\corrpar
+				\rem{Attention: on note l'implication $\rightarrow$ et non pas $\Rightarrow$. Même si elles représentent la même chose, le but est de distinguer l'implication que l'on note quand on raisonne, et celle au sens des expressions booléennes.}
+
+				\definition{Pour alléger la syntaxe, on notera:}
+
+				\begin{multicols}{2}
+				\begin{itemize}
+					\item $\bot$ pour $(\bot,\_)$,
+					\item $\top$ pour $(\top,\_)$ ,
+					\item $\neg A$ pour $(\neg,A)$,
+					\item $q$ pour $(\text{Var},q)$, 
+					\item $A \wedge B$ pour $(\wedge,\_,A,B)$,
+					\item $A \vee B$ pour $(\vee,\_,A,B)$,
+					\item $A \rightarrow B$ pour $(\rightarrow,\_,A,B)$,
+					\item $A \leftrightarrow B$ pour $(\leftrightarrow,\_,A,B)$.
+				\end{itemize}
+				\end{multicols}
+
+		\subsection{Représentation sous forme d'arbre}
+			Une formule de $\fpq$ peut être représentée par un arbre binaire non vide dont les feuilles sont étiquetées par $Q\cup\set{\top,\bot}$,
+			et les noeuds par les autres règles.
+
+			\exemple{Pour $Q = \{x,y,z\}$, l'expression $ x\wedge y$ peut être représentée ainsi:}
+			\begin{center}\begin{tikzpicture}
+				\node [circle,draw] (z) {$\wedge$}
+					child {node [circle,draw] (a) {$x$}}	
+					child {node [circle,draw] (a) {$y$}};	
+			\end{tikzpicture}\end{center}
+
+			\rem{Une sous formule correspond à un sous-arbre.}
+
+			La hauteur (resp. la taille) d'une formule est la hauteur (resp. la taille) de l'arbre qui la représente. 
+			Plus formellement, on définit la hauteur des formules de $\fpq$ comme suit:
+			\begin{center}
+			\begin{tabular}{ c c }	
+					$h = 
+					\left(
+					\begin{tabular}{ c c c }
+						$\fpq$ & $\to$ & $\mathbb{N}$\\
+						$\neg A$ & $\mapsto$ & $1 + h(A)$ \\
+						$\begin{drcases}
+							\top \\
+							\bot \\
+							q\in Q
+						\end{drcases}$ & $\mapsto$ & 0 \\
+						$\begin{drcases}
+							A\vee B  \\
+							A\wedge B \\
+							A\rightarrow B \\
+							A\leftrightarrow B
+						\end{drcases}$
+						& $\mapsto$ & $\max (h(A),h(B))$ 
+					\end{tabular}
+					\right)
+				$
+				&
+				$
+					s = 
+					\left(
+					\begin{tabular}{ c c c }
+						$\fpq$ & $\to$ & $\mathbb{N}$\\
+						$\neg A$ & $\mapsto$ & $1 + s(A)$ \\
+						$\begin{drcases}
+							\top \\
+							\bot \\
+							q\in Q
+						\end{drcases}$ & $\mapsto$ & 1 \\
+						$\begin{drcases}
+							A\vee B  \\
+							A\wedge B \\
+							A\rightarrow B \\
+							A\leftrightarrow B
+						\end{drcases}$
+						& $\mapsto$ & $1 +s(A)+s(B)$ 
+					\end{tabular}
+					\right)
+				$
+			\end{tabular}
+			\end{center}
+
+			\exo{Définir de manière similaire la fonction qui à une formule associe l'ensemble de variables apparaissant dans une formule.}
+
+
+
+		\subsection{Conjonction et disjonction}
+			Soit $(A_i)_{i\in [1..n]} \in \fpq^n$ avec $n\in\mathbb{N}$.
+			\begin{itemize}
+				\item On notera $\bigwedge\limits_{i=1}^n A_i$ pour désigner $((A_1\wedge A_2) \wedge A_3 ...) \wedge A_n$ = $(\bigwedge_{i=1}^{n-1} A_i) \wedge A_n$.
+				\item On notera $\bigvee\limits_{i=1}^n A_i$ pour désigner $((A_1\vee A_2) \vee A_3 ...) \vee A_n$ = $(\bigvee_{i=1}^{n-1} A_i) \vee A_n$.
+			\end{itemize}
+			Formellement, $\bigwedge\limits_{i=1}^{1}A_i = A_1$ et pour $n \geq 2$, $\bigwedge\limits_{i=1}^n A_i = (\bigwedge_{i=1}^{n-1} A_i) \wedge A_n$. 
+
+			\definition{Plus généralement, si $I \neq \varnothing$ est un ensemble ordonné, on s'autorise à écrire
+			$\bigvee\limits_{i\in I} A_i$ et $\bigwedge\limits_{i\in I} A_i$.}
+
+			\definition{Enfin, si $I = \varnothing$, $\bigwedge\limits_{i\in I} A_i$ désigne $\top$, et $\bigvee\limits_{i\in I} A_i$ désigne $\bot$.}
+
+		\subsection{Formes normales}
+			Soit $A \in \fpq$.
+
+			\begin{itemize}
+				\item $A$ est un \textbf{littéral} ssi il existe $q \in Q$ tel que $A = q$ ou $A = \neg q$.
+				\item $A$ est une \textbf{clause} (disjonctive) ssi c'est une disjonction de littéraux.
+				\item Pour $n \in \mathbb{N}^*$, $\bigvee_{i=1}^n A_i$ est une \textbf{$n$-clause} ssi c'est une clause d'exactement $n$ littéraux.
+				\item $A$ est sous \textbf{forme normale conjonctive} (abrégée FNC) ssi c'est une conjonction de clauses disjonctives.
+				\item $A$ est sous \textbf{forme normale disjonctive} (abrégée FNC) ssi c'est une disjonction de conjonctions de littéraux.
+			\end{itemize}
+
+			\exemple{$(a\vee b) \wedge (a \vee b \vee (\neg c))$ est une forme normale conjonctive.}
+
+	\section{Algèbre booléenne}
+		\subsection{Défintion}
+			On note $\mathbb{B}$ l'ensemble $\{V,F\}$.
+			On munit $\mathbb{B}$ des opérations suivantes:
+			\begin{center}	
+			\begin{tabular}{ c c c c c}
+				$+ = \left(\begin{tabular}{ c c c }
+					$\mathbb{B}\times\mathbb{B}$ & $\to$ & $\mathbb{B}$ \\
+					$(F,F)$ & $\mapsto$ & $F$ \\
+					$(V,F)$ & $\mapsto$ & $V$ \\
+					$(F,V)$ & $\mapsto$ & $V$ \\
+					$(V,V)$ & $\mapsto$ & $V$ \\
+				\end{tabular}\right)$ 
+				& &
+				$
+				\times = \left(\begin{tabular}{ c c c }
+					$\mathbb{B}\times\mathbb{B}$ & $\to$ & $\mathbb{B}$ \\
+					$(F,F)$ & $\mapsto$ & $F$ \\
+					$(V,F)$ & $\mapsto$ & $F$ \\
+					$(F,V)$ & $\mapsto$ & $F$ \\
+					$(V,V)$ & $\mapsto$ & $V$ \\
+				\end{tabular}\right)$ 
+				& &
+				$\overline{\bullet} = \left(\begin{tabular}{ c c c }
+					$\mathbb{B}$ & $\to$ & $\mathbb{B}$ \\
+					$V$ & $\mapsto$ & $F$ \\
+					$F$ & $\mapsto$ & $V$ \\
+				\end{tabular}\right)$ 
+			\end{tabular}
+			\end{center}
+			Le point dans $\overline{\bullet}$ désigne un élément de $\mathbb{B}$ quelconque. 
+			En pratique, la notation est la même que pour le conjugué complexe, ou les distances algébriques.
+
+			\definition{$(\mathbb{B},+,\times,\overline{\bullet}\,)$ est appelé \textbf{algèbre de Boole}.}
+
+			\paragraph{Propriété} \textsl{On a sur $(\mathbb{B},+,\times,\overline{\bullet})$ les propriétés suivantes:}
+				\begin{enumerate}
+				\item \textsl{+ et $\times$ sont commutatives et associatives.}
+				\item \textsl{$\overline{\bullet}$ est involutive.}
+				\item \textsl{$+$ admet $F$ comme élément neutre.}
+				\item \textsl{$\times$ admet $V$ comme élément neutre.}
+				\item \textsl{$V$ est absorbant pour +.}
+				\item \textsl{$F$ est absorbant pour $\times$}
+				\end{enumerate}
+			\begin{demo}
+				L'associativité se montre en étudiant tous les cas possibles. 
+				On va les présenter dans un tableau, appelé table de vérité (voir plus loin). 
+				Soit $(a,b,c) \in \mathbb{B}^3$. On a:
+			\end{demo}
+			\begin{adjustbox}{center}
+			\begin{tabular}{c c}
+			\begin{tabular}{|c|c|c|c|c|c|c|}
+				\hline
+				$a$                  & $b$                  & $c$ & $a+b$ & $b+c$ & $a+(b+c)$ & $(a+b)+c$ \\ \hline
+				\multirow{4}{*}{$V$} & \multirow{2}{*}{$V$} & $V$ & $V$   & $V$   & $V$       & $V$       \\ \cline{3-7} 
+									 &                      & $F$ & $V$   & $V$   & $V$       & $V$       \\ \cline{2-7} 
+									 & \multirow{2}{*}{$F$} & $V$ & $V$   & $V$   & $V$       & $V$       \\ \cline{3-7} 
+									 &                      & $F$ & $V$   & $F$   & $V$       & $V$       \\ \hline
+				\multirow{4}{*}{$F$} & \multirow{2}{*}{$V$} & $V$ & $V$   & $V$   & $V$       & $V$       \\ \cline{3-7} 
+									 &                      & $F$ & $V$   & $V$   & $V$       & $V$       \\ \cline{2-7} 
+									 & \multirow{2}{*}{$F$} & $V$ & $F$   & $V$   & $V$       & $V$       \\ \cline{3-7} 
+									 &                      & $F$ & $F$   & $F$   & $F$       & $F$       \\ \hline
+			\end{tabular}
+
+			\begin{tabular}{|c|c|c|c|c|c|c|}
+				\hline
+				$a$                  & $b$                  & $c$ & $a\times b$ & $b\times c$ & $a\times(b \times c)$ & $(a\times b) \times c$ \\ \hline
+				\multirow{4}{*}{$V$} & \multirow{2}{*}{$V$} & $V$ & $V$   & $V$   & $V$       & $V$       \\ \cline{3-7} 
+									 &                      & $F$ & $V$   & $F$   & $F$       & $F$       \\ \cline{2-7} 
+									 & \multirow{2}{*}{$F$} & $V$ & $F$   & $F$   & $F$       & $F$       \\ \cline{3-7} 
+									 &                      & $F$ & $F$   & $F$   & $F$       & $F$       \\ \hline
+				\multirow{4}{*}{$F$} & \multirow{2}{*}{$V$} & $V$ & $F$   & $V$   & $F$       & $F$       \\ \cline{3-7} 
+									 &                      & $F$ & $F$   & $F$   & $F$       & $F$       \\ \cline{2-7} 
+									 & \multirow{2}{*}{$F$} & $V$ & $F$   & $F$   & $F$       & $F$       \\ \cline{3-7} 
+									 &                      & $F$ & $F$   & $F$   & $F$       & $F$       \\ \hline
+			\end{tabular}
+			\end{tabular}
+			\end{adjustbox}
+
+			\begin{demo}
+				La commutativité se démontre de la même façon. 
+				En lisant ces tables de vérités, on prouve aussi 3), 4), 5) et 6). 2) découle simplement des définitions.
+			\end{demo}
+			
+			\prop{Pour tout couple $(a,b)\in\mathbb{B}^2$, on a $\overline{(a+b)}$ = $\overline{a} \times \overline{b}$, et $\overline{a\times b} = \overline{a} + \overline{b}$.}
+			\begin{demo}
+				Avec une table de vérité...
+			\end{demo}
+
+			\prop{+ est distributive par rapport à $\times$ et $\times$ est distributive par rapport à +.}
+			\begin{demo}
+				Soient $A, B$ et $C$ trois valeurs de $\mathbb{B}$. Supposons $B = F$. Alors, comme $F$ est le neutre de $+$, et absorbant pour $\times$:
+				\[ A \times (B+C) = A \times C =  F + (A \times C) = (A \times B) + (A \times C)\]
+				Si $B = V$, on a, comme $V$ est le neutre de $\times$ et absorbant pour $+$:
+				\[ A \times (B+C) = A \times V = (A \times B) = (A \times B) + (A \times C) \]
+			\end{demo}
+			\begin{demo}
+				On déduit l'autre distributivité en utilisant la proposition précédente.
+			\end{demo}
+
+		\subsection{Fonctions booléennes}
+
+			\paragraph{Définition :}Soit $n\in \mathbb{N}^*$. On appelle \textbf{fonction booléenne d'arité $n$} une fonction de $\mathbb{B}^n$ dans $\mathbb{B}$.
+
+			\rem{Le cardinal de $\mathbb{B}^n$ vaut $2^n$. 
+			On en déduit que le cardinal de $\mathcal{F}(\mathbb{B}^n,\mathbb{B}) = \mathbb{B}^{\mathbb{B}^n}$ vaut $2^{2^n}$.}
+
+			\corrpar
+			\paragraph{Définition :}Soit $n \in \mathbb{N}^*$. Soit $f \in \mathcal{F}(\mathbb{B}^n,\mathbb{B})$. 
+			On appelle \textbf{table de vérité de $f$} un tableau $T$ ayant $2^n$ lignes (indicées de 1 à $2^{n}$) et $n+1$ colonnes,
+			indicées de 1 à $n+1$, à valeurs dans $\mathbb{B}$, qui vérifie:
+
+			\begin{itemize}
+				\item $\set{(T_{i,j})_{j\in\intset{1,n}}  \tq j \in \intset{1,2^n}} = \mathbb{B}^n$
+				\item $\forall i \in \intset{1,2^n}, f((T_{i,j})_{j\in [1..n]}) = T_{i,n+1}$
+			\end{itemize}
+
+			Autrement dit, pour chaque ligne, la dernière colonne indique l'image par $f$ du $n$-uplet constitué des $n$ premières cases.
+
+			\rem{Il est recommandé d'énumérer les $2^n$ $n$-uplets de manière logique (compter en binaire), 
+				sinon il sera pénible de tous les lister sans doublons.}
+			\corrpar
+			\rem{On s'autorisera à regrouper les tables de vérités de plusieurs fonctions de même arité en ajoutant des colonnes.}
+
+
+	\section{Sémantique de la logique propositionnelle}
+		On fixe à nouveau $Q$ un ensemble de symboles. On appelle \textbf{environnement propositionnel}, \textbf{valeurs de vérité} ou \textbf{assignation de variable} 
+		une fonction de $Q$ dans $\mathbb{B}$.
+		
+		\subsection{Fonction booléenne associée à une formule}
+			\paragraph{Définition :} Soit $\rho$ un environnement propositionnel. On définit l'interprétation selon $\rho$ des formules de la logique propositionnelle sur $Q$ par:
+
+			\begin{center}
+			$
+				[\bullet]^\rho = \left(\begin{tabular}{c c c c | c c c c}
+				$\mathbb{F}_p$  & $\to$  & $\mathbb{B}$ & & &
+				$\top $& $\mapsto$ & $V$ \\
+				$\bot $& $\mapsto$ & $F$ & & &
+				$q \in Q$ & $\mapsto$ & $\rho(q)$ \\
+				$\neg$ A & $\mapsto$ & $\overline{[A]^\rho}$ & & &
+				$A \vee B$ & $\mapsto$ & $[A]^\rho + [B]^\rho$  \\ 
+				$A \wedge B$ & $\mapsto$ & $[A]^\rho \times [B]^\rho$  & & &
+				$A \rightarrow B$ & $\mapsto$ &  $\overline{[A]^\rho} + [B]^\rho$  \\ 
+				$A \leftrightarrow B$  &  $\mapsto$  &  $\overline{[A]^\rho \times [B]^p} + \left([A]^\rho \times [B]^p\right)$ & & & & &
+				\end{tabular}
+				\right)
+			$
+			\end{center}
+
+			Soit $A \in \mathbb{F}_p (Q)$.
+
+			\begin{itemize}
+				\item Pour $\rho \in \mathbb{B}^Q$ tel que $[A]^\rho = V$, on dit que \textbf{$\rho$ satisfait $A$}.
+				\item On dit que $A$ est \textbf{satisfiable} ssi il existe $\rho \in \mathbb{B}^Q$ tel que $\rho$ satisfait $A$.
+				\item On dit que $A$ est \textbf{valide} ou est une \textbf{tautologie} ssi tout $\rho \in \mathbb{B}^Q$ satisfait $A$. 
+				\item On dit que $A$ est \textbf{insatisfiable} ou est une \textbf{antilogie} ssi tout $\rho \in \mathbb{B}^Q$ ne satisfait pas $A$. 
+			\end{itemize}	
+
+			\exemple{$\top$ et $x \vee (\neg x)$ sont des tautologies, tandis que $\bot$ et $x \wedge (\neg x)$ sont des antilogies.}
+
+			\paragraph{Définition :} Soit $A \in \mathbb{F}_p(Q)$. On appelle \textbf{fonction booléenne associée} à la formule $A$ la fonction
+			\[
+				\intset{\bullet}^A = \left(
+				\begin{tabular}{c c c}
+					$\mathbb{B}^Q$ & $\rightarrow$ & $\mathbb{B}$ \\
+					$\rho$ & $\rightarrow$ & $[A]^\rho$
+				\end{tabular}
+				\right)
+			\]
+			
+			\rem{Toute fonction booléenne d'arité $n \in \mathbb{N}^*$ est la fonction booléenne associée d'une formule propositionnelle sur un ensemble de variables propositionnelles de cardinal $n$, et même d'une formule sous forme normale conjonctive ou forme normale disjonctive (voir section "mise sous forme normale" plus loin).}
+
+		\subsection{Équivalence logique}
+			On définit la relation binaire $\equiv$ sur $\mathbb{F_p}(Q)$ par
+
+			\[
+				\forall (A,B) \in \mathbb{F}_p(Q)^2, A \equiv B \Leftrightarrow \intset{\bullet}^A = \intset{\bullet}^B
+			\]\[
+				\Leftrightarrow \forall \rho \in \mathbb{B}^Q, \intset{\rho}^A = \intset{\rho}^B
+			\]\[
+				\Leftrightarrow \forall \rho \in \mathbb{B}^Q, [A]^\rho = [B]^\rho
+			\]
+
+			Autrement dit, $\set{\rho \in \mathbb{B}^Q \tq [A]^\rho = V} = \set{\rho \in \mathbb{B}^Q \tq [B]^\rho = V}$.
+
+			\prop{$\equiv$ est une relation d'équivalence.}
+			\begin{demo}
+				Cela découle simplement du fait que = est une relation d'équivalence.
+			\end{demo}
+			~\\
+			{\parindent0pt Soit $(A,B) \in \mathbb{F}_p(Q)^2$. On dit que $A$ et $B$ sont \textbf{logiquement équivalentes} ssi $A \equiv B$.}
+
+			\exemple{Pour $(A,B) \in \mathbb{F}_p(Q)^2$, on a $A\vee B \equiv B \vee A$.}
+			\begin{demo}
+				En effet, pour tout $\rho \in \mathbb{B}^Q, [A\vee B]^\rho = [A]^\rho + [B]^\rho$ par définition de l'interprétation, 
+				ce qui vaut $[B]^\rho + [A]^\rho$ par commutativité de +, soit $[B\vee A]^p$ par définition de l'interprétation.
+			\end{demo}
+
+			\exo{Soit $(A,B) \in \mathbb{F}_p(Q)^2$. Montrer que:}
+			\begin{itemize}
+				\item $A \wedge B \equiv B \wedge A$
+				\item $A \rightarrow B \equiv (\neg A) \vee B$
+				\item $A \rightarrow B \equiv (\neg B) \rightarrow (\neg A)$
+				\item $A \leftrightarrow B \equiv (A \rightarrow B) \wedge (B \rightarrow A)$ 
+				\item $A \vee (\neg A) \equiv \top$
+			\end{itemize}
+			
+			~\\
+			Soit $(A,B) \in \fpq$. On dit que $B$ est \textbf{conséquence logique de $A$}, noté $A \vDash B$ ssi tout environnement propositionnel satisfaisant $A$ satisfait aussi $B$.
+			Formalisé avec des ensembles, on a la définition suivante:
+			\[ A \vDash B \text{ si et seulement si } \set{\rho \in \mathbb{B}^Q \tq [A]^\rho = V} \subset \set{\rho \in \mathbb{B}^Q \tq [B]^Q = V} \]
+
+			\prop{La relation binaire $\vDash$ est réflexive et transitive, et on a $A\equiv B \Leftrightarrow A \vDash B$ et $B \vDash A$.}
+			\begin{demo}
+				En exercice.
+			\end{demo}
+			~\\
+			Soit $X \subset \fpq$. Soit $B \in \fpq$.
+			On note $X \vDash B$ ssi tout environnement propositionnel satisfaisant \textbf{toutes} les formules de $X$ satisfait aussi $B$.
+			Autrement dit, $\set{\rho \in \mathbb{B}^Q \tq \forall A \in X , [A]^\rho = V} \subset \set{\rho \in \mathbb{B}^Q \tq [B]^\rho = V}$.
+			
+			\rem{Attention, ça ne signifie pas que $B$ est conjonction des formules de $X$, ni équivalente à cette conjonction: $X$ pourrait être de cardinal infini !}
+			\corrpar
+			\exo{Soit $(A,B) \in \fpq^2$. Montrer que:}
+			\begin{itemize}
+				\item $\set{(A\rightarrow B), A} \vDash B$
+				\item $\set{(A \rightarrow B), \neg B} \vDash \neg A$
+			\end{itemize}
+
+			\prop{Soit $A \in \fpq$.}
+			\begin{itemize}
+				\item $A$ est une tautologie ssi $A \equiv \top$.
+				\item $A$ est une antilogie ssi $A \equiv \bot$.
+				\item $A$ est une tautologie ssi $\neg A$ est une antilogie.
+			\end{itemize}
+
+			\prop{Soit $(A,B) \in \fpq^2$.}
+			\begin{itemize}
+				\item $A \equiv B$ ssi $A \leftrightarrow B \equiv \top$ (i.e $A \leftrightarrow B$ est une tautologie).
+				\item $A \vDash B$ ssi $A \rightarrow B \equiv \top$ (i.e $A \rightarrow B$ est une tautologie).
+			\end{itemize}
+			\begin{demo}
+				En exercice.
+			\end{demo}
+
+		\subsection{Espace quotient}
+			L'espace des formules logiques quotienté par équivalence, $\fpq/\equiv$, est en bijection avec $\mathcal{F}(\mathbb{B}^Q,\mathbb{B})$.
+			En effet une classe d'équivalence selon $\equiv$ est caractérisée par la fonction booléenne à laquelle sont associées tous ses éléments. 
+			Cela justifie que $\llbracket\bullet\rrbracket^A$ soit parfois appelée la \textbf{représentation} de $A$.
+
+		\subsection{Table de vérité d'une formule}
+			On étend ici la définition de table de vérité aux formules, pour une numérotation des variables fixée: $Q = \set{q_1,q_2,...,q_n}$ où $n = \card(Q)$.
+			Une table de vérité d'une formule $A \in \fpq$ est en fait une table de vérité de la fonction associée $\llbracket\bullet\rrbracket^A :$
+			\\[-5pt]
+			\begin{itemize}
+				\item $\set{(T_{i,j})_{j_\in\intset{1,n}} \tq i\in \intset{1,2^n}} = \mathbb{B}^Q$.
+				\item Pour tout $i \in \intset{1,2^n}$, $T_{i,n+1}$ vaut $\intset{\rho_i}^A$,
+					où $\rho_i \in \mathbb{B}^Q$ est défini par $\forall j \in \intset{1,n}, \rho_i(q_j) = T_{i,j}$.
+			\end{itemize}
+			\vspace{5pt}
+		\subsection{Mise sous forme normale}
+			\begin{center}\textsl{On fixe dans toute cette partie un entier naturel $n$ 
+			et $(T_{i,j})_{(i,j)\in\intset{1,2^n}\times\intset{1,n}}$ une table de vérité.}\end{center}
+			\subsubsection{Mise sous FND à partir d'une table de vérité}
+				Pour tout $i \in \intset{1,2}$ et $j \in \intset{1,n}$, on note $\ell_{i,j}$ comme étant:
+				\\[-5pt]
+				\begin{itemize}
+					\item Le littéral $q_j$ si $T_{i,j} = V$
+					\item Le littéral $\neg q_j$ si $T_{i,j} = F$
+				\end{itemize}
+
+				\paragraph{Lemme:} \textsl{$\forall i \in \intset{1,2^n}$, $\forall j \in \intset{1,n}$, $[\ell_{i,j}]^{\rho_i} = V$}
+				\begin{demo}
+					Soit $i \in \intset{1,2^n}$. Soit $j \in \intset{1,n}$.
+					\begin{itemize}
+						\item Si $T_{i,j} = V$ alors $\ell_{i,j} = q_j$ donc $[\ell_{i,j}]^{\rho_i} = \rho_i(q_j)$ par définition de l'interprétation d'une variable. 
+						Or par définition de $\rho_i$, $\rho_i(q_j) = T_{i,j}$, donc $[\ell_{i,j}]^{\rho_i}=V$.
+						\item Si $T_{i,j} = F$ alors $\ell_{i,j} = \neg q_j$ donc $[\ell_{i,j}]^{\rho_i} = \overline{\rho_i(q_j)}$ par définition de l'interprétation d'une négation. 
+						Or par définition de $\rho_i$, $\rho_i(q_j) = T_{i,j}$, donc $[\ell_{i,j}]^{\rho_i}=\overline{F}=V$.
+					\end{itemize}
+				\end{demo}
+
+				\definition{On pose ensuite, pour tout $i\in\intset{1,2^n}, L_i = \bigwedge\limits_{j=1}^n \ell_{i,j}$.}
+
+				\paragraph{Lemme:} \textsl{$\forall i \in \intset{1,2^n}, [L_i]^{\rho_i} = V$, $\forall k \in \intset{1,2^n}$, si $i\neq k$ alors $[L_i]^{\rho_k} = F$.}
+				\begin{demo}
+					Soit $i \in \intset{1,2^n}.$ Par définition de l'interprétation d'une conjonction, 
+					$[L_i]^{\rho_i} = \prod\limits_{j=1}^n [\ell_{i,j}]^{\rho_i} = \prod\limits_{j=1}^n V$ d'après le lemme précédent, d'où $[L_i]^{\rho_i} = V$.
+					\item Soit $k \in \intset{1,2^n}$ tel que $k \neq i$. 
+					Puisque les lignes de $T$ restreintes à leurs $n$ premières colonnes sont deux à deux distinctes, il existe $j_0 \in \intset{1,n}$ tel que $T_{i,j_0} \neq T_{k,j_0}$.
+					\begin{itemize}
+						\item Si $T_{i,j_0} = V$, alors $\ell_{i,j_0} = q_{j_0}$ et $T_{k,j_0} = F$. 
+						Par définition de l'interprétation d'une variable $[\ell_{i,j_0}]^{\rho_k} = \rho_k(q_{j_0})$,
+						or par définition de $\rho_k$ on a $\rho_k(q_{j_0}) = T_{k,j_0} = F$, donc $[\ell_{i,j_0}]^{\rho_k} = F$.
+						%
+						\item Si au contraire $T_{i,j_0} = F$, alors $\ell_{i,j_0} = \neg q_{j_0}$ et $T_{k,j_0} = V$.
+						Par définition de l'interprétation de la négation d'une variable,
+						$[\ell_{i,j_0}]^{\rho_k} = \overline{\rho_k(q_{j_0})}$, or par définition de $\rho_k$, on a $\rho_k(q_{j_0}) = T_{k,j_0} = V$, 
+						donc $[\ell_{i,j_0}]^{\rho_k} = \overline{V} = F$.
+					\end{itemize}
+					\item Dans les deux cas, le terme d'indice $j_0$ de la somme qu'est l'interprétation de $L_i$ vaut $F$, et $F$ étant absorbant pour $\times$, on en déduit que
+					$[L_i]^{\rho_k} = F$.
+				\end{demo}
+				\vspace{10pt}
+
+				\definition{Finalement, on pose $D = \bigvee\limits_{i\in\intset{1,2^n} / T_{i,n+1} = V} L_i$.}
+
+				\prop{$D \equiv A$.}
+				\begin{demo}
+					Soit $\rho \in \mathbb{B}^Q$. On note $I = \set{i \in \intset{1,2^n} \tq T_{i,n+1} = V}$, ainsi $D = \bigvee_{i\in I} L_i$.
+					De plus, par définition de l'interprétation d'une disjonction, $[D]^\rho = \sum_{i\in I} [L_i]^\rho$.
+					Puisque les lignes de $T$ restreintes à leurs premières colonnes couvrent $\mathbb{B}^Q$, il existe $i_0 \in \intset{1,2^n}$ tel que $\rho = \rho_{i_0}$.
+					\begin{itemize}
+						\item Si $[A]^\rho = V$, on a $V = \intset{\rho}^A = \intset{\rho_{i_0}}^A = T_{i_0,n+1}$, donc $i_0 \in I$. 
+						Ainsi le terme $[L_{i_0}]^\rho$ apparaît dans la somme qu'est $[D]^\rho$, or d'après le lemme précédent, $[L_{i_0}]^\rho = [L_{i_0}]^{\rho_{i_0}} = V$,
+						et $V$ étant absorbant pour la somme, on en déduit que $[D]^\rho = V$, soit $[D]^\rho = [A]^\rho$.
+						\item Si au contraire $[A]^\rho = F$, alors $T_{i_0,n+1} = F$ donc $i_0\not\in I$. Autrement dit $\forall i \in I, i\neq i_0$ donc d'après le lemme prédédent,
+						$[L_i]^{\rho_{i_0}} = F$ soit $[L_i]^\rho = F$. Une somme de $F$ étant $F$, on en déduit que $[D]^\rho = F$ soit $[D]^\rho = [A]^\rho$.
+					\end{itemize}
+				\end{demo}
+
+
+				\exemple{Mise sous FND de la formule $A = (a\vee b) \rightarrow (c \wedge a)$:}
+					On commence par réaliser la table de vérité de l'expression:
+					\begin{center}
+					\begin{tabular}{c c}
+					\begin{tabular}{| c c c | c | c | c | c }
+						\hline
+						$a$ & $b$ & $b$   &  $(a\vee b)$ & $(c \wedge a)$ & $A$ \\
+						\hline
+						$V$ & $V$ & $V$   &     $V$      &     $V$        & $V$ \\
+						\hline
+						$V$ & $V$ & $F$   &     $V$      &     $F$        & $F$ \\
+						\hline
+						$V$ & $F$ & $V$   &     $V$      &     $V$        & $V$ \\
+						\hline
+						$V$ & $F$ & $F$   &     $V$      &     $F$        & $F$ \\
+						\hline
+						$F$ & $V$ & $V$   &     $V$      &     $F$        & $F$ \\
+						\hline
+						$F$ & $V$ & $F$   &     $V$      &     $F$        & $F$ \\
+						\hline
+						$F$ & $F$ & $V$   &     $F$      &     $F$        & $V$ \\
+						\hline
+						$F$ & $F$ & $F$   &     $F$      &     $F$        & $V$ \\
+						\hline
+					\end{tabular}
+					& \begin{tabular}{l}
+					\\ $\rightarrow (a \wedge b \wedge c)$ \\ \\ 
+					$\rightarrow (a \wedge (\neg b) \wedge c)$ \\ \\ \\ \\ 
+					$\rightarrow ((\neg a) \wedge (\neg b) \wedge c)$ \\ 
+					$\rightarrow ((\neg a) \wedge (\neg b) \wedge (\neg c))$ 
+					\end{tabular}
+					\end{tabular}
+					\end{center}
+					D'où $A = (a \wedge b \wedge c) \vee 
+					\underbrace{(a \wedge (\neg b) \wedge c) \vee ((\neg a) \wedge (\neg b) \wedge c)}_{= (\neg b) \wedge c} 
+					\vee ((\neg a) \wedge (\neg b) \wedge (\neg c))$, soit 
+					\[ 
+						\boxed{A = (a \wedge b \wedge c) \vee ((\neg b) \wedge c) \vee ((\neg a) \wedge (\neg b) \wedge (\neg c))}
+					\]
+
+
+			\subsubsection{Mise sous FNC à partir d'une table de vérité}
+				\exemple{Mise sous FNC de la formule $A = (a\vee b) \rightarrow (c \wedge a)$:}
+					On commence par réaliser la table de vérité de l'expression:
+					\begin{center}
+					\begin{tabular}{c c}
+					\begin{tabular}{| c c c | c | c | c | c }
+						\hline
+						$a$ & $b$ & $b$   &  $(a\vee b)$ & $(c \wedge a)$ & $A$ \\
+						\hline
+						$V$ & $V$ & $V$   &     $V$      &     $V$        & $V$ \\
+						\hline
+						$V$ & $V$ & $F$   &     $V$      &     $F$        & $F$ \\
+						\hline
+						$V$ & $F$ & $V$   &     $V$      &     $V$        & $V$ \\
+						\hline
+						$V$ & $F$ & $F$   &     $V$      &     $F$        & $F$ \\
+						\hline
+						$F$ & $V$ & $V$   &     $V$      &     $F$        & $F$ \\
+						\hline
+						$F$ & $V$ & $F$   &     $V$      &     $F$        & $F$ \\
+						\hline
+						$F$ & $F$ & $V$   &     $F$      &     $F$        & $V$ \\
+						\hline
+						$F$ & $F$ & $F$   &     $F$      &     $F$        & $V$ \\
+						\hline
+					\end{tabular}
+					& \begin{tabular}{l}
+					\\ \\ $\rightarrow ((\neg a) \vee (\neg b) \vee c)$ \\ \\
+					$\rightarrow ((\neg a) \wedge b \wedge (\neg c))$ \\
+					$\rightarrow (a \wedge (\neg b) \wedge (\neg c))$ \\
+					$\rightarrow (a \wedge (\neg b) \wedge c)$ \\ \\ \\ 
+					\end{tabular}
+					\end{tabular}
+					\end{center}
+					Ainsi:
+					\[ 
+						\boxed{A = ((\neg a) \vee (\neg b) \vee c) \wedge ((\neg a) \vee b \vee c) \wedge (a \vee (\neg b) \vee (\neg c)) \wedge (a \vee (\neg b) \vee c)}
+					\]
+
+				Soit $A \in \fpq$ où $Q = \set{q_1,q_2,..., q_n}$. Soit $T$ une table de vérité suivant cette numérotation de $Q$.
+				Pour tout $i \in \intset{1,2^n}$ et $j \in \intset{1,n}$, on note $r_{i,j}$ comme étant
+				\vspace{5pt}
+				\begin{itemize}
+					\item Le littéral $\neg q_j$ si $T_{i,j} = V$.
+					\item Le littéral $q_j$ sinon.
+				\end{itemize}
+				\vspace{5pt}
+				\definition{On pose, pour tout $i \in \intset{1,2^n}, R_i = \bigvee_{j=1}^n r_{i,j}$, et $C = \bigwedge_{i\in\intset{1,2^n} / T_{i,n+1} = F} = R_i$.}
+
+				\prop{Avec ces notations, on a les propriétés suivantes:}
+				\begin{itemize}
+					\item $\forall i \in \intset{1,2^n}, \forall j \in \intset{1,n}, [r_{i,j}]^{\rho_i} = F$.
+					\item $\forall i \in \intset{1,2^n}, [R_i]^{\rho_i} = F$ \textsl{et} $\forall k \in \intset{1,2^n}, k \neq i, [R_i]^{\rho_k} = V$.
+					\item $C \equiv A$.
+				\end{itemize}
+				\begin{demo}
+					Pour s'entraîner; c'est comme pour les FND...
+				\end{demo}
+
+			\subsubsection{Bilan:}
+				\begin{itemize}
+					\item Certaines formules sont à la fois sous FNC et FND, par exemple $a \wedge b \wedge c$.
+					\item Il y a \textbf{existence} de la FNC/FND équivalente à une formule.
+					\item Il n'y a pas \textbf{unicité} de la FNC/FND équivalente à une formule (soit à cause de la commutativité, soit à cause de simplifications possibles).
+					\item Attention, \textbf{la taille de la forme normale peut exploser} en passant d'une forme à l'autre:
+						Par exemple, $A = \bigvee_{i=1}^n (a_i\wedge b_i)$ est une conjonction de $n$ termes, écrites avec $2n$ littéraux,
+						mais une FND équivalente est une disjonction de $2^n$ termes étant chacun le produit de $n$ littéraux 
+						(pour chaque $i\in \intset{1,n}, a_i$ ou $b_i$ apparaît):
+				\end{itemize}
+				\[
+					A \equiv (a_1 \vee a_2 \vee ... \vee a_n) \wedge (b_1 \vee a_2 \vee ... \vee a_n) \wedge ... \wedge (b_1 \vee b_2 \vee ... \vee b_n)
+				\]
+
+				\exo{Donner une formule équivalente, plus simple, aux formules suivantes:}
+				\corrpar
+				\begin{multicols}{2}
+				\begin{enumerate}
+					\item $A \wedge (\neg A) \equiv $  
+					\item $A \vee (\neg A) \equiv $  
+					\item $A \wedge \top \equiv $  
+					\item $A \vee \top \equiv $  
+					\item $A \wedge \bot \equiv $  
+					\item $A \vee \bot \equiv$
+					\item $A \wedge ((\neg A) \vee B) \equiv$  
+					\item $A \vee ((\neg A) \wedge B) \equiv$  
+					\item $(A \vee B) \wedge ((\neg A) \vee B) \equiv$  
+					\item $(A \wedge B) \vee ((\neg A) \wedge B) \equiv $  
+				\end{enumerate}
+				\end{multicols}
+				\corrpar
+				\exo{Mettre sous FNC et FND les formules suivantes:}
+				\corrpar
+				\begin{enumerate}
+					\item $U = (x \wedge y) \vee (z \wedge (\neg z) \wedge q) \vee ((\neg x) \wedge z)$
+					\item $V = (x \wedge q) \rightarrow ((y \vee (\neg z)) \wedge q)$
+					\item $W = (x \wedge y) \leftrightarrow ((\neg x) \wedge z)$
+				\end{enumerate}
+\end{document}

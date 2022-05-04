@@ -1,0 +1,277 @@
+\newcommand\PATH{/home/matthieu/Documents/Ecole/Informatique/cours/4-probleme-sat.latex}
+
+\RequirePackage{fix-cm}
+
+\documentclass{scrartcl}
+
+\input{\PATH/include/preamble.tex}
+\input{\PATH/include/algofr.tex}
+\newcommand{\fpq}{\mathbb{F}_p(Q)}
+\newcommand{\pb}[3]
+{
+	\textbf{#1}
+	\left|\left|\begin{tabular}{l l}
+		Entrée: & #2 \\
+		Sortie: & #3
+	\end{tabular}\right.\right.
+}
+\newcommand{\pbinlist}[3]
+{
+	\textbf{#1} &  $\left|\left|\begin{tabular}{l l}
+		Entrée: & #2\\ 
+		Sortie: & #3 
+	\end{tabular}\right.\right.$ 
+}
+\newcommand{\supp}{\text{supp}}
+\usepackage{lmodern}
+
+\title{Le problème SAT}
+\author{}
+\date{}
+
+\begin{document}
+	\maketitle
+		\begin{center}\textsl{Dans ce chapitre, on s’intéresse à la satisfiabilité des formules (sur un ensemble de variables fini, i.e. $\card (Q) \in \mathbb{N}$).
+		En effet, une formule propositionnelle peut modéliser un problème concret dont une solution serait donnée par un environnement satisfaisant la formule.}\end{center}
+
+	\section{Définitions}
+		\exemple La valeur de vérité d'une variable $p_{i,j,k}$ indique si la case en $(i,j)$ contient la valeur $k$, 
+			l’environnement complet décrit une solution, et s’il satisfait la formule, alors c’est une solution valide.
+
+		Mais on s’intéresse déjà au problème de décision (plus simple) de savoir si une formule est satisfiable, sans demander par quel environnement.
+		\[
+			\pb{SAT}{$A \in \fpq$}{oui si $A$ est satifsiable, non sinon.}
+		\]
+
+		\rem Puisque la satisfiabilité d’une formule ne dépend que de sa classe, 
+		on peut résoudre le problème sur une formule ayant une forme particulière, 
+		mais attention au coût de transformation. 
+
+		Ce problème a plusieurs variantes:
+		\begin{center}
+			\begin{tabular}{r l}
+				\pbinlist{FND-SAT}{$A \in \fpq$ sous FND.}{oui si $A$ est satisfiable, non sinon.} \\[20pt]
+				\pbinlist{FNC-SAT}{$A \in \fpq$ sous FNC.}{oui si $A$ est satisfiable, non sinon.} \\[20pt]
+				\pbinlist{3-SAT}{$A \in \fpq$ sous FNC avec des clauses de 3 littéraux seulement.}{oui si $A$ est satisfiable, non sinon.} \\[20pt]
+				\pbinlist{2-SAT}{$A \in \fpq$ sous FNC avec des clauses de 2 littéraux seulement.}{oui si $A$ est satisfiable, non sinon.} 
+			\end{tabular}
+		\end{center}
+
+	\section{Réductions}
+		Soient $X$ et $Y$ deux problèmes de décisions.
+		On note $X^+$ (resp. $X^{-}$) les instances positives (resp. négatives) de $X$, 
+		i.e. celles pour lesquelles la solution est vrai (resp. faux). 
+		On définit de même $Y^+$ et $Y^{-}$.
+
+		\definition On dit que \textbf{$Y$ se réduit à $X$ en temps polynomial} s'il existe une transformation $\varphi$,
+		calculable en temps polynomial, qui transforme toute instance de $Y$ en une instance de $X$ de sorte que:
+		\[
+			\forall \mathcal{I}, \quad \varphi(\mathcal{I}) \in X^+ \Leftrightarrow \mathcal{I} \in Y^+
+		\]
+		
+		On a alors, pour les problèmes définis précédemment:
+		\begin{itemize}
+			\item \textbf{SAT} est plus dur que \textbf{FND-SAT} et \textbf{FNC-SAT}:
+			\begin{itemize}
+				\item \textbf{FNC-SAT} se réduit en temps polynomial à \textbf{SAT} (pour $\varphi = \Id$).
+				\item \textbf{FND-SAT} se réduit en temps polynomial à \textbf{SAT} (pour $\varphi = \Id$).
+			\end{itemize}
+			\item \textbf{FNC-SAT} est plus dur que \textbf{2-SAT} et \textbf{3-SAT}:
+			\begin{itemize}
+				\item \textbf{2-SAT} se réduit en temps polynomial à \textbf{FNC-SAT} (pour $\varphi = \Id$).
+				\item \textbf{3-SAT} se réduit en temps polynomial à \textbf{FNC-SAT} (pour $\varphi = \Id$).
+			\end{itemize}
+			\item \textbf{FNC-SAT} se réduit à \textbf{3-SAT}:
+			\begin{itemize}
+				\item On transforme chaque clause de taille inférieure à 3 en clause de taille 3:
+				\begin{center}\begin{tabular}{c c c}
+					$a \equiv (a \vee a \vee a)$ & \quad & $(a \vee b) \equiv (a \vee a \vee b)$
+				\end{tabular}\end{center}
+				\item On transforme chaque clause de taille supérieure à 3 en conjonction de clauses de taille 3 en ajoutant des nouvelles variables:
+				\[
+					(a \vee b \vee c \vee d) \longrightarrow (a \vee b \vee z) \wedge ((\neg z) \vee c \vee d) 
+				\]
+				\[
+					(a \vee b \vee c \vee d \vee e) \longrightarrow (a \vee b \vee z_1) \wedge ((\neg z_1) \vee c \vee z_2) \wedge ((\neg z_2) \vee d \vee e) 
+				\]
+				\item Toutes ces transformations sont en temps polynomial et préservent la satisfiablilité.
+			\end{itemize}
+		\end{itemize}
+
+		\exo Soit $C = \ell_1 \vee \ell_2 \vee \ell_3 \vee ... \vee \ell_k$ une clause de $\fpq$ de taille $k > 3$.
+		Soit $z$ une nouvelle variable (i.e $z \not\in Q$). 
+		On pose alors $C_1 = (\ell_1 \vee \ell_2 \vee z)$ et $C_2 = ((\neg z) \vee \ell_3 \vee ... \vee \ell_k)$.
+		Montrer les deux propositions suivantes:
+		\begin{itemize}
+			\item $\forall \rho \in \mathbb{B}^Q$, $[C]^\rho = V \Rightarrow 
+				(\exists \rho' \in \mathbb{B}^{Q\cup\set{z}}, \rho'\big|_Q = \rho \text{ et } [C_1\wedge C_2]^{\rho'} = V)$
+			\item $\forall \rho \in \mathbb{B}^{Q\cup\set{z}}, [C_1\wedge C_2] = V \Rightarrow [C]^{\rho'} = V$
+		\end{itemize}
+
+		\rem \textbf{FNC-SAT} ne se réduit pas à \textbf{2-SAT}. 
+		On verra que \textbf{2-SAT} se résout en temps polynomial (cf. chapitre sur les graphes), 
+		que \textbf{3-SAT} est NP-complet (théorème de Cook, au programme de seconde année),
+		et qu'à moins que P = NP, ces deux problèmes ne sont pas équivalents.
+
+		\rem \textbf{FNC-SAT} ne se réduit pas à \textbf{FND-SAT}:
+		La transformation d'une forme à l'autre se fait en temps exponentiel et peut aussi augmenter la taille de l'entrée de manière exponentielle.
+		On verra que \textbf{FND-SAT} se résout en temps polynomial (juste après).
+		À moins que P = NP, ces deux problèmes ne sont pas équivalents.
+
+	\section{Modéliser une FND}
+		On rappelle qu'une formule sous FND est une disjonction de conjonction de littéraux. D'un point de vue sémantique, c'est à dire dans $\fpq$,
+		\begin{itemize}
+			\item L'ordre des littéraux au sein d'une conjonction n'a pas d'importance, ni leur multiplicité:
+				une conjonction est satisfaite par un environnement propositionnel ssi il satisfait l’ensemble de ses termes.
+			\item L'ordre des conjonctions n'a pas non plus d'importance au sein de la disjonction, ni leur multiplicité:
+				une conjonction est satisfaite par un environnement propositionnel ssi il satisfait l'un de ses termes.
+			\item Pour modéliser les conjonctions de littéraux, il est intéressant d'utiliser un \textbf{ensemble de littéraux} ou un \textbf{couple d'ensembles de variables}:
+				d'une part celles apparaissant dans les littéraux positifs, d'autre part celles apparaissant dans les littéraux négatifs.
+			\item Pour modéliser une FND, il faut alors utiliser un ensemble de conjonctions. 
+				Quant à la structure de données à employer, une liste de littéraux convient.
+		\end{itemize}
+	
+	\section{\textbf{FND-SAT} et \textbf{FND-SAT}}
+		On suppose que $Q = \set{q_1,q_2,...,q_N}$. Avec la modélisation décrite précédemment, les deux problèmes deviennent:
+		\[
+			\pb{FND-SAT}{$((\ell_{i,j})_{i\in\intset{1,n_j}})_{j\in\intset{1,n}}$ une famille de littéraux de $Q$}{oui si $A = \bigvee_{j=1}^n\bigwedge_{i=1}^{n_j}\ell_{i,j}$ est satisfiable, non sinon.}
+		\]
+		\[
+			\pb{FNC-SAT}{$((\ell_{i,j})_{i\in\intset{1,n_j}})_{j\in\intset{1,n}}$ une famille de littéraux de $Q$}{oui si $A = \bigwedge_{j=1}^n\bigvee_{i=1}^{n_j}\ell_{i,j}$ est satisfiable, non sinon.}
+		\]
+		\exemple Prenons $(a\wedge b \wedge (\neg c)) \vee ((\neg b) \wedge (\neg c)) \vee (a \wedge c)$.
+		Mise sous forme d'ensemble d'ensembles de littéraux, la formule devient:
+		\[ \set{\set{a,b,(\neg c)},\set{(\neg b,\neg c)},\set{a,c}} \]
+		Soit encore, sous forme d'ensemble de couples:
+		\[ \set{(\set{a,b},\set{c}),(\varnothing, \set{b,c}), (\set{a,c},\varnothing)} \]
+
+		\exemple Prenons $(a\wedge b \wedge (\neg c)) \vee (a \wedge c \wedge a) \vee ((\neg b) \wedge (\neg c))$.
+		Mise sous forme d'ensemble d'ensembles de littéraux, la formule devient:
+		\[ \set{\set{a,b,\neg c},\set{(\neg b,\neg c)},\set{a,c}} \]
+		Soit encore, sous forme d'ensemble de couples:
+		\[ \set{(\set{a,b},\set{c}),(\varnothing, \set{b,c}), (\set{a,c},\varnothing)} \]
+
+		\exemple Prenons $(a\wedge b \wedge (\neg a)) \vee (a \wedge c \wedge (\neg a)) \vee ((\neg b) \wedge (\neg c))$.
+		Mise sous forme d'ensemble d'ensembles de littéraux, la formule devient:
+		\[ \set{\set{a,b,\neg a},\set{(a, \neg a,\neg c)},\set{\neg b, \neg c}} \]
+		Soit encore, sous forme d'ensemble de couples:
+		\[ \set{(\set{a,b},\set{a}),(\set{a}, \set{a,c}), (\varnothing,\set{b,c})} \]
+
+	\section{Algorithme pour FND-SAT}
+		{\parindent0pt \algofor{$j$}{1}{$n$}}
+		\tab	Créer $T$ un tableau indicé par $\intset{1,N}$ initialisé à -1 \\
+		\tab	\algotry 
+		\tab	\tab	\algofor{$i$}{1}{$n_j$}
+		\tab	\tab	\tab	\algoif{$\ell_{i,j}$ = $q_k$}
+		\tab	\tab	\tab	\tab	\textbf{alors Si} $T[k]$ = -1, \textbf{alors} $T[k] \leftarrow 1$ \\
+		\tab	\tab	\tab	\algoelif{$T[k]$ = 0} déclencher "\textit{conj. non sat.}" \\
+		\tab	\tab	\tab	\algoif{$\ell_{i,j} = \neg q_k$}
+		\tab	\tab	\tab	\tab	\textbf{alors Si} $T[k]$ = -1, \textbf{alors} $T[k] \leftarrow 0$ \\
+		\tab	\tab	\tab	\algoelif{$T[k] = 1$} déclencher "\textit{conj. non sat.}" \\
+		\tab	\tab	\algoreturn{\algotrue}
+		\tab	\algocatch{"\textit{conj. non sat.}"}
+		\algoreturn{\algofalse}
+	\section{Modélisation}
+		\subsection{Exemple du solitaire}
+			\plabel{État inital du jeu:} Sur chaque case d'un damier carré de $m\times m$ cases, 
+			il y a une pierre bleue ($b$), ou bien une pierre rouge ($r$) ou rien.
+			
+			\plabel{But du jeu:} Enlever des pierres de manière à ce que:
+			\begin{itemize}
+				\item Sur chaque colonne toutes les pierres soient de la même couleur.
+				\item Sur chaque ligne, il y ait au moins une pierre.
+			\end{itemize}
+			
+			\exo \begin{itemize}
+				\item Formaliser le problème de décision consistant à savoir si une partie peut être gagnée.
+				\item Réduire ce problème à \textbf{3-SAT}.
+				\item Réduire \textbf{3-SAT} à ce problème (bonus).
+			\end{itemize}
+			
+	\section{Algorithme de Quine}
+		\subsection{Substitution}
+			Soit $\sigma\in \mathcal{F}(Q,\fpq)$.
+			On appelle \textbf{support de $\sigma$}, noté $\supp(\sigma)$ l'ensemble des variables que $\sigma$ n'envoie pas sur la formule réduite à elle-même.
+			\[
+				\supp(\sigma) = \set{q \in Q \tq \sigma(q) \neq q}
+			\]
+
+			\exemple Pour $\sigma = \left(\begin{tabular}{c c c}
+				$Q=\set{x,y}$ & $\rightarrow$ & $\mathbb{F}_p(\set{x,y})$ \\
+				$x$ & $\mapsto$ & $x$ \\
+				$y$ & $\mapsto$ & $\neg x$
+			\end{tabular}\right)$, $\supp(\sigma) = \set{y}$.
+
+			\definition Soit $\sigma \in \mathcal{F}(Q,\fpq)$. On dit que $\sigma$ est une \textbf{substitution} ssi $\card(\supp(\sigma)) \in \mathbb{N}$.
+
+			\definition Soit $\sigma \in \mathcal{F}(Q,\fpq)$ une substitution. 
+			On appelle \textbf{application de la substitution $\sigma$} la fonction suivante:
+			\[
+				\bullet[\sigma] = 
+				\left(\begin{tabular}{c c c}
+					$\fpq$ & $\rightarrow$ & $\fpq$ \\
+					$\bot$ & $\mapsto$ & $\bot$ \\
+					$\top$ & $\mapsto$ & $\top$ \\
+					$q$ & $\mapsto$ & $\sigma(q)$ \\
+					$\neg A$ & $\mapsto$ & $\neg (A[\sigma])$ \\
+					$A \alpha B$ & $\mapsto$ & $A[\sigma] \alpha B[\sigma]$ où $\alpha \in \set{\wedge,\vee,\rightarrow,\leftrightarrow}$
+				\end{tabular}\right)
+			\]
+			Soit $\sigma_1$ et $\sigma_2$ deux substitutions. 
+			On note $\sigma_1\cdot\sigma_2$ et on appelle \textbf{composée de $\sigma_1$ et $\sigma_2$} la fonction
+			\[f=\left(\begin{tabular}{c c c }
+			$Q$ & $\rightarrow$ & $\fpq$ \\
+			$q$ & $\mapsto$ & $\sigma_2(q)[\sigma_1]$
+			\end{tabular}\right)\]
+
+			\prop{La composée de substitutions est \textbf{associative}, 
+			c'est à dire que pour tout triplet$(\sigma_1,\sigma_2,\sigma_3) \in \mathcal{F}(Q,\fpq)^3$ vérifiant
+			$\forall i \in \intset{1,3}, \card(\supp(\sigma_i)) \in \mathbb{N}$, 
+			on a $(\sigma_1\cdot\sigma_2)\cdot\sigma_3 = \sigma_1\cdot(\sigma_2\cdot\sigma_3)$
+			et admet pour}
+			\begin{demo}
+				\item En exercice.
+			\end{demo}
+			
+			\rem Attention: une substition n'est pas forcément symétrisable! 
+			Ainsi, l'ensemble des substitutions muni de la composition est juste un monoïde, mais pas un groupe. 
+
+		\subsection{Règles de simplification}
+			On a les règles suivantes:
+			
+			\begin{multicols}{3}
+			\begin{itemize}
+				\item $\neg \top \equiv \bot$ 
+				\item $\neg \bot \equiv \top$ 
+				\item $A \wedge \top \equiv \top \wedge A \equiv A$ 
+				\item $A \wedge \bot \equiv \bot \wedge A \equiv \bot$ 
+				\item $A \vee \top \equiv \top \vee A \equiv \top$ 
+				\item $A \rightarrow \bot \equiv \neg A$ 
+				\item $A \rightarrow \top \equiv A$ 
+				\item $A \vee \bot \equiv \bot \vee A \equiv A$ 
+				\item $\bot \rightarrow A \equiv T$ 
+				\item $\top \rightarrow A \equiv A$ 
+				\item $A \leftrightarrow \top \equiv A$ 
+				\item $A \leftrightarrow \bot \equiv \neg A$ 
+			\end{itemize}
+			\end{multicols}		
+
+			On remarque que l'application de chacune de ses règles amène à une réduction stricte de la taille de la formule, 
+			soit en enlevant un opérateur, soit en enlevant une variable, soit en enlevant un symbole $\bot$ ou $\top$.
+
+			\prop{Soit $(A,B,A',B') \in \fpq^4$. Pour $\alpha \in \set{\wedge,\vee,\rightarrow,\leftrightarrow}$, 
+				si $A \equiv A'$ et $B \equiv B'$, alors $A \alpha B \equiv A' \alpha B'$.}
+			\begin{demo}
+				\item Il suffit de revenir à la définition de l'équivalence. 
+				Si $A \equiv A'$ alors pour tout environnement propositionnel $\rho$, $[A]^\rho = [A']^\rho$. 
+				Comme $[A \alpha B]^\rho$ s'écrit $f([A]^\rho,[B]^\rho) = f([A']^\rho,[B']^\rho)$, on en déduit que 
+				$[A \alpha B]^\rho = [A' \alpha B']^\rho$. Cela étant vrai pour tout $\rho$, on a bien $A\alpha B \equiv A' \alpha B'$.
+			\end{demo}
+
+			\exo Simplifier les expressions suivantes: 
+			\begin{itemize}
+				\item $((a \rightarrow b) \wedge (b \rightarrow c)) \rightarrow (a \rightarrow c)$
+				\item $((s \rightarrow (b \vee t)) \wedge (((b \vee a) \rightarrow (r \wedge m)) \wedge (\neg r))) \rightarrow (s \rightarrow t)$
+			\end{itemize}
+
+\end{document}

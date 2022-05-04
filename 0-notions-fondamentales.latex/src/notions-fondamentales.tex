@@ -1,0 +1,146 @@
+\newcommand\PATH{/home/matthieu/Documents/Ecole/Informatique/cours/0-notions-fondamentales.latex}
+
+\RequirePackage{fix-cm}
+\documentclass{scrartcl}
+
+\input{\PATH/include/preamble.tex}
+\input{\PATH/include/math-tools.tex}
+\input{\PATH/include/it-tools.tex}
+
+\title{Notions fondamentales}
+\author{}
+\date{}
+
+\begin{document}
+	\maketitle
+	\section{Exemple de domaines informatiques.}
+		L'informatique ne se résume pas à l'utilisation d'ordinateurs. On peut citer Alan Turing,
+		qui disait que 
+		"l'informatique n'est pas plus la science des ordinateurs que l'astronomie n'est la science des téléscopes".
+		C'est une discipline très vaste, avec beaucoup de domaines, dont notamment:
+		\begin{multicols}{2}
+		\begin{itemize}
+			\item Les bases de données
+			\item Les réseaux
+			\item Les systèmes embarqués
+			\item La robotique
+			\item La sécurité des systèmes d'information
+			\item La cryptographie
+			\item Le calcul scientifique
+			\item L'intelligence artificielle
+			\item L'interface utilisateur
+			\item Le développement web
+			\item La recherche opérationnelle et l'optimisation
+			\item La vérification de programmes
+			\item La logique
+		\end{itemize}
+		\end{multicols}
+	
+	\section{Problèmes}
+		Un \textbf{problème} est la donnée d'un format de \textbf{paramètres d'entrée} (qui décrit quelles données on a entrées),
+		et de la \textbf{sortie attendue} en fonction de ces paramètres.
+
+		\exemple 
+		\[
+			\pb{Rectangle}
+			{Un entier $a \in \mathbb{N}$, un entier $b \in \mathbb{N}$.}
+			{La surface d'un rectangle de longueur $a$ et de largeur $b$.}
+		\]\[
+			\pb{Parité}
+			{$n\in\mathbb{N}$.}
+			{\texttt{Vrai} si $n$ est pair, \texttt{Faux} sinon.}
+		\]
+		
+		On appelle \textbf{problème de décision} un problème dans lequel 
+		la sortie attendue est \texttt{Vrai} ou \texttt{Faux}, et
+		\textbf{problème d'optimisation} un problème dans lequel la sortie attendue minimise ou maximise
+		une fonction donnée sur un ensemble donné.
+
+		\exemple |\textbf{Parité} est un problème de décision. Les deux problèmes qui suivent sont des problèmes d'optimisation:
+		\[
+			\pb{\begin{tabular}{c}Plus court \\ chemin\end{tabular}}
+			{\begin{tabular}{l}Un graphe $G$ (pondéré), un point de départ $A \in G$\\ et un point d'arrivée $B \in G$.\end{tabular}}
+			{Un chemin de longueur minimale de $A$ à $B$ dans $G$}
+		\]\[
+			\pb{Sac à dos}
+			{$n\in \mathbb{N}$, $P_{max} \in \mathbb{R}^+, (p_i)_{i\in\intset{1,n}} \in (\mathbb{R}^+)^n$, $(v_i)_{i \in \intset{1,n}}$}
+			{\begin{tabular}{l}$(x_i^*)_{i \in \intset{1,n}} \in \set{0,1}^n$ tel que $\sum_{i=1}^n x_i^*p_i \leq P_{max}$  \\
+			et maximisant f =
+			$\left(
+			\begin{tabular}{c c c}
+				$\set{0,1}^n$ & $\rightarrow$ & $\mathbb{R}$ \\ 
+				$(x_1,...,x_n)$ & $\mapsto$ & $\sum_{i=1}^n x_iv_i$
+			\end{tabular}\right)$\end{tabular}}
+		\]
+
+		Pour un problème donné, une \textbf{instance} est une famille de paramètres répondant au type des entrées du problème.
+
+		\plabel{Exemples:}
+		\begin{itemize}
+			\item 18 est une instance positive (de solution \texttt{Vrai}) de \textbf{Parité}.
+			\item 17 est une instance négative (de solution \texttt{Faux}) de \textbf{Parité}.
+			\item (7,8) est une instance de \textbf{Rectangle} de solution 56.
+			\item (1,(1,2),(3,15)) est un instance de \textbf{Sac à dos} de solution (1,0).
+		\end{itemize}
+
+	\section{Algorithmes}
+		Un \textbf{algorithme} est une méthode systématique à base d'\textbf{opérations} qui permet de résoudre toutes les instances d'un problème.
+
+		\exemple Comptage binaire sur les doigts:
+		\begin{algotext}
+Commencer les doigts levés.
+Si le pouce est baissé
+	Lever le pouce
+Sinon
+	Baisser les doigts levés consécutifs au pouce
+	Lever le doigt suivant
+	Baisser le pouce
+		\end{algotext}
+
+		En programmation, une \textbf{fonction} peut être vue come un rassemblement d'instructions, 
+		qui s'appliquent sur des données que l'on peut faire varier avec ce que l'on appelle argument.
+		Si on attend généralement d'une fonction qu'elle donne/retourne un résultat en sortie, 
+		mais elle peut aussi avoir des \textbf{effets de bord}: affichages, modification de la mémoire...
+
+		\rem Quitte à décomposer les problèmes difficiles en sous-problèmes, on essaiera d'avoir un fonction par problème.
+		Pour que ce découpage par fonctions soit lisible dans le code, 
+		on munit chaque fonction dans celui-ci d'une spécification qui contient:
+		\begin{itemize}
+			\item La signature de la fonction, contenant:
+			\begin{itemize}
+				\item Le nombre et le type des arguments
+				\item Le type de la sortie
+			\end{itemize}
+			\item Les hypothèses sur les arguments
+			\item La valeur de la sortie pour les arguments et éventuellement la description des effets de bord.
+		\end{itemize}
+
+		\exemple
+		\begin{code}{c}
+int surface_rectangle(int longueur, int largeur)
+{
+	// hyp: longueur >= 0 && largeur >= 0
+	/* Renvoie la surface d'un rectangle de longueur `longueur` et de largeur `largeur` */
+	return longueur * largeur
+}
+		\end{code}
+	\section{Langage de programmation}
+		\definition Un langage de programmation est une manière conventionnelle et formelle
+		de formuler des algorithmes intelligibles par les humains et exécutables par une machine.
+
+		\begin{tabular}{| c | c | c |}
+			\hline
+			 & Langue naturelle & Langage de programmation \\
+			 \hline
+			 Alphabet & \Verb|abc...zABC...Z 0123456789 .;:"()| & \Verb|+@{}#&...| (table ASCII) \\
+			 \hline 
+			 Mots & Mots présents dans le dictionnaire, noms propres & Mots clés, identificateurs \\
+			 \hline
+			 Grammaire & Former des mots/phrases selon les règles de la grammaire & Syntaxe \\
+			 \hline
+			 Sémantique & Sens de la phrase & Sémantique \\
+			 \hline
+		\end{tabular}
+	
+			
+\end{document}
