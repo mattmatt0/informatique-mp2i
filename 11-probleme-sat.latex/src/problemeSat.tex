@@ -1,4 +1,4 @@
-\newcommand\PATH{/home/matthieu/Documents/Ecole/Informatique/cours/4-probleme-sat.latex}
+\newcommand\PATH{/home/matthieu/Documents/Ecole/Informatique/cours/11-probleme-sat.latex}
 
 \RequirePackage{fix-cm}
 
@@ -6,23 +6,9 @@
 
 \input{\PATH/include/preamble.tex}
 \input{\PATH/include/algofr.tex}
-\newcommand{\fpq}{\mathbb{F}_p(Q)}
-\newcommand{\pb}[3]
-{
-	\textbf{#1}
-	\left|\left|\begin{tabular}{l l}
-		Entrée: & #2 \\
-		Sortie: & #3
-	\end{tabular}\right.\right.
-}
-\newcommand{\pbinlist}[3]
-{
-	\textbf{#1} &  $\left|\left|\begin{tabular}{l l}
-		Entrée: & #2\\ 
-		Sortie: & #3 
-	\end{tabular}\right.\right.$ 
-}
-\newcommand{\supp}{\text{supp}}
+\input{\PATH/include/math-tools.tex}
+\input{\PATH/include/it-tools.tex}
+
 \usepackage{lmodern}
 
 \title{Le problème SAT}
