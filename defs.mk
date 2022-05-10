@@ -5,4 +5,4 @@ INC_DIR=include
 INCLUDE=$(wildcard $(INC_DIR)/*.tex)
 
 CFLAGS=--shell-escape --output-directory ../$(OBJ_DIR)
-VFLAGS=--fullscreen
+VIEWER=xdg-open

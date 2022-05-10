@@ -6,7 +6,7 @@ $(NAME).pdf: $(SRC_DIR)/$(NAME).tex $(INCLUDE)
 	mv $(OBJ_DIR)/$(OUTPUT) ./
 
 view: $(NAME).pdf
-	evince $(VFLAGS) $(OUTPUT)
+	$(VIEWER) $(OUTPUT)
 
 adapt:
 	-mv $(SRC_DIR)/* $(SRC_DIR)/$(NAME).tex
