@@ -6,6 +6,7 @@ $(NAME).pdf: $(SRC_DIR)/$(NAME).tex $(INCLUDE)
 	mv $(OBJ_DIR)/$(OUTPUT) ./
 
 view: $(NAME).pdf
+	mkdir -p obj
 	$(VIEWER) $(OUTPUT)
 
 adapt:
