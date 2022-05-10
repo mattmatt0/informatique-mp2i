@@ -1,4 +1,4 @@
-\newcommand\PATH{Lancez `make adapt avant de compiler!`}
+\newcommand\PATH{/home/matthieu/Documents/Ecole/Informatique/cours/12-schemas-algorithmiques.latex}
 
 \RequirePackage{fix-cm}
 \documentclass{scrartcl}
@@ -344,6 +344,7 @@ let test_tri_selec :unit =
 				Si $w = \varepsilon$, alors $\mathscr{L}(i,j) = |\varepsilon| = 0$, or $u_i=v_j\in\mathscr{S}_{i,j}$ 
 				donc $\mathscr{L}(i,j) \geq |u_1| = 1$, ce qui est absurde. Plaçons-nous maintenant dans le cas contraire.
 				On pose $p=|w|$ et $x = w_1w_2...w_{p-1}$. Alors $|x| = p-1 = |w| - 1$.
+				Notons $\mathscr{S}_{i,j}=\set{w \in \Sigma^* \tq w \leq u_1...u_i\text{ et }w \leq v_1...v_j}$
 				Montrons que $x \in \mathscr{S}_{i-1,j-1}$. 
 				\begin{itemize}
 					\item Si $w_p = u_i = v_j,$ alors $x \leq u_1,...u_{i-1}$ et $x \leq v_1...v_{j-1}$ par identification.
@@ -351,6 +352,102 @@ let test_tri_selec :unit =
 					De plus, comme $x \leq w$, par transitivité on a $x \leq u_1...u_{i-1}$ et $x \leq v_1...v_{j-1}$.
 					\item Dans les deux cas, $x \in \mathscr{S}_{i-1,j-1}$ donc $|x| \leq \mathscr{L}(i-1,j-1)$ 
 					soit $\mathscr{L}(i,j)-1 = |w| - 1 = |x| \leq \mathscr{L}(i-1,j-1)$
+					\item Si $u_i = v_j$: Montrons que $\mathscr{L}_{i,j} = \max (\mathscr{L}_{i-1,j},\mathscr{L}_{i,j-1})$.
+					Pour cela, montrons que $\mathscr{S}_{i,j} = \mathscr{S}_{i-1,j} \cup \mathscr{S}_{i,j-1}$.
+					\item Soit $w \in \mathscr{S}_{i,j}$. On pose $p = |w|$.
+					Si $w_p = u_i$, alors $w_p \neq v_j$, or on a $w \leq v_i...v_j$,
+					et comme $w \leq u_1...u_i$, on en déduit que $w \in \mathscr{S}_{i,j-1}$.
+					Si $w_p \neq u_i$ et de même on montre que $w \in \mathscr{S}_{i-1,j}$.
+					Conclusion: $\mathscr{S}_{i,j} \leq \mathscr{S}_{i-1,j} \cup \mathscr{S}_{i,j-1}$.
+					Soit $w \in \mathscr{S}_{i-1,j}$. Par définition $w \leq u_1...u_{i-1}$ or
+					$u_1...u_{i-1} \leq u_1...u_i$ car un préfixe est un sous, par transitivité on en déduit que
+					$w \leq u_1...u_i$. Or on a aussi $w \leq v_i...v_j$ (car $w \in \mathscr{S}_{i-1,j}$),
+					donc $w \in \mathscr{S}_{i,j}$. D'où $\mathscr{S}_{i-1,j} \leq \mathscr{S}_{i,j}$.
+					\item De même on montre $\mathscr{S}_{i,j-1} \leq \mathscr{S}_{i,j}$ 
+					donc $\mathscr{S}_{i,j-1} \cup \mathscr{S}_{i-1,j} \subset \mathscr{S}_{i,j}$.
+					On conclut par double inclusion que $\mathscr{S}_{i,j} = \mathscr{S}_{i-1,j} \cup \mathscr{S}_{i,j-1}$.
+					Donc $\mathscr{L}_{i,j} = \max\set{|w| \tq w \in \mathscr{S}_{i,j}} =
+						 \max\set{|w| \tq w \in \mathscr{S}_{i-1,j} \cup \mathscr{S}_{i,j-1}} = \max{\mathscr{L}_{i-1,j},\mathscr{L}_{i,j-1}} $
 				\end{itemize}
 			\end{demo}
+
+		\subsection{Bilan sur la programmation dynamique}
+			Lorsqu'un algorithme récursif résout un problème en faisant appel à la solution de plusieurs sous-problèmes,
+			une implémentation naïve risque de recalculer de nombreuses fois les valeurs des mêmes sous-problème.
+			Dans certains cas, cela conduit à un algorithme de complexité inutilement exponentielle.
+			La \textbf{mémoïsation} permet de pallier cette inefficacité.
+			Il s'agit de garder en mémoire la valeur de chaque appel calulé. 
+			Plus précisément, on stocke les associations entre des paramètres caractérisant une instance/sous-instance, et la valeur de la solution.
+			Pour cela, on utilise une structure de dictionnaire, qui peut dans de nombreux cas être implémentée par un tableau.
+
+			La programmation dynamique repose sur la même idée de stockage des sous-problèmes pour résoudre un problème, 
+			mais cette approche n'est pas récursive: on calcule toutes les valeurs d'une famille de sous-problèmes, des plus petits aux plus grands 
+			(selon un ordre à définir).
+
+			\begin{center}\begin{tabular}{| c| c | c |}
+			\hline
+			& Mémoïsation & Programmation dynamique \\
+			\hline
+			Avantages & On calcule seulement les valeurs nécéssaires & Facile à implémenter, permet parfois une réduction de complexité spatiale.\\
+			\hline
+			Inconvénients & La complexité spatiale d'une implémentation par tableau ne peut être réduite.
+			C'est plus difficile à programmer & Potentiellement plus d'appels\\
+			\hline
+			\end{tabular}\end{center}
+	
+	\section{Diviser pour mieux régner}
+		\subsection{L'exemple du tri fusion}
+			Implémentation en Ocaml:
+			\begin{code}{ocaml}
+				let interclassement (t1:'a tableau) (t2:'a tableau) : tableau =
+					let n = Array.length t1 in
+					let m = Array.lenght t2 in
+					let (i,j) = (ref 0,ref 0) in
+					let t : 'a array = Array.make n+m a0 in
+					(* Invariant: t$\llbracket 0,i+j \rrbracket$ est trié, $\set{\set{\mathtt{t1}[k] \tq k \in \llbracket 0,i \rrbracket}} \cup \set{\set{\mathtt{t2}[k] \tq k \in \llbracket 0,j \rrbracket }} = \set{\set{\mathtt{t}[k] \tq \llbracket 0, i+j \rrbracket}}$*)
+					while (!i < n) && (!j < m) do
+						if t1.(!i) <= t2.(!j) then
+							t.(!i+!j) <- t1.(!i);
+							i := !i+1
+						else
+							t.(!i+!j) <- t2.(!j);
+							j := !j+1
+					done; 
+					while !j < m do
+						t.(i+j) <- t2.(j);
+						j := !j +1
+					done;
+					while !i < n do
+						t.(i+j) <- t1.(i);
+						i := !i +1
+					done; t
+
+				let rec tri_fusion (t:'a tableau) (depart:int) (arrivee:int) : 'a tableau =
+					let n : int = arrivee-depart+1 in
+					if (n=0) || (n=1) then sous_tableau(t,depart,arrivee)
+					else 
+						let m = int_from_float ((float n)/2) in
+						let t1 = tri_fusion(t,depart,m) in
+						let t2 = tri_fusion(t,m+1, arrivee) in
+						interclassement t1 t2
+			\end{code}
+
+			Interclassement fait au plus |T1| + |T2| comparaisons. (Il y a moins de comparaisnos que de tours de la 1ère boucle tant que, 
+			qui est inférieur à n+m car initialement, i+j = 0, à chaque tour i+j augmente d'un, et par la condition de boucle i+j est inférieur à m+n-2)
+
+			\exo Trouver une famille de pire cas qui atteint cette borne. 
+
+			Pour $n \in \mathbb{N}$, on note $C_n$ le nombre de maximal de comparaisons
+			fait pour trier un sous-tableau de taille $n$. On a:
+			$C_0 = 0, C_1=0$.
+			$\forall n > 1$, $C_n = \underbrace{0}_\text{Coût de division} + \overbrace{C_{\floor{\frac{n}{2}}} + C_{\ceil{\frac{n}{2}}}}^\text{Coût des appels récursifs} 
+			+ \underbrace{\overbrace{\floor{n \over 2} + \ceil{n \over 2} - 1}^{=n-1}}_\text{combiner}$.
+			Montrons par récurrence sur $n \in \mathbb{N}^* P(n): "C_n \leq n\log_2{n}"$. 
+			Pour $n=1$, on a $C_1 = 0 = 1\log_2(1)$, donc $P(1)$ est vraie.
+			
+			Soit $n \in \mathbb{N}$. On suppose que $\forall k \in \intset{1,n}, P(k)$ est vraie. Si $n = 2p$ est pair, 
+			$C_n = 2C_p + (n-1) \leq 2(p\log_2(p) + (n-1)) = n(\log_2(n)-1) + (n-1)$  
+
+			Si $n+1$ est impair, $\floor{\frac{n+1}{2}} = \frac{n}{2}$.
+
 \end{document}

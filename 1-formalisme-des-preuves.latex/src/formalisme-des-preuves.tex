@@ -15,11 +15,13 @@
 	\maketitle
 	\section{Raisonnements usuels}
 		\subsection{Implications / Équivalences}
-			Si l'on veut prouver une implication (si $A$, alors $B$), 
-			on peut utiliser d'autres implications déjà connues. 
-			Ainsi pour prouver que $A$ implique $C$, on commencera par supposer $A$,
+			Le principe est d'utiliser la transitivité de l'implication.
+			Ainsi pour prouver que $A$ implique $C$, on commencera par supposer $A$ vraie,
 			puis on rappelera que $A$ implique $B$, et donc que $B$ est vraie. 
 			Ensuite, on dira que $B$ implique $C$, donc comme $B$ est vraie, $C$ l'est aussi.
+
+			Le raisonnement par équivalence est le même procédé, sauf que l'on utilise des équivalences
+			à la place des implications.
 
 		\subsection{Absurde}
 			Le but ici est de montrer que quelque chose est faux.
@@ -29,7 +31,7 @@
 			et on conclut en disant que l'assertion initialement supposée est fausse.
 
 			\rem C'est un cas particulier du raisonnement par contraposée: si $A$ implique quelque chose de faux,
-			cela signifie que quelque chose de vrai implique non $A$.
+			cela signifie que quelque chose de vrai implique non $A$. 
 
 		\subsection{Récurrence}
 			La récurrence permet de montrer une propriété $P$ dépendant d'un entier naturel $n$ 
