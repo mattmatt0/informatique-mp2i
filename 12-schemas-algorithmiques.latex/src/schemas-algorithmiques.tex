@@ -3,9 +3,9 @@
 \RequirePackage{fix-cm}
 \documentclass{scrartcl}
 
-\input{\PATH/include/preamble.tex}
-\input{\PATH/include/it-tools.tex}
-\input{\PATH/include/math-tools.tex}
+\input{\PATH/../include/preamble.tex}
+\input{\PATH/../include/it-tools.tex}
+\input{\PATH/../include/math-tools.tex}
 \usepackage{bbm}
 \usepackage{lmodern}
 \title{Schémas algorithmiques}
@@ -34,7 +34,8 @@
 		on dit que $\widetilde{\mathcal{P}} = (\widetilde{\mathscr{S}},f)$, 
 		de solution optimale $\widetilde{P} = \argmax_{x \in \widetilde{\mathscr{S}}} f(x)$, 
 		est un \textbf{relâché de $\mathcal{P}$}, et on a alors $\val(\widetilde{\mathcal{P}}) \geq \val(\mathcal{P})$. 
-
+		
+		\warnwipnext
 
 	\section{Algorithmes gloutons}
 		\subsection{Définitions}
