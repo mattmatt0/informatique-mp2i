@@ -38,11 +38,11 @@
 
 	\section{Algorithmes gloutons}
 		\subsection{Définitions}
-			On dit d'un algorithme qu'il est \textbf{glouton} lorsqu'il construit une solution à un problème (d'optimisation généralement), 
-			en prenant des décisions \textsl{localement} pertinentes (optimales) à chaque étape, et qu'il ne revient pas sur ses décisions.
+			Un algorithme est dit \textbf{glouton} lorsqu'il construit une solution à un problème (d'optimisation généralement), 
+			en prenant des décisions \textsl{localement} pertinentes (optimales) à chaque étape, en ne revenant pas sur ses décisions.
 			Dans le cadre d'un problème d'optimisation, on dit qu'un algorithme glouton est \textbf{optimal} ssi il renvoie toujours une solution optimale.
 			
-			\exemple L'algorithme de Huffman ou "rempli-sac" dans le cas fractionnaire sont des algorithmes gloutons optimaux.
+			\exemple L'algorithme de Huffman ou "rempli-sac" (voir plus loin) dans le cas fractionnaire sont des algorithmes gloutons optimaux.
 
 			\rem Attention, selon les problèmes, un même algorithme peut être optimal ou non (sac à dos fractionnaire vs sac à dos entier). 
 			En général, les algorithmes gloutons sont efficaces (de faible complexité, à fortiori polynomiale). 
@@ -373,6 +373,7 @@ let test_tri_selec :unit =
 			Lorsqu'un algorithme récursif résout un problème en faisant appel à la solution de plusieurs sous-problèmes,
 			une implémentation naïve risque de recalculer de nombreuses fois les valeurs des mêmes sous-problème.
 			Dans certains cas, cela conduit à un algorithme de complexité inutilement exponentielle.
+
 			La \textbf{mémoïsation} permet de pallier cette inefficacité.
 			Il s'agit de garder en mémoire la valeur de chaque appel calulé. 
 			Plus précisément, on stocke les associations entre des paramètres caractérisant une instance/sous-instance, et la valeur de la solution.
@@ -382,7 +383,7 @@ let test_tri_selec :unit =
 			mais cette approche n'est pas récursive: on calcule toutes les valeurs d'une famille de sous-problèmes, des plus petits aux plus grands 
 			(selon un ordre à définir).
 
-			\begin{center}\begin{tabular}{| c| c | c |}
+			\begin{center}\begin{tabularx}{\textwidth}{| X | X | X |}
 			\hline
 			& Mémoïsation & Programmation dynamique \\
 			\hline
@@ -391,7 +392,7 @@ let test_tri_selec :unit =
 			Inconvénients & La complexité spatiale d'une implémentation par tableau ne peut être réduite.
 			C'est plus difficile à programmer & Potentiellement plus d'appels\\
 			\hline
-			\end{tabular}\end{center}
+			\end{tabularx}\end{center}
 	
 	\section{Diviser pour mieux régner}
 		\subsection{L'exemple du tri fusion}
