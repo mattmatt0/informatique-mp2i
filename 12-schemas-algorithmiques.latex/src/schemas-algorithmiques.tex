@@ -25,14 +25,14 @@
 		Ainsi, un tel problème $\mathcal{P}$ est défini par la fonction dite \textbf{fonction objectif} $f$, 
 		et l'ensemble des solutions $\mathscr{S}$.
 		
-		On appelle alors \textbf{valeur du problème $\mathcal{P}$}, notée $\val(\mathcal{P})$, la donnée $\max \set{f(X) \tq X \in \mathscr{S}}$,
-		et \textbf{ensemble des solutions optimales} l'ensemble $\argmax_{x\in\mathscr{S}} f(x) = \set{X \in \mathscr{S} \tq f(X) = \val(\mathcal{P})}$
+		On appelle alors \textbf{valeur du problème $\mathcal{P}$}, notée $\val(\mathcal{P})$, la donnée $\max \set{f(x) \tq x \in \mathscr{S}}$,
+		et \textbf{ensemble des solutions optimales} l'ensemble $\argmax_{x\in\mathscr{S}} f(x) = \set{x \in \mathscr{S} \tq f(x) = \val(\mathcal{P})}$
 	
 		\rem Il y a unicité de la valeur du problème, mais pas forcément de la solution optimale.
 
 		Si $\mathscr{S} \subset \widetilde{\mathscr{S}} \subset D_f$ (où $D_f$ désigne l'ensemble de définition de $f$), 
 		on dit que $\widetilde{\mathcal{P}} = (\widetilde{\mathscr{S}},f)$, 
-		de solution optimale $\widetilde{P} = \argmax_{x \in \widetilde{\mathscr{S}}} f(x) = \max_{x\in\widetilde{\mathscr{S}}}(f(x))$, 
+		de solution optimale $\widetilde{P} = \argmax_{x \in \widetilde{\mathscr{S}}} f(x)$, 
 		est un \textbf{relâché de $\mathcal{P}$}, et on a alors $\val(\widetilde{\mathcal{P}}) \geq \val(\mathcal{P})$. 
 
 
