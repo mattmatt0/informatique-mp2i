@@ -371,8 +371,9 @@ let test_tri_selec :unit =
 			\end{demo}
 
 		\subsection{Bilan sur la programmation dynamique}
-			Lorsqu'un algorithme récursif résout un problème en faisant appel à la solution de plusieurs sous-problèmes,
+			Lorsqu'un algorithme récursif résout un problème en faisant appel aux solutions de plusieurs sous-problèmes,
 			une implémentation naïve risque de recalculer de nombreuses fois les valeurs des mêmes sous-problème.
+
 			Dans certains cas, cela conduit à un algorithme de complexité inutilement exponentielle.
 
 			La \textbf{mémoïsation} permet de pallier cette inefficacité.
@@ -384,16 +385,12 @@ let test_tri_selec :unit =
 			mais cette approche n'est pas récursive: on calcule toutes les valeurs d'une famille de sous-problèmes, des plus petits aux plus grands 
 			(selon un ordre à définir).
 
-			\begin{center}\begin{tabularx}{\textwidth}{| X | X | X |}
-			\hline
-			& Mémoïsation & Programmation dynamique \\
-			\hline
-			Avantages & On calcule seulement les valeurs nécéssaires & Facile à implémenter, permet parfois une réduction de complexité spatiale.\\
-			\hline
-			Inconvénients & La complexité spatiale d'une implémentation par tableau ne peut être réduite.
-			C'est plus difficile à programmer & Potentiellement plus d'appels\\
-			\hline
-			\end{tabularx}\end{center}
+			\plabel{Comparaison de la mémoïsation et la programmation dynamique: } 
+			\begin{itemize}
+				\item La mémoïsation ne va calculer que les valeurs nécessaires, là où la programmation dynamique risque d'engendrer plus d'appels.
+				\item La programmation dynamique est plus difficile à implémenter que la mémoïsation.
+				\item Selon le contexte, une des deux méthodes aura une meilleure complexité spatiale.
+			\end{itemize}
 	
 	\section{Diviser pour mieux régner}
 		\subsection{L'exemple du tri fusion}
@@ -441,7 +438,7 @@ let test_tri_selec :unit =
 			fait pour trier un sous-tableau de taille $n$. On a:
 			$C_0 = 0, C_1=0$.
 			$\forall n > 1$, $C_n = \underbrace{0}_\text{Coût de division} + \overbrace{C_{\floor{\frac{n}{2}}} + C_{\ceil{\frac{n}{2}}}}^\text{Coût des appels récursifs} 
-			+ \underbrace{\overbrace{\floor{{n \over 2}} + \ceil{{n \over 2}} - 1}^{=n-1}}_\text{combiner}$.
+			+ \underbrace{\overbrace{\floor{\frac{n}{2}} + \ceil{\frac{n}{2}} - 1}^{=n-1}}_\text{combiner}$.
 			Montrons par récurrence sur $n \in \mathbb{N}^* P(n): "C_n \leq n\log_2{n}"$. 
 			Pour $n=1$, on a $C_1 = 0 = 1\log_2(1)$, donc $P(1)$ est vraie.
 			
