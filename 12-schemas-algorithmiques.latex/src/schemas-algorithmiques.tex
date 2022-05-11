@@ -206,11 +206,11 @@ Soit |$T$| une copie du tableau |(i.e $\forall i \in \intset{1,n}, T[i] = x_i$)|
 Soit |$I$| le tableau identité de |$[1..n]$|
 Soit |$\sigma$| un tableau d'entiers indicé par |$\intset{1,n}$| initialisé à 0
 Pour |$i$| allant de |1 à $n$|:
-						|Invariant: $\forall i \in \intset{1,n}, T[i] = x_{I(i)}$ et $\begin{cases}T[1..k-1] \text{est trié} \\ \forall i \in \intset{k,n} T[i] \geq \max\set{T[j] \tq j \in \intset{1,k-1}} \\ \forall i \in \intset{1,k-1}, T[i] = x_{\sigma[i]}\end{cases}$|
+			|Invariant: $\forall i \in \intset{1,n}, T[i] = x_{I(i)}$ et $\begin{cases}T[1..k-1] \text{est trié} \\ \forall i \in \intset{k,n}, T[i] \geq \max\set{T[j] \tq j \in \intset{1,k-1}} \\ \forall i \in \intset{1,k-1}, T[i] = x_{\sigma[i]}\end{cases}$|
 	Trouver |$i_0 \in \argmin_{i \in \intset{k,n}} T[i]$|
-	|$\sigma[k] \rightarrow i_0$|
+	|$\sigma[k] \leftarrow i_0$|
 	Échanger |$T[k]$| et |$T[i_0]$|
-Renvoyer $\sigma$
+Renvoyer |$\sigma$|
 			\end{algotext}
 
 			Implémentation en Ocaml:
