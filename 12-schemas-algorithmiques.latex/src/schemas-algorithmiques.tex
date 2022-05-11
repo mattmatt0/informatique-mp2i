@@ -74,26 +74,24 @@
 					"$\delta.p \leq P$" est une \textbf{contraine linéaire} (c'est une relation linéaire qui relie les différentes variables).
 
 				\plabel{Pseudo-code pour le sac à dos fractionnaire}
-					\[
-						\pb{Rempli-sac :}
-							{$(p_i,v_i)_{i \in \intset{1,n}}$ une suite finie de réels strictement positifs, $P$ un réel.}
-							{$\max\limits_{\substack{\delta \in [0,1]^n \\ \delta\cdot p \leq P}} \delta.(v_1,...,v_n)$}
-					\]
-					\begin{algotext}
-Trier les objets par rapport |$\frac{v_i}{p_i}$| décroissant
-En déduire |$\sigma \in \mathfrak{S}(\intset{1,n})$| telle que |$\left(\frac{v_{\sigma(k)}}{p_{\sigma(k)}}\right)_{k\in\intset{1,n}}$| décroît.
-|$s \leftarrow 0$|
-|$\delta \leftarrow $| tableau de réels indicé par |$\intset{1,n}$| initialisé à 0.
- 								|\(\text{ Invariant: } s = \sum_{i=1}^n \delta_i \times p_i\)|
-|$k = 1$|
-Tant que |$s+ p_{\sigma(k)} \leq P$|
-	|$s \leftarrow  s + p_{\sigma(k)}$|
-	|$\delta_{\sigma(k)} \leftarrow 1$|
-	|$k \leftarrow k+1$|
-si |$k \leq n$|
-	|$\delta_{\sigma(k)} \leftarrow \frac{P-s}{s_{\sigma(k)}}$|
-	|$s \leftarrow s+ \delta_{\sigma(k)}\times p_\sigma(k)$|
-					\end{algotext}
+						\begin{algotext}
+fonction Rempli-sac:
+	Entrée : |$(p_i,v_i)_{i \in \intset{1,n}}$ une suite finie de réels strictement positifs, $P$ un réel.|
+	Sortie : |$\max\limits_{\substack{\delta \in [0,1]^n \\ \delta\cdot p \leq P}} \delta.(v_1,...,v_n)$|
+	Trier les objets par rapport |$\frac{v_i}{p_i}$| décroissant
+	En déduire |$\sigma \in \mathfrak{S}(\intset{1,n})$| telle que |$\left(\frac{v_{\sigma(k)}}{p_{\sigma(k)}}\right)_{k\in\intset{1,n}}$| décroît.
+	|$s \leftarrow 0$|
+	|$\delta \leftarrow $| tableau de réels indicé par |$\intset{1,n}$| initialisé à 0.
+									|\(\text{ Invariant: } s = \sum_{i=1}^n \delta_i \times p_i\)|
+	|$k = 1$|
+	Tant que |$s+ p_{\sigma(k)} \leq P$|
+		|$s \leftarrow  s + p_{\sigma(k)}$|
+		|$\delta_{\sigma(k)} \leftarrow 1$|
+		|$k \leftarrow k+1$|
+	si |$k \leq n$|
+		|$\delta_{\sigma(k)} \leftarrow \frac{P-s}{s_{\sigma(k)}}$|
+		|$s \leftarrow s+ \delta_{\sigma(k)}\times p_\sigma(k)$|
+						\end{algotext}
 
 				\plabel{Preuve de optimalité}
 					On montre l'optimalité de cette stratégie par argument d'échange. On pose:
@@ -432,7 +430,7 @@ let test_tri_selec :unit =
 						interclassement t1 t2
 			\end{code}
 
-			Interclassement fait au plus |T1| + |T2| comparaisons. (Il y a moins de comparaisnos que de tours de la 1ère boucle tant que, 
+			Interclassement fait au plus |T1| + |T2| comparaisons. (Il y a moins de comparaisons que de tours de la 1ère boucle tant que, 
 			qui est inférieur à n+m car initialement, i+j = 0, à chaque tour i+j augmente d'un, et par la condition de boucle i+j est inférieur à m+n-2)
 
 			\exo Trouver une famille de pire cas qui atteint cette borne. 
