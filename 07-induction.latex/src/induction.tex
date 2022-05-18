@@ -1,0 +1,190 @@
+\newcommand\PATH{Lancez `make adapt avant de compiler!`}
+\documentclass{scrartcl}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage[cache=false,outputdir=\PATH]{minted}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{ltablex}
+\usepackage{cancel}
+\usepackage{graphicx}
+\usepackage{mathrsfs}
+\usepackage{ulem}
+
+\usepackage[a4paper,
+top=1.5cm,
+bottom=1.5cm,
+includefoot,
+left=3cm,
+right=3cm,
+footskip=1cm]{geometry}
+\usepackage{scrlayer-scrpage}
+\rofoot*{\pagemark}
+\cofoot*{}
+\pagestyle{scrheadings}
+
+\definecolor{codebg}{gray}{0.9}
+
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\newenvironment{code}[1]
+{\VerbatimEnvironment\begin{minted}[autogobble,linenos,bgcolor=codebg,tabsize=4,mathescape=true]{#1}}
+{\end{minted}}
+
+\title{Relations}
+\author{}
+\date{}
+
+\begin{document}
+	\maketitle
+	\section{Généralités}
+		Considérons un ensemble non vide $X$. Pour $n\in\mathbb{N}$, on appelle relation $n$-aire sur $X$
+		toute partie $\mathcal{R}$ de $X^n$. 
+
+		\begin{center}\textit{On ne s'intéressera dans ce chapitres qu'aux relations binaires}\end{center}
+
+		Pour deux éléments $x,y$ de $X$, on note $x\mathcal{R}y$ et on dit que $x$ est en relation avec $y$ si et seulement si
+		$(x,y)\in \mathcal{R}$.
+
+		\begin{center}\textit{On considèrera désormais que $X$ est un ensemble non vide et que $\mathcal{R}$ est une relation binaire sur $X$}\end{center}
+
+		On dit que $\mathcal{R}$ est:
+		\begin{itemize}
+			\item réflexive ssi $\forall x \in X^2: x\mathcal{R}x$
+			\item transitive ssi $x\mathcal{R}y$ et $y\mathcal{R}z \Rightarrow x\mathcal{R}z$
+			\item symétrique ssi $x\mathcal{R}y \Rightarrow y\mathcal{R}x$
+			\item antisymétrique ssi $x\mathcal{R}y$ et $y\mathcal{R}x \Rightarrow x = y$ 
+		\end{itemize}
+
+		On vérifie aisément que pour toute partie $Y$ de $X$, $\mathcal{R}\cap Y^2$ vérifie les mêmes propriétés que $X$ sur $Y$.
+
+	\section{Composition de relations}
+		Soient $\mathcal{R}$ et $\mathcal{R}'$ deux relations binaires sur $X$. 
+		On définit la composée de $\mathcal{R}$ et $\mathcal{R}'$, notée $\mathcal{R} \circ \mathcal{R}'$ par:
+		\[
+			\mathcal{R}\circ\mathcal{R}' = \left\{(x,y) \in X^2 \; \big| \; \exists z \in X: x\mathcal{R}z \text{ et } z\mathcal{R}'y \right\}
+		\]
+		
+		\paragraph{Propriété} \textsl{$\circ$ est associatif et possède pour neutre $\Delta_X = \left\{(x,x) \big| x\in X\right\}$}
+		\begin{labeling}{$\triangleright$}
+			\item [$\triangleright$] Fastidieux mais sans difficulté...
+		\end{labeling}
+
+		On définit par récurrence $\mathcal{R}^n = \underbrace{\mathcal{R}\circ\mathcal{R}\circ...\circ\mathcal{R}}_{n \text{ fois}}$.
+		On conviendra que $\mathcal{R}^0 = \Delta_X$. 
+
+		\paragraph{Propriété} \textsl{Soient $\mathcal{R}$ et $\mathcal{R'}$ deux relations binaires symétriques de $X$. 
+		On a $x\left(\mathcal{R}\circ\mathcal{R'}\right)y \Leftrightarrow y\left(\mathcal{R'}\circ\mathcal{R}\right)x$.}
+		\begin{labeling}{$\triangleright$}
+			\item [$\triangleright$] Soit $(x,y)\in X^2$ tel que $x\left(\mathcal{R}\circ\mathcal{R}'\right)y$.\\
+			Il existe alors $z \in X$ tel que $x\mathcal{R}z$ et $z\mathcal{R'}y$. 
+			Comme $\mathcal{R'}$ et $\mathcal{R}$ est symétrique, on a aussi $z\mathcal{R}x$ et $y\mathcal{R'}z$,
+			d'où $y\left(\mathcal{R'}\circ\mathcal{R}\right)x$
+		\end{labeling}
+
+		\paragraph{Remarque} En particulier, si $\mathcal{R}$ est symétrique, $\mathcal{R}^n$ l'est aussi pour tout entier naturel $n$.
+
+	\section{Fonctions}
+		On dit que $\mathcal{R}$ définit une fonction ssi $x\mathcal{R}y$ et $x\mathcal{R}y' \Rightarrow y = y'$
+
+		\paragraph{Propriété} \textsl{Si $\mathcal{R}$ définit une fonction $f$ et $\mathcal{R}'$ définit une fonction $g$, 
+			alors $\mathcal{R}\circ\mathcal{R}'$ définit la fonction $g\circ f$.}
+		\begin{labeling}{$\triangleright$}
+			\item [$\triangleright$] Soit $(x,y,y') \in X^3$, 
+			tel que $x\mathcal{R}\circ\mathcal{R'}y$ et $x\mathcal{R}\circ\mathcal{R'}y'$. \\
+			Par définition, il existe $z \in X$ tel que $x\mathcal{R}z$ et $z\mathcal{R}'y$, 
+			et $z' \in X$ tel que $x\mathcal{R}z'$ et $z'\mathcal{R}'y'$.\\
+			Comme $x\mathcal{R}z$ et $\mathcal{R}z'$, on a $z=z'=f(x)$ car $\mathcal{R}$ définit la fonction $f$. \\
+			Alors on a $f(x)\mathcal{R}'y$ et $f(x)\mathcal{R}'y'$ d'où $y=y'=g\circ f(x)$ car $\mathcal{R}'$ définit la fonction $g$.
+		\end{labeling}
+
+	\section{Étude des propriétés de relations binaires}
+		\subsection{Composition de relations binaires}
+			Comme pour tout couple d'entiers naturels $(m,n)$, 
+			on a $\mathcal{R}^n\circ\mathcal{R}^m = \mathcal{R}^m\circ\mathcal{R}^n$ (cela découle simplement de l'associativité de $\circ$), 
+			on peut définir la fermeture (ou clôture) transitive de la relation binaire $\mathcal{R}$ par:
+			\[
+				\mathcal{R_T} = \bigcup\limits_{n\geq 1} \mathcal{R}^n
+			\]
+		
+			\paragraph{Lemme} \textsl{Soit $\mathcal{R}'$ une relation binaire transitive sur $X$ contenant $\mathcal{R}$. 
+			Alors, pour tout entier naturel $n \geq 1$, $\mathcal{R}^n \subset R'$}	
+			\begin{labeling}{$\triangleright$}
+				\item [$\triangleright$] Par récurrence sur $n$. 
+				C'est vrai pour $n=1$ car $\mathcal{R}\subset\mathcal{R}'$.
+				Supposons que ce soit vrai pour $n\in\mathbb{N}^*$ quelconque.
+				Soit $(x,y)\in \mathcal{R}^{n+1}$. 
+				Alors il existe $z \in X$ tel que $x\mathcal{R}^nz$ et $z\mathcal{R}^ny$.
+				Comme par hypothèse $\mathcal{R}^n \subset \mathcal{R}'$, on a $z\mathcal{R}'y$, 
+				et comme $\mathcal{R} \subset \mathcal{R}'$, $x\mathcal{R}'z$. Par transitivité, on a $x\mathcal{R}'y$,
+				ce qui prouve l'inclusion et donc la proposition au rang $n+1$.
+			\end{labeling}
+
+			\paragraph{Propriété} \textsl{$\mathcal{R_T}$ est la plus petite (au sens de l'inclusion) relation binaire transitive sur $X$ contenant $R$}
+			\begin{labeling}{$\triangleright$}
+				\item [$\triangleright$] Montrons que $\mathcal{R_T}$ est transitive:
+				Soient $x$, $y$ et $z$ dans $X$ tels que $x\mathcal{R_T}y$ et $y\mathcal{R_T}z$.
+				Alors il existe $(m,n)\in\mathbb{N}^2$ tels que $x\mathcal{R}^my$ et $y\mathcal{R}^nz$.
+				On a donc $x\mathcal{R}^m\circ\mathcal{R}^nz$ i.e $x\mathcal{R}^{m+n}z$, d'où $x\mathcal{R_T}z$.
+				\item [$\triangleright$] Montrons que $\mathcal{R_T}$ est minimale:
+				Considérons $\mathcal{R}'$ une relation binaire transitive contenant $\mathcal{R}$. Soit $(x,y) \in \mathcal{R_T}$.
+				Il existe donc $n\in\mathbb{N}^*$ tel que $x\mathcal{R}^ny$. D'après le lemme, $\mathcal{R}^n\subset\mathcal{R}'$,
+				donc $(x,y)\in\mathcal{R}'$.
+			\end{labeling}
+
+		\subsection{Relations d'équivalence}
+			On dit que $\mathcal{R}$ est une relation d'équivalence sur $X$ ssi elle est réflexive, transitive et symétrique.
+			On note classe d'équivalence de $a\in X$ l'ensemble $\dot{a} = \left\{x\in X \big| x\mathcal{R}a\right\}$. On dit
+			alors que $a$ est un représentant de $\dot{a}$
+
+			\paragraph{Propriété} \textsl{Soient $x$ et $y$ deux éléments de $X$. 
+				Soit $y\in\dot{x}$ et alors $\dot{x} = \dot{y}$, soit $\dot{x}\cap\dot{y} = \varnothing$}
+			\begin{labeling}{$\triangleright$}
+				\item [$\triangleright$] On a forcément $y \in \dot{x}$ ou $y\not\in\dot{x}$. Dans le premier cas,
+				$y$ est en relation avec $x$, donc par transitivité tout élément en relation avec $y$ sera en relation avec
+				$x$, d'où $\dot{y} \subset \dot{x}$. L'autre inclusion découle de la symétrie de $\mathcal{R}$. Dans le second
+				cas, si $\dot{x}\cap\dot{y} \neq \varnothing$, il existerait $a\in X$ tel que $a\mathcal{R}y$ et $a\mathcal{R}x$.
+				Par symétrie et transitivité, on aurait alors $y\mathcal{R}x$, ce qui contredit $y\not\in\dot{x}$.
+			\end{labeling}
+
+			L'ensemble des classes d'équivalences de $X$ par $\mathcal{R}$ est appelé ensemble quotient de $X$ par $\mathcal{R}$,
+			et est noté $X/R$
+
+			\paragraph{Corrolaire} \textsl{L'ensemble des classes d'équivalence par $\mathcal{R}$ forme une partition de $X$}
+			\begin{labeling}{$\triangleright$}
+				\item [$\triangleright$] Notons $H = \bigcup\limits_{x\in X} \dot{x}$. $H \subset X$ en tant qu'union de parties
+				de $X$, et $X \subset H$ car tout élément de $X$ appartient à sa propre classe d'équivalence. 
+				Cela prouve que l'ensemble des classes d'équivalence forme un recouvrement de $X$.
+				Prenons alors deux classes d'équivalences $\dot{x}$ et $\dot{y}$. 
+				D'après le lemme, on a soit $\dot{x}=\dot{y}$, soit $\dot{x}\cap\dot{y} = \varnothing$, 
+				ce qui prouve que ce recouvrement est bien disjoint.
+			\end{labeling}
+
+			Soient $X$ et $Y$ deux ensembles non vides. Soit $\mathcal{R}$ une relation d'équivalence sur $X$.
+			On dit que $f\in\mathcal{F}(X,Y)$ passe au quotient si elle est constante sur les classes d'équivalence,
+			c'est à dire si $x\mathcal{R}y \Rightarrow f(x)=f(y)$.
+
+			On peut alors définir $\bar{f}\in\mathcal{F}(X/R,Y)$ qui à une classe d'équivalence $\dot{x}$ associe
+			l'image d'un de ses représentants par $f$.
+
+			\paragraph{Remarque} Quelque part, $\dot{f}$ "gagne" en injectivité par rapport à $f$, puisqu'il y a "moins" d'éléments
+			ayant la même image.
+			\paragraph{Remarque} On a $f(X) = \bar{f}(X/R)$
+		
+		\subsection{Relations d'ordre}
+			On dit que $\mathcal{R}$ est une relation d'ordre sur $X$ ssi elle est réflexive, transitive et antisymétrique.
+			\begin{center}\textit{On notera désormais une telle relations $\leq$}\end{center}
+			Un ensemble $(X,\leq)$ muni d'une telle relation est dit ordonné. Pour une partie $Y$ de $X$,
+			on note $(Y,\leq)$ l'ensemble ordonné induit (c'est à dire $Y$ muni de la relation $\leq$ restreite à $Y$).
+
+			On dit que $\mathcal{R}$ est une relation d'ordre totale sur $Y$ si et seulement si pour tout couple
+			$(x,y)$ d'éléments de $Y$, on a $x\mathcal{R}y$ ou $y\mathcal{x}$.
+
+			On note $x < y$ ssi $x \leq y$ et $x \neq y$, $x \geq y$ ssi $y \leq x$ et $x > y$ ssi $y < x$.
+\end{document}

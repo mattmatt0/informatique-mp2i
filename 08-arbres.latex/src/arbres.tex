@@ -1,0 +1,83 @@
+\newcommand\PATH{Lancez `make adapt avant de compiler!`}
+
+\RequirePackage{fix-cm}
+\documentclass{scrartcl}
+
+\input{\PATH/../include/preamble.tex}
+\input{\PATH/../include/it-tools.tex}
+\input{\PATH/../include/math-tools.tex}
+\usepackage{lmodern}
+
+\title{Structures de données arborescentes}
+\author{}
+\date{}
+
+\begin{document}
+	\maketitle
+	\section{Motivations}
+		\subsection{Un arbre pour un objet}
+			Pour des éléments d'un ensemble construit par induction, 
+			il est approprié d'utiliser une représentation par arbre puisque 
+			ces objets ont intrinsèquement une structure arborescente
+
+			\exemple Les expressions booléennes, arithmétiques, de type. 
+
+		\subsection{Un arbre pour une collection d'objet}
+			On cherche à stocker une collection d'objets sans multiplicité,
+			et dont l'ordre relatif n'est pas significatif 
+			(comme dans le cas d'un ensemble).
+
+			On suppose que tous les éléments sont du type \texttt{elem}, 
+			et qu'ils sont identifiés de manière unique par une clé, 
+			c'est à dire une sous-partie permettant l'identification.
+			
+			On a alors les méthodes suivantes:
+			\begin{multicols}{2}
+			\begin{itemize}
+				\item \texttt{creer\_ens\_vide : () -> ens}
+				\item \texttt{est\_ens\_vide : ens -> bool}
+				\item \texttt{appartient : ens$\times$elem -> bool}
+				\item \texttt{ajoute\_elem : ens$\times$elem -> ens}
+				\item \texttt{supprime\_elem : ens$\times$clé -> ens}
+				\item \texttt{trouve\_elem : ens$\times$clé -> elem}
+			\end{itemize}
+			\end{multicols} 
+
+			\rem On peut aussi imaginer des fonctions \texttt{ajoute\_elem} et \texttt{supprime\_elem}
+			qui modifieraient directement l'ensemble donné en entrée, 
+			plutôt que de renvoyer un nouvel ensemble. 
+
+		\subsection{Implémentations}
+			On peut stocker les éléments dans une liste. 
+			On peut aussi associer chaque élément à une clé
+			(pour un ensemble de caractères par exemple, leurs valeurs ascii),
+			qui permet de les comparer rapidement. 
+			Si l'on peut ordonner ces clés, 
+			on peut alors classer les éléments par ordre croissant dans un tableau.
+
+			\begin{center}
+			\begin{tabular}{| c | c  | c |}
+				\hline
+				Opération & Complexité (Liste) & Complexité (Tableau ordonné) \\
+				\hline
+				\texttt{appartient} & $\theta(n)$ & $\theta(\log(n))$ (dichotomie) \\
+				\hline
+				\texttt{ajoute\_elem} & $\theta(1)$ & $\theta(n)$ \\
+				\hline
+				\texttt{supprime\_elem} & $\theta(n)$ & $\theta(n)$ \\
+				\hline
+				\texttt{trouve\_elem} & $\theta(n)$ & $\theta(\log(n))$ \\
+				\hline
+			\end{tabular}
+			\end{center}
+
+			\rem On voit selon le contexte qu'une certaine implémentation sera plus efficace qu'une autre:
+			si on doit faire beaucoup d'insertions sans trop chercher d'éléments, le plus efficace sera la liste.
+			Par contre, si on n'insère que rarement des éléments mais que 
+			l'on est souvent ammené à chercher dans les éléments, le tableau trié sera à préférer.
+
+			ll existe cela dit une structure qui permet d'avoir une complexité d'ajout / suppression et de recherche
+			en $\theta(\log(n))$, sous certaines conditions: il s'agit des \textbf{arbres binaires de recherche (ABR)}.
+
+
+\end{document}
