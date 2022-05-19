@@ -124,4 +124,49 @@
 				$(N,4,(N,2,(V,\_),(V,\_)),(N,3,(N,1,(V,\_),(V,\_)),(V,\_)))$
 			\end{tabular}
 			\end{center}
+			
+		\subsection{Feuilles}
+			\begin{center}\textsl{On fixe désormais $\mathcal{S}$ un ensemble d'étiquettes.
+			On notera par ailleurs $N(x,g,d) = (N,x,g,d)$ et $V = (V,\_)$ pour alléger l'écriture.}\end{center}
+			
+			On dit qu'un arbre $t \in \abins$ est réduit à une feuille ssi il existe $x \in \mathcal{S}$
+			tel que $t = N(x,V,V)$.
+
+			\prop{Pour la relation d'ordre $\leq$ associée à la définition inductive de $\abins$, on a:}
+			\begin{enumerate}
+				\item \textsl{$V$ est le seul élément minimal de $(\abins, \leq)$.}
+				\item \textsl{$t$ élément minimal de $\abins\setminus\set{V} \Leftrightarrow$ $t$ est réduit à une feuille.}
+			\end{enumerate}
+			\begin{demo}
+				\item Le 1) découle du fait que $V$ soit le seul cas de base des règles d'induction de $\abins$.
+				\item Soit $t$ minimal dans $\abins\setminus\set{V}$. 
+				Il existe par définition $x \in \mathcal{S}$ et $(g,d) \in \abins^2$ tels que $t = N(x,g,d)$.
+				Comme $g \leq t$ et $d \leq t$, et d'autre part $g \neq t$ et $d \neq t$,
+				on en déduit que $g < t$ et $d < t$. 
+				Par minimalité de $t$ dans $\abins\setminus\set{V}$, on en déduit que $g = d =V$,
+				donc que $t$ est réduit à une feuille.
+			\end{demo}
+
+		\subsection{Chemins}
+			Considérons l'alphabet $\Sigma = \set{0,1}$. 
+			On définit par induction sur $\abins$ l'ensemble des chemins admissibles d'un arbre binaire $t$,
+			noté $\text{ch}(t)$, par:
+			\[
+				\forall t \in \abins: \quad \text{ch}(t) = 
+				\begin{cases}
+					\varnothing \text{ si } t = V \\ 
+					\set{\epsilon}\cup\set{0.\text{ch}(g)}\cup\set{1.\text{ch}(d)} \text{ si } t = N(x,g,d)
+				\end{cases}
+			\]
+
+			Soit $t \in \abins$. Un \textbf{noeud} $\mathcal{N}$ de $t$ est un élément de $\text{ch}(t)$. 
+			Sa profondeur, notée |$\mathcal{N}$| est alors sa longueur en tant que mot de $\Sigma^*$.
+			La taille de $t$, notée $s(t)$, est alors le nombre de noeuds de $t$, 
+			autrement dit $\card\text{ch}(t)$.
+
+			\rem Un chemin admissible décrit la "position" d'un "noeud" dans l'arbre.
+
+			\exo Donner une définition inductive de $s(t)$.
+
+			
 \end{document}
