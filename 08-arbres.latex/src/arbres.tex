@@ -79,5 +79,49 @@
 			ll existe cela dit une structure qui permet d'avoir une complexité d'ajout / suppression et de recherche
 			en $\theta(\log(n))$, sous certaines conditions: il s'agit des \textbf{arbres binaires de recherche (ABR)}.
 
+	\section{Arbre minimal}
+		\subsection{Ensemble $\mathscr{A}_B$}
+			Soit $\mathcal{S}$ un ensemble.
+			On définit l'ensemble des arbres binaires étiquetés par $\mathcal{S}$ 
+			comme l'ensemble construit par induction à partir de ces deux règles:
 
+			\begin{multicols}{2}
+			\begin{itemize}
+				\item $V\Big|_{\set{-}}^0$ 
+				\item $N\Big|_{\mathcal{S}}^2$ 
+			\end{itemize}
+			\end{multicols}
+
+			\exemple Soit $\mathcal{S} = \set{1,2,3,4}$. 
+
+			\begin{center}
+			\begin{tabular}{c | c | c}
+				\begin{tikzpicture}
+					\node (a) {$\times$};
+				\end{tikzpicture}
+				\quad & \quad
+				\begin{tikzpicture}
+					\node [circle,draw](a) {1}
+						child {node (b) {$\times$}}
+						child {node (b) {$\times$}};
+				\end{tikzpicture} 
+				\quad & \quad
+				\begin{tikzpicture}[
+					level 1/.style={sibling distance=10em}, 
+					level 2/.style={sibling distance=5em}, 
+					level 3/.style={sibling distance=2em}]
+					\node [circle,draw](a) {4}
+						child {node [circle,draw] (b) {2}
+							child {node (c) {$\times$}}
+							child {node (c) {$\times$}}}
+						child {node [circle,draw] (b) {3}
+							child {node [circle,draw] (c) {$1$}
+								child {node (d) {$\times$}}
+								child {node (d) {$\times$}}}
+							child {node (c) {$\times$}}};
+				\end{tikzpicture} \\
+				$(V,\_)$ & $(N,1,(V,\_),(V,\_))$  & 
+				$(N,4,(N,2,(V,\_),(V,\_)),(N,3,(N,1,(V,\_),(V,\_)),(V,\_)))$
+			\end{tabular}
+			\end{center}
 \end{document}
