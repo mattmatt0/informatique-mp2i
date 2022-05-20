@@ -1,43 +1,12 @@
 \newcommand\PATH{Lancez `make adapt avant de compiler!`}
+
+\RequirePackage{fix-cm}
 \documentclass{scrartcl}
 
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
-\usepackage{mathtools}
-\usepackage[cache=false,outputdir=\PATH]{minted}
-\usepackage{xcolor}
-\usepackage{tikz}
-\usepackage{tabularx}
-\usepackage{booktabs}
-\usepackage{ltablex}
-\usepackage{cancel}
-\usepackage{graphicx}
-\usepackage{mathrsfs}
-\usepackage{ulem}
-
-\usepackage[a4paper,
-top=1.5cm,
-bottom=1.5cm,
-includefoot,
-left=3cm,
-right=3cm,
-footskip=1cm]{geometry}
-\usepackage{scrlayer-scrpage}
-\rofoot*{\pagemark}
-\cofoot*{}
-\pagestyle{scrheadings}
-		
-\definecolor{codebg}{gray}{0.9}
-
-\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
-\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
-
-\newenvironment{code}[1]
-{\VerbatimEnvironment\begin{minted}[autogobble,linenos,bgcolor=codebg,tabsize=4,mathescape=true]{#1}}
-{\end{minted}}
-
-
+\input{\PATH/../include/preamble.tex}
+\input{\PATH/../include/it-tools.tex}
+\input{\PATH/../include/math-tools.tex}
+\usepackage{lmodern}
 
 \title{Ordres et induction}
 \author{}
@@ -60,11 +29,11 @@ footskip=1cm]{geometry}
 				\item $y$ est maximal ssi il n'existe pas de $y'$ dans $Y$ tel que $y\leq y'$
 			\end{itemize}
 			
-			\paragraph{Remarque} Si le plus grand élément et le plus petit élément sont forcément uniques
+			\rem Si le plus grand élément et le plus petit élément sont forcément uniques
 			à cause de l'antisymétrie de la relation, les éléments minimaux et maximaux, eux, ne le sont
 			pas toujours !
 
-			\paragraph{Remarque} Cela dit, si l'ordre est total, il n'y a qu'un seul élément minimal, le plus
+			\rem Cela dit, si l'ordre est total, il n'y a qu'un seul élément minimal, le plus
 			petit élément (il en va de même pour les élément maximaux).
 
 			On note Min($Y$) l'ensemble des minorants de $Y$, et Maj($Y$) l'ensemble de ses majorants.
@@ -84,12 +53,12 @@ footskip=1cm]{geometry}
 				\item $f$ est strictement décroissante ssi $\forall (x,x') \in X^2, x < x' \Rightarrow f(x) \succ f(x')$
 			\end{itemize}
 
-			\paragraph{Remarque} On étend ces définitions aux suites de $X^\mathbb{N}$, 
+			\rem On étend ces définitions aux suites de $X^\mathbb{N}$, 
 			vues comme des fonctions de $(\mathbb{N},\leq)$ dans $(X,\leq)$.
 
-			\paragraph{Exemple} La fonction identité Id de $(\mathbb{N}^*,\leq)$ dans $(\mathbb{N}^*,|)$ est strictement croissante
+			\exemple La fonction identité Id de $(\mathbb{N}^*,\leq)$ dans $(\mathbb{N}^*,|)$ est strictement croissante
 			
-			\paragraph{Propriété} \textsl{Si $\leq$ est une relation d'ordre totale sur $X$ (autrement dit si $(X,\leq)$ est un ordre total),
+			\prop \textsl{Si $\leq$ est une relation d'ordre totale sur $X$ (autrement dit si $(X,\leq)$ est un ordre total),
 				alors toute fonction strictement croissante de $(X,\leq)$ dans $(Y,\preceq)$ est injectif.}
 			\begin{labeling}{$\triangleright$}
 				\item [$\triangleright$] Soient $x$ et $y$ dans $X$ tels que $f(x) = f(y)$.
@@ -106,7 +75,7 @@ footskip=1cm]{geometry}
 				Donc $f$ est injective
 			\end{labeling}
 
-			\paragraph{Remarque} Attention à ce que l'ordre soit bien total. 
+			\rem Attention à ce que l'ordre soit bien total. 
 				Par exemple, la fonction de $(\mathbb{N}^*,|)$ dans $(\mathbb{N}^*,\leq)$ 
 				qui associe à un entier naturel son nombre de diviseurs est bien strictement croissante,
 				mais certainement pas injective !
@@ -114,7 +83,7 @@ footskip=1cm]{geometry}
 			On dit qu'un ordre $\leq$ sur $X$ est bien fondé ssi toute partie non vide de $X$ admet
 			un élément minimal.
 
-			\paragraph{Propriété} \textsl{Un ordre est bien fondé ssi il n'existe pas une suite infinie strictement décroissante.}
+			\prop \textsl{Un ordre est bien fondé ssi il n'existe pas une suite infinie strictement décroissante.}
 			\begin{labeling}{$\Rightarrow$ :}
 				\item [$\Rightarrow$ :] Considérons $(X,\leq)$ un ensemble bien fondé,
 				et supposons par l'absurde l'existence d'une suite $(u_n)_{n\in\mathbb{N}}\in X^\mathbb{N}$ strictement décroissante.
@@ -136,7 +105,7 @@ footskip=1cm]{geometry}
 			Considérons une famille finie $(X_i,\leq_i)_{i\in [1..n]}$ d'ensembles ordonnés.
 			On note $Y = \prod_{i=1}^n X_i$.
 			
-			\paragraph{Propriété} \textsl{La relation $\mathcal{R}$ définie sur $Y$ par 
+			\prop \textsl{La relation $\mathcal{R}$ définie sur $Y$ par 
 				$(a_1,a_2,...,a_n)\mathcal{R}(b_1,b_2,...,b_n) \Leftrightarrow \forall i \in [1..n], a_i\leq_i b_i$
 				est une relation d'ordre, appelé ordre produit des $\leq_i$ et 
 				noté $\leq_1\times\leq_2\times...\times\leq_n$ ou $\prod_{i=1}^n\leq_i$.}
@@ -151,7 +120,7 @@ footskip=1cm]{geometry}
 					$a_i = b_i$, donc $a=b$.
 			\end{labeling}
 
-			\paragraph{Propriété} \textsl{La relation $\mathcal{R}$ définie sur $Y$ par 
+			\prop \textsl{La relation $\mathcal{R}$ définie sur $Y$ par 
 				$a\mathcal{R}b \Leftrightarrow a=b$ ou $\exists j \in [1..n], \forall i \in [1..j[, a_i = b_i$ et
 				$a_j <_j b_j$
 				est une relation d'ordre, appelé ordre lexicographique sur Y}
@@ -177,7 +146,7 @@ footskip=1cm]{geometry}
 			Le mot vide (autrement dit le 0-uplet) est noté $\epsilon$.
 			Pour un mot $u$ de $\Sigma$, on note $|u|$ la taille de ce mot.
 
-			\paragraph{Propriété} \textsl{La relation $\mathcal{R}$ définie sur $\Sigma^*$ par $\forall (u,v)\in(\Sigma^*)^2$
+			\prop \textsl{La relation $\mathcal{R}$ définie sur $\Sigma^*$ par $\forall (u,v)\in(\Sigma^*)^2$
 			$u\mathcal{R}v \Leftrightarrow \exists j \in \mathbb{N}: $($\forall i \in [1..j[, u_i = v_i$ et $j=|u|$) ou 
 			($j < |u|$ et $u_j < v_j$) est un relation d'ordre.}
 			\begin{labeling}{$\triangleright$}
