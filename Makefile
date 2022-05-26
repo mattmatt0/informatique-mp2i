@@ -14,5 +14,8 @@ clean:
 %.pdf:
 	(cd $$(dirname $*) ; make clean; make adapt; make)
 
+preview:
+	for i in $(DIRS); do (cd $$i; make adapt; make preview); done
+
 view:
 	for i in $(PDFS); do $(GLOBAL_VIEWER) $$i; done

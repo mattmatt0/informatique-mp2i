@@ -4,7 +4,7 @@
 \usepackage{lmodern}
 
 % Minted
-\usepackage[cache=false,outputdir=\PATH/obj]{minted}
+\usepackage[cache=true,outputdir=\PATH/obj]{minted}
 
 % Pour les symboles et outils mathématiques
 \usepackage{amsmath}
@@ -22,8 +22,8 @@
 
 % Tableaux et listes
 \usepackage{tabularx}
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
 \usepackage{booktabs}
-\usepackage{ltablex}
 \usepackage{multirow}
 \usepackage{enumitem}
 \usepackage{multicol}
@@ -60,16 +60,16 @@
 \setcounter{compteurExos}{0}
 \newcommand{\plabel}[1]{{\parindent10pt \fontfamily{cmss}\selectfont\textbf{#1} \,}}
 
-\newcommand{\prop}[1]{\plabel{Propriété:} \textsl{#1}}
-\newcommand{\lemma}[1]{\plabel{Lemme:} \textsl{#1}}
-\newcommand{\rem}{\plabel{Remarque:}}
-\newcommand{\exemple}{\plabel{Exemple:}}
-\newcommand{\exo}{\stepcounter{compteurExos}\plabel{Exercice \thecompteurExos:}}
-\newcommand{\obs}{\plabel{Observation:} }
+\newcommand{\prop}[1]{\plabel{Propriété :} \textsl{#1}}
+\newcommand{\lemma}[1]{\plabel{Lemme :} \textsl{#1}}
+\newcommand{\rem}{\plabel{Remarque :}}
+\newcommand{\exemple}{\plabel{Exemple :}}
+\newcommand{\exo}{\stepcounter{compteurExos}\plabel{Exercice \thecompteurExos :}}
+\newcommand{\obs}{\plabel{Observation :} }
 
 \newenvironment{demo}{\begin{itemize}[label=$\triangleright$]}{\end{itemize}}
 \newcommand{\definition}[1]{{\parindent0pt #1}}
-\newcommand{\defpoint}{\bullet \,}
+\newcommand{\semidef}{\parindent0pt $\bullet$ \,}
 
 % Outils
 \newcommand{\corrpar}{\vspace{-20pt}}
@@ -79,5 +79,6 @@
 \parskip5pt
 
 % Annonce pour le développement:
-\newcommand{\warnwip}{\begin{center}\textsl{Ce cours n'est pas encore bien relu}\end{center}}
-\newcommand{\warnwipnext}{\begin{center}\textsl{La suite de ce cours est encore en rédaction}\end{center}}
+\newcommand{\notecentrale}[1]{\begin{center}\textsl{#1}\end{center}}
+\newcommand{\warnwip}{\notecentrale{Ce cours n'est pas encore bien relu}}
+\newcommand{\warnwipnext}{\notecentrale{La suite de ce cours est encore en rédaction}\message}

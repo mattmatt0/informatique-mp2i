@@ -5,6 +5,13 @@ $(NAME).pdf: $(SRC_DIR)/$(NAME).tex $(INCLUDE)
 	(cd src && pdflatex $(CFLAGS) $(NAME).tex)
 	mv $(OBJ_DIR)/$(OUTPUT) ./
 
+preview:
+	-sed -i "s/\\\\documentclass{scrartcl}/\\\\documentclass{article}/g" $(SRC)
+	-make $(NAME.pdf)
+	sed -i "s/\\\\documentclass{article}/\\\\documentclass{scrartcl}/g" $(SRC)
+	$(VIEWER) $(OUTPUT)
+
+
 view: $(NAME).pdf
 	mkdir -p obj
 	$(VIEWER) $(OUTPUT)

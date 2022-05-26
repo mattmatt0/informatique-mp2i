@@ -58,10 +58,10 @@
 
 			\exemple La fonction identité Id de $(\mathbb{N}^*,\leq)$ dans $(\mathbb{N}^*,|)$ est strictement croissante
 			
-			\prop \textsl{Si $\leq$ est une relation d'ordre totale sur $X$ (autrement dit si $(X,\leq)$ est un ordre total),
+			\prop{Si $\leq$ est une relation d'ordre totale sur $X$ (autrement dit si $(X,\leq)$ est un ordre total),
 				alors toute fonction strictement croissante de $(X,\leq)$ dans $(Y,\preceq)$ est injectif.}
-			\begin{labeling}{$\triangleright$}
-				\item [$\triangleright$] Soient $x$ et $y$ dans $X$ tels que $f(x) = f(y)$.
+			\begin{demo}
+				\item Soient $x$ et $y$ dans $X$ tels que $f(x) = f(y)$.
 				On a donc en particulier $f(x) \leq f(y)$ et $f(y) \leq f(x)$. 
 				Le fait que l'ordre sur $X$ soit total nous permet de conclure
 				en utilisant la contraposée de la définition de la croissance stricte de $f$ que:
@@ -73,7 +73,7 @@
 					\Leftrightarrow \left(f(x) = f(y) \Rightarrow x=y \right)
 				\]
 				Donc $f$ est injective
-			\end{labeling}
+			\end{demo}
 
 			\rem Attention à ce que l'ordre soit bien total. 
 				Par exemple, la fonction de $(\mathbb{N}^*,|)$ dans $(\mathbb{N}^*,\leq)$ 
@@ -83,9 +83,9 @@
 			On dit qu'un ordre $\leq$ sur $X$ est bien fondé ssi toute partie non vide de $X$ admet
 			un élément minimal.
 
-			\prop \textsl{Un ordre est bien fondé ssi il n'existe pas une suite infinie strictement décroissante.}
-			\begin{labeling}{$\Rightarrow$ :}
-				\item [$\Rightarrow$ :] Considérons $(X,\leq)$ un ensemble bien fondé,
+			\prop{Un ordre est bien fondé ssi il n'existe pas une suite infinie strictement décroissante.}
+			\begin{demo}
+				\item Considérons $(X,\leq)$ un ensemble bien fondé,
 				et supposons par l'absurde l'existence d'une suite $(u_n)_{n\in\mathbb{N}}\in X^\mathbb{N}$ strictement décroissante.
 				On note $A = \left\{u_n \big| n \in \mathbb{N}\right\}$.
 				$A$ est une partie non vide de $X$, et admet donc un élément minimal $a_0$.
@@ -93,14 +93,14 @@
 				Par stricte décroissance de $(u_n)$, on aurait alors  $u_{n_0+1} < u_{n_0} = a_0$, 
 				ce qui contredit la minimalité de $a_0$. 
 				Donc il n'existe pas de suite d'élements de $X$ strictement décroissante.
-				\item [$\Leftarrow$ :] Montrons la contraposée. 
+				\item Montrons la contraposée. 
 				Supposons que $(X,\leq)$ n'est pas bien fondé. 
 				Il existe donc $A\subset X \neq \varnothing$ n'admettant pas d'élément minimal.
 				Soit $a_0$ l'un des éléments de $A$. 
 				$a_0$ n'est pas minimal dans $A$, donc il existe $a_1 \in A$ tel que $a_1 < a_0$.
 				On peut alors construire selon ce procédé une suite $(a_n)_{n\in\mathbb{N}}$ infinie
 				d'éléments de $X$ strictement décroissante.
-			\end{labeling}
+			\end{demo}
 		\subsection{Ordre produit, ordre lexicographique}
 			Considérons une famille finie $(X_i,\leq_i)_{i\in [1..n]}$ d'ensembles ordonnés.
 			On note $Y = \prod_{i=1}^n X_i$.
@@ -109,36 +109,36 @@
 				$(a_1,a_2,...,a_n)\mathcal{R}(b_1,b_2,...,b_n) \Leftrightarrow \forall i \in [1..n], a_i\leq_i b_i$
 				est une relation d'ordre, appelé ordre produit des $\leq_i$ et 
 				noté $\leq_1\times\leq_2\times...\times\leq_n$ ou $\prod_{i=1}^n\leq_i$.}
-			\begin{labeling}{$\triangleright$}
-				\item [$\triangleright$] $\mathcal{R}$ est réflexive car on a bien, pour tout $a = (a_1,a_2,...,a_n)$ dans $Y$
+			\begin{demo}
+				\item $\mathcal{R}$ est réflexive car on a bien, pour tout $a = (a_1,a_2,...,a_n)$ dans $Y$
 					$a\mathcal{R}a$: en effet, comme tous les $a_i$ sont égaux, $\forall i \in [1..n], a_i \leq a_i$.
-				\item [$\triangleright$] $\mathcal{R}$ est transitive: considérons trois éléments $a,b$ et $c$ de $Y$,
+				\item $\mathcal{R}$ est transitive: considérons trois éléments $a,b$ et $c$ de $Y$,
 					tels que $a\mathcal{R}b$ et $b\mathcal{R}c$. Alors pour tout $i \in [1..n]$, on a $a_i\leq_i b_i$
 					et $b_i \leq_i c_i$, donc par transitivité de $\leq_i$, $a_i\leq_i c_i$, d'où $a\mathcal{R}c$.
-				\item [$\triangleright$] $\mathcal{R}$ est antisymétrique car si $a\mathcal{R}b$ et $b\mathcal{R}a$,
+				\item $\mathcal{R}$ est antisymétrique car si $a\mathcal{R}b$ et $b\mathcal{R}a$,
 					alors pour tout $i\in [1..n]$, on a $a_i \leq_i b_i$ et $b_i\leq_i a_i$, c'est à dire
 					$a_i = b_i$, donc $a=b$.
-			\end{labeling}
+			\end{demo}
 
 			\prop \textsl{La relation $\mathcal{R}$ définie sur $Y$ par 
 				$a\mathcal{R}b \Leftrightarrow a=b$ ou $\exists j \in [1..n], \forall i \in [1..j[, a_i = b_i$ et
 				$a_j <_j b_j$
 				est une relation d'ordre, appelé ordre lexicographique sur Y}
-			\begin{labeling}{$\triangleright$}
-				\item [$\triangleright$] $\mathcal{R}$ est réflexive par définition.
-				\item [$\triangleright$] $\mathcal{R}$ est transitive: considérons trois éléments $a,b$ et $c$ de $Y$,
+			\begin{demo}
+				\item $\mathcal{R}$ est réflexive par définition.
+				\item $\mathcal{R}$ est transitive: considérons trois éléments $a,b$ et $c$ de $Y$,
 					tels que $a\mathcal{R}b$ et $b\mathcal{R}c$. Si $a=b$ ou $b=c$, on a bien $a\mathcal{R}c$.
 					Considérons maintenant que ce ne soit pas le cas. Comme $a\mathcal{R}b$, il existe$(j,j')\in[1..n]^2$ tel que 
 					$\forall i \in [1..j[$, $a_i = b_i$, $\forall i \in [1..j'[$, $b_i=c_i$ ainsi que $a_j <_j b_j$ et $b_{j'} \leq c_{j'}$.
 					En prenant $J = \min(j,j')$, on a alors, pour tout $i \in [1..J[$, $a_i = c_i$, et $a_J <_J c_J$ 
 					(car soit $a_J < b_J \leq_J c_J$, soit $a_J \leq b_J < c_J$ car $J = j$ ou $J = j'$).
 					Ainsi $a\mathcal{R}c$
-				\item [$\triangleright$] Montrons $\mathcal{R}$ est antisymétrique par l'absurde.
+				\item Montrons $\mathcal{R}$ est antisymétrique par l'absurde.
 					Supposons qu'il existe $(a,b)\in Y^2$ tel que $a\mathcal{R}b$ et $b\mathcal{R}a$, mais $a\neq b$.
 					Alors il existe $(j,j')\in[1..n]^2$ vérifiant $\forall i \in [1..j[ a_i <_i b_i$ et $\forall i \in [1..j'[ b_i <_i a_i$,
 					donc en particulier pour $i=1$, $a_1 < b_1$ et $a_1 > b_1$: on arrive à une absurdité.
 					Donc $\mathcal{R}$ est bien antisymétrique.
-			\end{labeling}
+			\end{demo}
 
 			On peut étendre cet définition à des $n$-uplets de taille différente. Considérons un ensemble $(\Sigma,\leq)$.
 			On note $\Sigma^*$ l'ensemble des $n$-uplets d'éléments de $\Sigma$. 
@@ -149,13 +149,13 @@
 			\prop \textsl{La relation $\mathcal{R}$ définie sur $\Sigma^*$ par $\forall (u,v)\in(\Sigma^*)^2$
 			$u\mathcal{R}v \Leftrightarrow \exists j \in \mathbb{N}: $($\forall i \in [1..j[, u_i = v_i$ et $j=|u|$) ou 
 			($j < |u|$ et $u_j < v_j$) est un relation d'ordre.}
-			\begin{labeling}{$\triangleright$}
-				\item [$\triangleright$] Introduisons le caractère nul 0 et l'ensemble $\mathcal{A} = \Sigma \cup \{0\}$.
+			\begin{demo}
+				\item Introduisons le caractère nul 0 et l'ensemble $\mathcal{A} = \Sigma \cup \{0\}$.
 					On introduit la relation d'ordre $\preceq$ sur $\mathcal{A}$, telle que $\preceq\cap\Sigma^2 = \leq$, et 
 					que $\forall a \in \mathcal{A}, 0 \preceq a$.
 					Considérons alors la fonction $f_n$ qui à un mot $(u_1,u_2,...,u_m)$ de $\Sigma$ de longueur $m \leq n$ associe
 					le mot $(u_1,u_2,...,u_m,0,0,...)$ de $\mathcal{A}^n$.
-				\item [$\triangleright$] Montrons que $u \mathcal{R}v \Rightarrow f(u) \preceq v$ (où $\preceq$ désigne l'ordre lexicographique) 
+				\item Montrons que $u \mathcal{R}v \Rightarrow f(u) \preceq v$ (où $\preceq$ désigne l'ordre lexicographique) 
 					et que $f$ est injective:
 					Pour le premier point, si $u \mathcal{R} v$, alors il existe $j \in [1..n] : \forall i \in [1..j[, u_i = v_i$ et $j=|u|$,
 					auquel cas $\forall i \in [1..n] f_n(u)_i = f_n(v_i)$ et $f_n(u)_j = 0 \preceq f_n(v)_j$ (ce qui arrive aussi dans l'autre cas)
@@ -164,11 +164,11 @@
 					Il existe alors un $j$ à partir duquel $f(u)_i = f(v)_i = 0$. Alors $|u|=|v|=j$, 
 					et $\forall i \in [1..j], u_i=f(u)_i = f(v)_i = v_i$ d'où $u=v$.
 					On en déduit par ailleurs que $u\mathcal{R}v$ et $u\neq v \Rightarrow f(u) \prec f(v)$
-				\item [$\triangleright$] $\mathcal{R}$ est alors réflexive: en effet si $u\mathcal{R}v$ et $v\mathcal{R}u$,
+				\item $\mathcal{R}$ est alors réflexive: en effet si $u\mathcal{R}v$ et $v\mathcal{R}u$,
 					en notant $n=\max(|u|,|v|)$, $f(u) \preceq f(v)$ et $f(v) \preceq f(u)$ d'où $f(u)=f(v)$ et par injectivité 
 					$u=v$. Par ailleurs, si $u\mathcal{R}v$ et $v\mathcal{R}w$, alors $f(u) \preceq f(v) \preceq f(w)$, d'où 
 					$f(u) \preceq f(w)$. Alors par contraposée on a bien $u\mathcal{R}w$. 
-			\end{labeling}
+			\end{demo}
 
 
 \end{document}
