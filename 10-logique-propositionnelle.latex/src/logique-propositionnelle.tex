@@ -1,68 +1,10 @@
 \newcommand\PATH{Lancez `make adapt avant de compiler!`}
+\RequirePackage{fix-cm}
 \documentclass{scrartcl}
 
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
-\usepackage{mathtools}
-\usepackage[cache=false,outputdir=\PATH]{minted}
-\usepackage{xcolor}
-\usepackage{tikz}
-\usepackage{tabularx}
-\usepackage{booktabs}
-\usepackage{ltablex}
-\usepackage{cancel}
-\usepackage{graphicx}
-\usepackage{mathrsfs}
-\usepackage{ulem}
-\usepackage{mathtools}
-
-\usepackage{multirow}
-\usepackage{stmaryrd}
-\usepackage{enumitem}
-\usepackage{multicol}
-\usepackage{adjustbox}
-\usepackage[french]{babel}
-\frenchbsetup{StandardLists=true}
-\usepackage[a4paper,
-top=1cm,
-bottom=1cm,
-includefoot,
-left=1.5cm,
-right=1.5cm,
-footskip=1cm]{geometry}
-\usepackage{scrlayer-scrpage}
-\rofoot*{\pagemark}
-\cofoot*{}
-\pagestyle{scrheadings}
-
-\definecolor{codebg}{gray}{0.9}
-
-\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
-\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
-\setlist[itemize]{topsep=1pt}
-
-\newenvironment{code}[1]
-{\VerbatimEnvironment\begin{minted}[autogobble,linenos,bgcolor=codebg,tabsize=4,mathescape=true]{#1}}
-{\end{minted}}
-
-\newcounter{compteurExos}
-\setcounter{compteurExos}{0}
-\newcommand{\prop}[1]{\paragraph{Propriété : } \textsl{#1}\\}
-\newcommand{\rem}[1]{\paragraph{Remarque : } #1\\}
-\newcommand{\exemple}[1]{\paragraph{Exemple : } #1\\}
-\newcommand{\exo}[1]{\stepcounter{compteurExos} \paragraph{Exercice \thecompteurExos : } #1\\}
-\newenvironment{demo}{\begin{itemize}[label=$\triangleright$]\item }{\end{itemize}}
-\newcommand{\fpq}{\mathbb{F}_p(Q)}
-\newcommand{\set}[1]{\{#1\}}
-\newcommand{\tq}{\, \big| \,}
-\newcommand{\intset}[1]{\llbracket #1 \rrbracket}
-\newcommand{\card}{\text{card }}
-\newcommand{\corrpar}{\vspace{-20pt}}
-\newcommand{\definition}[1]{{\parindent0pt #1}}
-
-
-
+\input{\PATH/../include/preamble.tex}
+\input{\PATH/../include/math-tools.tex}
+\input{\PATH/../include/it-tools.tex}
 \title{Logique propositionnelle}
 \author{}
 \date{}
@@ -91,7 +33,7 @@ footskip=1cm]{geometry}
 				\end{multicols}
 
 				\rem{Cet ensemble de règles de construction n'est pas minimal. On pourrait ne garder que Var, $\top$, $\bot$, $\neg$ et $\vee$.}
-				\corrpar
+
 				\rem{Attention: on note l'implication $\rightarrow$ et non pas $\Rightarrow$. Même si elles représentent la même chose, le but est de distinguer l'implication que l'on note quand on raisonne, et celle au sens des expressions booléennes.}
 
 				\definition{Pour alléger la syntaxe, on notera:}
@@ -236,7 +178,7 @@ footskip=1cm]{geometry}
 
 			\definition{$(\mathbb{B},+,\times,\overline{\bullet}\,)$ est appelé \textbf{algèbre de Boole}.}
 
-			\paragraph{Propriété} \textsl{On a sur $(\mathbb{B},+,\times,\overline{\bullet})$ les propriétés suivantes:}
+			\prop{On a sur $(\mathbb{B},+,\times,\overline{\bullet})$ les propriétés suivantes:}
 				\begin{enumerate}
 				\item \textsl{+ et $\times$ sont commutatives et associatives.}
 				\item \textsl{$\overline{\bullet}$ est involutive.}
@@ -246,7 +188,7 @@ footskip=1cm]{geometry}
 				\item \textsl{$F$ est absorbant pour $\times$}
 				\end{enumerate}
 			\begin{demo}
-				L'associativité se montre en étudiant tous les cas possibles. 
+				\item L'associativité se montre en étudiant tous les cas possibles. 
 				On va les présenter dans un tableau, appelé table de vérité (voir plus loin). 
 				Soit $(a,b,c) \in \mathbb{B}^3$. On a:
 			\end{demo}
@@ -281,35 +223,34 @@ footskip=1cm]{geometry}
 			\end{adjustbox}
 
 			\begin{demo}
-				La commutativité se démontre de la même façon. 
+				\item La commutativité se démontre de la même façon. 
 				En lisant ces tables de vérités, on prouve aussi 3), 4), 5) et 6). 2) découle simplement des définitions.
 			\end{demo}
 			
 			\prop{Pour tout couple $(a,b)\in\mathbb{B}^2$, on a $\overline{(a+b)}$ = $\overline{a} \times \overline{b}$, et $\overline{a\times b} = \overline{a} + \overline{b}$.}
 			\begin{demo}
-				Avec une table de vérité...
+				\item Avec une table de vérité...
 			\end{demo}
 
 			\prop{+ est distributive par rapport à $\times$ et $\times$ est distributive par rapport à +.}
 			\begin{demo}
-				Soient $A, B$ et $C$ trois valeurs de $\mathbb{B}$. Supposons $B = F$. Alors, comme $F$ est le neutre de $+$, et absorbant pour $\times$:
+				\item Soient $A, B$ et $C$ trois valeurs de $\mathbb{B}$. Supposons $B = F$. Alors, comme $F$ est le neutre de $+$, et absorbant pour $\times$:
 				\[ A \times (B+C) = A \times C =  F + (A \times C) = (A \times B) + (A \times C)\]
 				Si $B = V$, on a, comme $V$ est le neutre de $\times$ et absorbant pour $+$:
 				\[ A \times (B+C) = A \times V = (A \times B) = (A \times B) + (A \times C) \]
 			\end{demo}
 			\begin{demo}
-				On déduit l'autre distributivité en utilisant la proposition précédente.
+				\item On déduit l'autre distributivité en utilisant la proposition précédente.
 			\end{demo}
 
 		\subsection{Fonctions booléennes}
 
-			\paragraph{Définition :}Soit $n\in \mathbb{N}^*$. On appelle \textbf{fonction booléenne d'arité $n$} une fonction de $\mathbb{B}^n$ dans $\mathbb{B}$.
+			\definition Soit $n\in \mathbb{N}^*$. On appelle \textbf{fonction booléenne d'arité $n$} une fonction de $\mathbb{B}^n$ dans $\mathbb{B}$.
 
 			\rem{Le cardinal de $\mathbb{B}^n$ vaut $2^n$. 
 			On en déduit que le cardinal de $\mathcal{F}(\mathbb{B}^n,\mathbb{B}) = \mathbb{B}^{\mathbb{B}^n}$ vaut $2^{2^n}$.}
 
-			\corrpar
-			\paragraph{Définition :}Soit $n \in \mathbb{N}^*$. Soit $f \in \mathcal{F}(\mathbb{B}^n,\mathbb{B})$. 
+			\definition Soit $n \in \mathbb{N}^*$. Soit $f \in \mathcal{F}(\mathbb{B}^n,\mathbb{B})$. 
 			On appelle \textbf{table de vérité de $f$} un tableau $T$ ayant $2^n$ lignes (indicées de 1 à $2^{n}$) et $n+1$ colonnes,
 			indicées de 1 à $n+1$, à valeurs dans $\mathbb{B}$, qui vérifie:
 
@@ -322,7 +263,7 @@ footskip=1cm]{geometry}
 
 			\rem{Il est recommandé d'énumérer les $2^n$ $n$-uplets de manière logique (compter en binaire), 
 				sinon il sera pénible de tous les lister sans doublons.}
-			\corrpar
+
 			\rem{On s'autorisera à regrouper les tables de vérités de plusieurs fonctions de même arité en ajoutant des colonnes.}
 
 
@@ -331,7 +272,7 @@ footskip=1cm]{geometry}
 		une fonction de $Q$ dans $\mathbb{B}$.
 		
 		\subsection{Fonction booléenne associée à une formule}
-			\paragraph{Définition :} Soit $\rho$ un environnement propositionnel. On définit l'interprétation selon $\rho$ des formules de la logique propositionnelle sur $Q$ par:
+			\definition Soit $\rho$ un environnement propositionnel. On définit l'interprétation selon $\rho$ des formules de la logique propositionnelle sur $Q$ par:
 
 			\begin{center}
 			$
@@ -361,7 +302,7 @@ footskip=1cm]{geometry}
 
 			\exemple{$\top$ et $x \vee (\neg x)$ sont des tautologies, tandis que $\bot$ et $x \wedge (\neg x)$ sont des antilogies.}
 
-			\paragraph{Définition :} Soit $A \in \mathbb{F}_p(Q)$. On appelle \textbf{fonction booléenne associée} à la formule $A$ la fonction
+			\definition Soit $A \in \mathbb{F}_p(Q)$. On appelle \textbf{fonction booléenne associée} à la formule $A$ la fonction
 			\[
 				\intset{\bullet}^A = \left(
 				\begin{tabular}{c c c}
@@ -388,14 +329,14 @@ footskip=1cm]{geometry}
 
 			\prop{$\equiv$ est une relation d'équivalence.}
 			\begin{demo}
-				Cela découle simplement du fait que = est une relation d'équivalence.
+				\item Cela découle simplement du fait que = est une relation d'équivalence.
 			\end{demo}
 			~\\
 			{\parindent0pt Soit $(A,B) \in \mathbb{F}_p(Q)^2$. On dit que $A$ et $B$ sont \textbf{logiquement équivalentes} ssi $A \equiv B$.}
 
 			\exemple{Pour $(A,B) \in \mathbb{F}_p(Q)^2$, on a $A\vee B \equiv B \vee A$.}
 			\begin{demo}
-				En effet, pour tout $\rho \in \mathbb{B}^Q, [A\vee B]^\rho = [A]^\rho + [B]^\rho$ par définition de l'interprétation, 
+				\item En effet, pour tout $\rho \in \mathbb{B}^Q, [A\vee B]^\rho = [A]^\rho + [B]^\rho$ par définition de l'interprétation, 
 				ce qui vaut $[B]^\rho + [A]^\rho$ par commutativité de +, soit $[B\vee A]^p$ par définition de l'interprétation.
 			\end{demo}
 
@@ -415,7 +356,7 @@ footskip=1cm]{geometry}
 
 			\prop{La relation binaire $\vDash$ est réflexive et transitive, et on a $A\equiv B \Leftrightarrow A \vDash B$ et $B \vDash A$.}
 			\begin{demo}
-				En exercice.
+				\item En exercice.
 			\end{demo}
 			~\\
 			Soit $X \subset \fpq$. Soit $B \in \fpq$.
@@ -423,7 +364,7 @@ footskip=1cm]{geometry}
 			Autrement dit, $\set{\rho \in \mathbb{B}^Q \tq \forall A \in X , [A]^\rho = V} \subset \set{\rho \in \mathbb{B}^Q \tq [B]^\rho = V}$.
 			
 			\rem{Attention, ça ne signifie pas que $B$ est conjonction des formules de $X$, ni équivalente à cette conjonction: $X$ pourrait être de cardinal infini !}
-			\corrpar
+
 			\exo{Soit $(A,B) \in \fpq^2$. Montrer que:}
 			\begin{itemize}
 				\item $\set{(A\rightarrow B), A} \vDash B$
@@ -443,7 +384,7 @@ footskip=1cm]{geometry}
 				\item $A \vDash B$ ssi $A \rightarrow B \equiv \top$ (i.e $A \rightarrow B$ est une tautologie).
 			\end{itemize}
 			\begin{demo}
-				En exercice.
+				\item En exercice.
 			\end{demo}
 
 		\subsection{Espace quotient}
@@ -454,27 +395,26 @@ footskip=1cm]{geometry}
 		\subsection{Table de vérité d'une formule}
 			On étend ici la définition de table de vérité aux formules, pour une numérotation des variables fixée: $Q = \set{q_1,q_2,...,q_n}$ où $n = \card(Q)$.
 			Une table de vérité d'une formule $A \in \fpq$ est en fait une table de vérité de la fonction associée $\llbracket\bullet\rrbracket^A :$
-			\\[-5pt]
+
 			\begin{itemize}
 				\item $\set{(T_{i,j})_{j_\in\intset{1,n}} \tq i\in \intset{1,2^n}} = \mathbb{B}^Q$.
 				\item Pour tout $i \in \intset{1,2^n}$, $T_{i,n+1}$ vaut $\intset{\rho_i}^A$,
 					où $\rho_i \in \mathbb{B}^Q$ est défini par $\forall j \in \intset{1,n}, \rho_i(q_j) = T_{i,j}$.
 			\end{itemize}
-			\vspace{5pt}
 		\subsection{Mise sous forme normale}
 			\begin{center}\textsl{On fixe dans toute cette partie un entier naturel $n$ 
 			et $(T_{i,j})_{(i,j)\in\intset{1,2^n}\times\intset{1,n}}$ une table de vérité.}\end{center}
 			\subsubsection{Mise sous FND à partir d'une table de vérité}
 				Pour tout $i \in \intset{1,2}$ et $j \in \intset{1,n}$, on note $\ell_{i,j}$ comme étant:
-				\\[-5pt]
+
 				\begin{itemize}
 					\item Le littéral $q_j$ si $T_{i,j} = V$
 					\item Le littéral $\neg q_j$ si $T_{i,j} = F$
 				\end{itemize}
 
-				\paragraph{Lemme:} \textsl{$\forall i \in \intset{1,2^n}$, $\forall j \in \intset{1,n}$, $[\ell_{i,j}]^{\rho_i} = V$}
+				\lemma \textsl{$\forall i \in \intset{1,2^n}$, $\forall j \in \intset{1,n}$, $[\ell_{i,j}]^{\rho_i} = V$}
 				\begin{demo}
-					Soit $i \in \intset{1,2^n}$. Soit $j \in \intset{1,n}$.
+					\item Soit $i \in \intset{1,2^n}$. Soit $j \in \intset{1,n}$.
 					\begin{itemize}
 						\item Si $T_{i,j} = V$ alors $\ell_{i,j} = q_j$ donc $[\ell_{i,j}]^{\rho_i} = \rho_i(q_j)$ par définition de l'interprétation d'une variable. 
 						Or par définition de $\rho_i$, $\rho_i(q_j) = T_{i,j}$, donc $[\ell_{i,j}]^{\rho_i}=V$.
@@ -485,9 +425,9 @@ footskip=1cm]{geometry}
 
 				\definition{On pose ensuite, pour tout $i\in\intset{1,2^n}, L_i = \bigwedge\limits_{j=1}^n \ell_{i,j}$.}
 
-				\paragraph{Lemme:} \textsl{$\forall i \in \intset{1,2^n}, [L_i]^{\rho_i} = V$, $\forall k \in \intset{1,2^n}$, si $i\neq k$ alors $[L_i]^{\rho_k} = F$.}
+				\lemma \textsl{$\forall i \in \intset{1,2^n}, [L_i]^{\rho_i} = V$, $\forall k \in \intset{1,2^n}$, si $i\neq k$ alors $[L_i]^{\rho_k} = F$.}
 				\begin{demo}
-					Soit $i \in \intset{1,2^n}.$ Par définition de l'interprétation d'une conjonction, 
+					\item Soit $i \in \intset{1,2^n}.$ Par définition de l'interprétation d'une conjonction, 
 					$[L_i]^{\rho_i} = \prod\limits_{j=1}^n [\ell_{i,j}]^{\rho_i} = \prod\limits_{j=1}^n V$ d'après le lemme précédent, d'où $[L_i]^{\rho_i} = V$.
 					\item Soit $k \in \intset{1,2^n}$ tel que $k \neq i$. 
 					Puisque les lignes de $T$ restreintes à leurs $n$ premières colonnes sont deux à deux distinctes, il existe $j_0 \in \intset{1,n}$ tel que $T_{i,j_0} \neq T_{k,j_0}$.
@@ -510,7 +450,7 @@ footskip=1cm]{geometry}
 
 				\prop{$D \equiv A$.}
 				\begin{demo}
-					Soit $\rho \in \mathbb{B}^Q$. On note $I = \set{i \in \intset{1,2^n} \tq T_{i,n+1} = V}$, ainsi $D = \bigvee_{i\in I} L_i$.
+					\item Soit $\rho \in \mathbb{B}^Q$. On note $I = \set{i \in \intset{1,2^n} \tq T_{i,n+1} = V}$, ainsi $D = \bigvee_{i\in I} L_i$.
 					De plus, par définition de l'interprétation d'une disjonction, $[D]^\rho = \sum_{i\in I} [L_i]^\rho$.
 					Puisque les lignes de $T$ restreintes à leurs premières colonnes couvrent $\mathbb{B}^Q$, il existe $i_0 \in \intset{1,2^n}$ tel que $\rho = \rho_{i_0}$.
 					\begin{itemize}
@@ -620,7 +560,7 @@ footskip=1cm]{geometry}
 					\item $C \equiv A$.
 				\end{itemize}
 				\begin{demo}
-					Pour s'entraîner; c'est comme pour les FND...
+					\item Pour s'entraîner; c'est comme pour les FND...
 				\end{demo}
 
 			\subsubsection{Bilan:}
@@ -638,7 +578,7 @@ footskip=1cm]{geometry}
 				\]
 
 				\exo{Donner une formule équivalente, plus simple, aux formules suivantes:}
-				\corrpar
+
 				\begin{multicols}{2}
 				\begin{enumerate}
 					\item $A \wedge (\neg A) \equiv $  
@@ -653,9 +593,9 @@ footskip=1cm]{geometry}
 					\item $(A \wedge B) \vee ((\neg A) \wedge B) \equiv $  
 				\end{enumerate}
 				\end{multicols}
-				\corrpar
+
 				\exo{Mettre sous FNC et FND les formules suivantes:}
-				\corrpar
+
 				\begin{enumerate}
 					\item $U = (x \wedge y) \vee (z \wedge (\neg z) \wedge q) \vee ((\neg x) \wedge z)$
 					\item $V = (x \wedge q) \rightarrow ((y \vee (\neg z)) \wedge q)$
