@@ -1,6 +1,7 @@
 \newcommand\PATH{Lancez `make adapt avant de compiler!`}
 \RequirePackage{fix-cm}
-\documentclass{scrartcl}
+\documentclass{article}
+
 \input{\PATH/../include/preamble.tex}
 \input{\PATH/../include/math-tools.tex}
 \input{\PATH/../include/it-tools.tex}
@@ -30,70 +31,80 @@
 
 \begin{document}
 	\maketitle
-	\begin{center}
-		\textsl{Dans ce chapitre, on présente différents paradigmes algorithmiques qui permettent de développer des algorithmes résolvant des problèmes (souvent d'optimisation) mettant en jeu des textes, des nombres, des listes, des graphes, des expressions arithmétiques, des points du plan, des ordonnancements...}
-	\end{center}
+	\notecentrale{Dans ce chapitre, on présente différents paradigmes algorithmiques 
+	qui permettent de développer des algorithmes résolvant des problèmes (souvent d'optimisation)
+	mettant en jeu des textes, des nombres, des listes, des graphes, 
+	des expressions arithmétiques, des points du plan, des ordonnancements...}
 	
 	\plabel{Rappel :} On rappelle qu'un problème d'optimisation consiste à minimiser une fonction à valeurs réelles données sur un ensemble de solutions donné.
 
-	\definition Ainsi, un tel problème $\mathcal{P}$ est défini par la fonction dite fonction-objectif $f$ et l'ensemble des solutions $\mathcal{S}$. \\
-	On note 
-	$\mathcal{P} : \max_{X \in \, \mathcal{S}} f(X) $ 
-	(ou bien $ \mathcal{P} : \min_{X \in \, \mathcal{S}} f(X) $ s'il s'agit de minimiser $f$). \\
+	\definition Ainsi, un tel problème $\mathcal{P}$ est défini par la fonction dite fonction-objectif $f$ et l'ensemble des solutions $\mathcal{S}$.
+	On note $\mathcal{P} : \max_{X \in \, \mathcal{S}} f(X) $ 
+	(ou bien $ \mathcal{P} : \min_{X \in \, \mathcal{S}} f(X) $ s'il s'agit de minimiser $f$).
 	On appelle alors valeur du problème $\mathcal{P}$ :
-	$\mathrm{val} (\mathcal{P}) = \max \, \! \left\{ f(X) \ \middle| \, X \in \mathcal{S} \right\} $. \\
-	On note aussi $\displaystyle \underset{X \in \, \mathcal{S}}{\mathrm{argmax}} \: f(X) = \set{X \in \mathcal{S} \ \tq \, f(X) = \mathrm{val} (\mathcal{P})}$ l'ensemble des solutions optimales.
+	$\mathrm{val} (\mathcal{P}) = \max \, \! \left\{ f(X) \ \middle| \, X \in \mathcal{S} \right\} $.
+	On note aussi $\displaystyle \underset{X \in \, \mathcal{S}}{\mathrm{argmax}} \: f(X) = \set{X \in \mathcal{S} \ \tq \, f(X) = \mathrm{val} (\mathcal{P})}$ 
+	l'ensemble des solutions optimales.
 
 	\rem L'unicité de la valeur optimale n'entraîne pas celle des solutions optimales.
 
 	\rem Si \( \mathcal{S} \subseteq \widetilde{\mathcal{S}} \subseteq \mathcal{D} (f)\), on dit que \( \widetilde{\mathcal{P}} = \displaystyle \max_{X \in \, \mathcal{S}} f(X) \) est un relâché de $\mathcal{P}$. 
 	On a alors \( \mathrm{val} (\widetilde{\mathcal{P}}) \geq \mathrm{val} (\widetilde{\mathcal{P}}) \).
 	
+	\definition On définit le produit scalaire de deux $n$-uplets $(u,v)$ par $u \cdot v = \sum_{i=1}^n u_iv_i$.
+
+	\notecentrale{Dans tout ce chapitre, $\mathbbm{1}_S$ désigne le $n$-uplet 
+	($n$ dépendant du contexte, par exemple si cette notation est employée dans un produit scalaire, ce sera la taille de l'autre $n$-uplet) 
+	constitué uniquement de 0, sauf pour les éléments dont les positions sont dans $S$, qui vaudront 1. 
+	Ainsi $\mathbbm{1}_{\set{1,3,4}} = (0,1,0,1,1,0,0...)$. 
+	On écrira $\mathbbm{1}_i$ pour $\mathbbm{1}_{\set{i}}$ et $\mathbbm{1}$ pour $\mathbbm{1}_{\intset{1,n}}$.}
+
 	\section{Algorithmes gloutons}
-	
 		\subsection{L'exemple du problème du sac à dos}
-		
-			\[\pb{Sac à dos}{SUS}{AMOGUS}\]	
-			\textsf{\textbf{\underline{SAC À DOS}}} \hspace{-0.6mm}
-			\begin{tabular}[t]{|| l }
-				\underline{entrée :}
-					\begin{tabular}[t]{l}
-						$P \in \mathbb{R}$ \\
-						$v = (v_i)_{i \in [1 .. n]} \in (\mathbb{R^{+*}})^n$ \\
-						$p = (p_i)_{i \in [1 .. n]} \in (\mathbb{R}^{+*})^n$ \\
+			\begin{center}
+			\begin{tabular}{r l}
+				\pbinlist{Sac à dos}
+				{
+					\begin{tabular}{l}
+						$\cdot \, P \in \mathbb{R}$ \\
+						$\cdot \, v = (v_i)_{i \in [1 .. n]} \in (\mathbb{R^{+*}})^n$ \\ 
+						$\cdot \, p = (p_i)_{i \in [1 .. n]} \in (\mathbb{R}^{+*})^n$
 					\end{tabular}
-				\\
-				\underline{sortie :} \( \, \underset{\substack{\delta \in \{ 0,1 \}^n \\ \delta \cdot p \leq P}}{\max} \delta \dotp v = \!\! \underset{\substack{\delta \in \{ 0,1 \}^n \\ \sum_{i=1}^{n} \delta_i p_i \leq P}}{\max} \displaystyle \sum_{i=1}^{n} \delta_i v_i \)
+				}
+				{
+					$\underset{\substack{\delta \in \{ 0,1 \}^n \\ 
+					\delta \cdot p \leq P}}{\max} \delta \dotp v$
+									
+				} 
+				\\[5em]
+				\pbinlist{Sac à dos fractionnaire}
+				{
+					\begin{tabular}{l}
+						$\cdot \, P \in \mathbb{R}$ \\
+						$\cdot \, v = (v_i)_{i \in [1 .. n]} \in (\mathbb{R^{+*}})^n$ \\ 
+						$\cdot \, p = (p_i)_{i \in [1 .. n]} \in (\mathbb{R}^{+*})^n$
+					\end{tabular}
+				}
+				{
+					$\underset{\substack{\delta \in [0,1]^n (*) \\ \delta \cdot p \leq P}}{\max} \delta \! \cdot \! v $
+				}
 			\end{tabular}
-			
-			\vspace{2mm}
-			\textsf{\textbf{\underline{SAC À DOS FRACTIONNAIRE}}} \hspace{-0.6mm}
-			\begin{tabular}[t]{|| l }
-				\underline{entrée :}
-				\begin{tabular}[t]{l}
-					$P \in \mathbb{R}$ \\
-					$v = (v_i)_{i \in [1 .. n]} \in (\mathbb{R^{+*}})^n$ \\
-					$p = (p_i)_{i \in [1 .. n]} \in (\mathbb{R}^{+*})^n$ \\
-				\end{tabular}
-				\\
-				\underline{sortie :} \hspace{1mm} \( \underset{\substack{\delta \in [0,1]^n (*) \\ \delta \cdot p \leq P}}{\max} \delta \! \cdot \! v \)
-			\end{tabular}
-		
-			\rem \textsf{\textit{Sac à dos fractionnaire}} est un relâché de \textsf{\textit{Sac à dos}}.
-				%
-				\\[5mm]
-				%
-			\rem La contrainte $(*)$ s'écrit aussi/se traduit aussi par : \hspace{-4.2mm}
-				\begin{tabular}{l}
-					\( \forall \, i \in [1..n], \, \delta \! \cdot \! \mathbbm{1}_{\{i\}} \geq 0 \) \\
-					\( \forall \, i \in [1..n], \, \delta \! \cdot \! \mathbbm{1}_{\{i\}} \leq 1 \). \\
-				\end{tabular}
-				\\[-2mm]
-			En effet, \( \forall \, i \in [1..n], \, \delta \dotp \1_{i} = \displaystyle \sum_{j=1}^{n} \delta_j \x \hspace{-5mm} \underbrace{(\1_i)_j}_{=0 \text{ sauf si } j = i} \hspace{-5mm} = \delta_i \x (\1_i)_i = \delta_i \x 1 = \delta_i \).
-				\nl
-				%
-			\elt{Exemple :} Pour $P = 20$, en choisissant par $v_i$ décroissants, on trouve \( \delta^* = \begin{psmallmatrix} 1 \\ 0 \\ 0 \end{psmallmatrix} \).
-			\\[-3mm]
+			\end{center}
+
+			\rem \textbf{Sac à dos fractionnaire} est un relâché de \textbf{Sac à dos}.
+
+			\rem La contrainte $(*)$ se traduit aussi par  $\forall i \in \intset{1,n}, 1 \geq \delta \cdot \mathbbm{1}_i \geq 0 $.
+			En effet,
+			\[
+				\forall i \in \intset{1,n}, \delta \cdot \1_{i} = 
+				\sum_{j=1}^{n} \delta_j \times \mathbbm{1}_{ij} = 
+				\delta_i \times \mathbbm{1}_{ii} = 
+				\delta_i \times 1 = 
+				\delta_i 
+			\].
+
+			\exemple Pour $P = 20$, en choisissant par $v_i$ décroissants, on trouve $\delta^* = (1,0,0) $.
+
 				\begin{tabular}[t]{ll}
 					\begin{tabular}[t]{| c | c | c |}
 						\hline
@@ -105,41 +116,37 @@
 					&
 					\parbox[t]{120mm}{
 						\vspace{1mm}
-						Alors, $\delta^* \! \dotp v = v_1 = 10$. \\
-						Or, \( \delta = \begin{psmallmatrix} 0 \\ 1 \\ 1 \end{psmallmatrix} \) vérifie
-						\hspace{-8mm}
-							\begin{tabular}[t]{l}
-								\hspace{3.6mm} \( \delta \dotp p = 1 \x p_2 + 1 \x p_3 = 10 + 10 = 20 \leq P \) \\
-								et \( \delta \dotp v = 1 \x v_2 + 1 \x v_3 = 9 + 9 = 18 > 10 \).
-							\end{tabular} \\
+						Alors, $\delta^* \! \dotp v = v_1 = 10$.
+						Or, $ \delta = (0,1,1)$ vérifie
+						$\delta \cdot p = 1 \times p_2 + 1 \times p_3 = 20 \leq P$,
+						et $\delta \cdot v = 1 \times v_2 + 1 \times v_3 = 18 > 10$.
+
 						Ainsi, cette stratégie n'est pas optimale.
 					}
 				\end{tabular}
-				\nl
-				%
-			\elt{Exemple :} Toujours pour $P = 20$, avec des $p_i$ croissants, on a \( \delta^* = \begin{psmallmatrix} 0 \\ 1 \\ 1 \end{psmallmatrix} \), de valeur $\delta^* \! \dotp v = 2$.
-			\\[-3mm]
-				\begin{tabular}[t]{ll}
-					\begin{tabular}[t]{| c | c | c |}
-						\hline
-						$i$ & $p_i$ & $c_i$ \\ \hline
-						1 & 18 & 10 \\ \hline
-						2 & 10 & 9 \\ \hline
-						3 & 10 & 9 \\ \hline
-					\end{tabular}
-					&
-					\parbox[t]{140mm}{
-						\vspace{1mm}
-						Or, \( \delta = \begin{psmallmatrix} 1 \\ 0 \\ 0 \end{psmallmatrix} \) est une solution, car \( \delta \dotp p = 18 \leq P \), et est de valeur \( \delta \dotp v = 10 > 2 \).
-							\\[2mm]
-						On en déduit donc de même que cette stratégie n'est pas optimale.
-						\hspace{-8mm}
-					}
+
+			\exemple Toujours pour $P = 20$, avec des $p_i$ croissants, on a \( \delta^* = \begin{psmallmatrix} 0 \\ 1 \\ 1 \end{psmallmatrix} \), de valeur $\delta^* \! \dotp v = 2$.
+
+			\begin{tabular}[t]{ll}
+				\begin{tabular}[t]{| c | c | c |}
+					\hline
+					$i$ & $p_i$ & $c_i$ \\ \hline
+					1 & 18 & 10 \\ \hline
+					2 & 10 & 9 \\ \hline
+					3 & 10 & 9 \\ \hline
 				\end{tabular}
-				\nl
-				%
-			\elt{Exemple :} Si on sélectionne maintenant par $(v_i / p_i)$ décroissants, on obtient $\delta^* \! \dotp v = v_1 = 22$.
-			\\[-1mm]
+				&
+				\parbox[t]{140mm}{
+					\vspace{1mm}
+					Or, \( \delta = \begin{psmallmatrix} 1 \\ 0 \\ 0 \end{psmallmatrix} \) est une solution, car \( \delta \dotp p = 18 \leq P \), et est de valeur \( \delta \dotp v = 10 > 2 \).
+						\\[2mm]
+					On en déduit donc de même que cette stratégie n'est pas optimale.
+					\hspace{-8mm}
+				}
+			\end{tabular}
+
+			\exemple Si on sélectionne maintenant par $(v_i / p_i)$ décroissants, on obtient $\delta^* \! \dotp v = v_1 = 22$.
+
 			\begin{tabular}[t]{ll}
 				\begin{tabular}[t]{| c | c | c | c |}
 					\hline
@@ -159,15 +166,18 @@
 					Ainsi, cette stratégie n'est pas optimale non plus.
 				}
 			\end{tabular}
-				\nl
-			\rem Les exemples précédents montrent que pour le problème \textsf{\textit{Sac à dos}}, les stratégies simples consistant à prendre les objets simplement par $v_i$ décroissants, $p_i$ croissants ou $v_i/p_i$ décroissants ne sont pas optimales. En fait, \textsf{\textit{Sac à dos}} est un problème difficile $^{\text{(?)}}$.
-				\\[2mm]
-			Par contre, le dernier des trois exemples précédents s'avèrera utile pour le problème du \textsf{\textit{Sac à dos fractionnaire}}.
-				\nl
-				%
-			\elt{Exemple :} Sur le dernier exemple, \( \delta^* = \left( \!\! \begin{smallmatrix} 1 \\ 9/10 \\ 0 \end{smallmatrix} \!\! \right) \) convient en tant que solution optimale, \\[-2mm] et \( \delta^* \! \dotp v = 22 + \text{13,5} = \text{35,5} \).
-				\nl
-				%
+
+			\rem Les exemples précédents montrent que pour le problème \textbf{Sac à dos}, 
+			les stratégies simples consistant à prendre les objets simplement par $v_i$ décroissants, 
+			$p_i$ croissants ou $v_i/p_i$ décroissants ne sont pas optimales. 
+			En fait, \textbf{Sac à dos} est un problème NP-difficile.
+
+			Par contre, le dernier des trois exemples précédents s'avèrera utile pour le problème du \textbf{Sac à dos fractionnaire}.
+
+			\exemple Sur le dernier exemple, $\delta^* = (1,0.9,0)$
+			convient en tant que solution optimale, 
+			et $ \delta^* \! \cdot v = 22 + 13,5 = 35,5 $.
+
 			\renewcommand{\arraystretch}{0.7}
 			\elt{\underline{$\boldsymbol{*}$ Algorithme en pseudo-code}} \\[2mm]
 				\begin{tabular}{l | l}
