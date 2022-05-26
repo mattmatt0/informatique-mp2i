@@ -72,12 +72,12 @@
 
 				\noindent \rem Pour tout $n \in \mathbb{N}$, il existe $a_{l-1}a_{l-2}...a_0 \in \Sigma^l$ tel que
 				$val_b(a_{l-1}...a_0) = n$. Plus précisément, tout entier $n \in \mathbb{N}$ admet une écriture en base $b$
-				à $\lceil lob_b(n+1) \rceil$ chiffres".
+				à $\lceil lob_b(n+1) \rceil$ chiffres.
 
 				\begin{demo}
 					\item
 						Montrons par récurrence sur $l \in \mathbb{N}$ la propriété $\mathcal{P}_l$ :
-						"$\forall n \in [0..b^l-1], n$ admet une écriture en base $b$ à $l$ chiffres.
+						"$\forall n \in [0..b^l-1], n$ admet une écriture en base $b$ à $l$ chiffres".
 
 						$\forall n \in [0..b^l-1]$, c'est-à-dire $\forall n \in [0..0], n$ admet une écriture en base $b$ à $0$ chiffres.
 						En effet, le seul nombre à $0$ chiffre est le mot vide $\varepsilon$.
@@ -86,7 +86,7 @@
 
 						Pour un $l$ fixé, supposons $\mathcal{P}_l$. Soit $n \in [0..b^{l+1}-1[$.
 						Par définition de la division euclidienne, il existe $(q,r) \in \mathbb{N}^2$ tel que
-						$n = b^lq+r$ et $r < b^l$, $i.e. r \in [0..b^l-1[$.
+						$n = b^lq+r$ et $r < b^l$, $i.e.$ $r \in [0..b^l-1[$.
 						Par $\mathcal{P}_l$, on en déduit que $r$ admet une écriture en base $b$ à $l$ chiffres qu'on note $(a_i)_{i \in [0..l[}$.
 						On a alors $r = \sum_{i=0}^{l-1} a_ib^i$, et donc $n=qb^l + \sum_{i=0}^{l-1} a_ib^i$.
 
