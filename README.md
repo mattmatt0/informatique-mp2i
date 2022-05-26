@@ -33,6 +33,7 @@ Le makefile principal, situé dans le dossier contenant tous les chapitres, perm
 - `make all` compilera tous les pdfs de tous les projets;
 - `make clean` effacera tous les pdfs;
 - `make view` affichera tous les pdfs disponibles. Notez que cela se fera en utilisant le logiciel défini par la variable `GLOBAL_VIEWER` définie dans ce makefile;
+- `make preview` compilera tous les pdfs rapidement (en n'utilisant pas les classes KOMA-script), et affichera chaque pdf après compilation. Utile pour tester la compilation à grande échelle.
 - `make hide` cachera les chemins d'accès globaux (spécifiés automatiquement via `make adapt` - voir Makefile général) pour cacher votre arborescence locale, et éviter les modifications inutiles. Il est donc recommandé d'éxécuter cette commande avant chaque commit.
 
 ## Makefile général
@@ -42,6 +43,7 @@ Les différentes commandes - définies dans `commands.mk` avec ce makefile sont 
 
 - `<nom>.pdf` génère le pdf du projet ;
 - `view` affiche le pdf du projet, en le compilant s'il n'existe pas ;
+- `preview` compilera comme `view` mais sans utiliser les classes KOMA-script. Cela implique une compilation plus rapide, mais le rendu sera différent.
 - `adapt` adapte votre projet: Minted nécessitant l'utilisation de chemins absolus, chaque source latex (dans le dossier `scr`) contient une commande `\PATH`, qui permet d'avoir accès au répertoire du projet courant. `make adapt` définit correctement cette variable. Elle renome ensuite le pdf et le fichier source `.tex` selon le nom défini dans la variable `NAME` (défini dans le Makefile - et non `commands.mk` - du projet).
 - `hide` supprime la définition de `\PATH` pour cacher votre arborescence de fichiers.
 - `clean` supprime les fichiers pdf, log, aux, et les fichiers cache de minted. Si vous rencontrez des problèmes à la compilation du style `FancyVerb Error`, vous devriez essayer d'exécuter cette commande.
