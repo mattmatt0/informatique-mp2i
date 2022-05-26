@@ -22,8 +22,8 @@
 
 % Tableaux et listes
 \usepackage{tabularx}
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
 \usepackage{booktabs}
-\usepackage{ltablex}
 \usepackage{multirow}
 \usepackage{enumitem}
 \usepackage{multicol}
@@ -60,16 +60,16 @@
 \setcounter{compteurExos}{0}
 \newcommand{\plabel}[1]{{\parindent10pt \fontfamily{cmss}\selectfont\textbf{#1} \,}}
 
-\newcommand{\prop}[1]{\plabel{Propriété:} \textsl{#1}}
-\newcommand{\lemma}[1]{\plabel{Lemme:} \textsl{#1}}
-\newcommand{\rem}{\plabel{Remarque:}}
-\newcommand{\exemple}{\plabel{Exemple:}}
-\newcommand{\exo}{\stepcounter{compteurExos}\plabel{Exercice \thecompteurExos:}}
-\newcommand{\obs}{\plabel{Observation:} }
+\newcommand{\prop}[1]{\plabel{Propriété :} \textsl{#1}}
+\newcommand{\lemma}[1]{\plabel{Lemme :} \textsl{#1}}
+\newcommand{\rem}{\plabel{Remarque :}}
+\newcommand{\exemple}{\plabel{Exemple :}}
+\newcommand{\exo}{\stepcounter{compteurExos}\plabel{Exercice \thecompteurExos :}}
+\newcommand{\obs}{\plabel{Observation :} }
 
 \newenvironment{demo}{\begin{itemize}[label=$\triangleright$]}{\end{itemize}}
 \newcommand{\definition}[1]{{\parindent0pt #1}}
-\newcommand{\defpoint}{\bullet \,}
+\newcommand{\semidef}{\parindent0pt $\bullet$ \,}
 
 % Outils
 \newcommand{\corrpar}{\vspace{-20pt}}

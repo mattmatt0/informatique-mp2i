@@ -1,454 +1,460 @@
 \newcommand\PATH{Lancez `make adapt avant de compiler!`}
-
 \RequirePackage{fix-cm}
-\documentclass{scrartcl}
-
+\documentclass{article}
 \input{\PATH/../include/preamble.tex}
-\input{\PATH/../include/it-tools.tex}
 \input{\PATH/../include/math-tools.tex}
+\input{\PATH/../include/it-tools.tex}
 \usepackage{bbm}
 \usepackage{lmodern}
-\title{Schémas algorithmiques}
+
+
+
+\renewcommand{\cal}[1]{\mathcal{#1}}
+\newcommand{\scr}[1]{\mathscr{#1}}
+\newcommand{\bb}[1]{\mathbb{#1}}
+\newcommand{\bbm}[1]{\mathbbm{#1}}
+\renewcommand{\rm}[1]{\mathrm{#1}}
+
+\newcommand{\elt}[1]{\textbf{#1}}
+\newcommand{\dotp}{\! \cdot \!}
+\newcommand{\x}{\! \times \!}
+
+\newcommand{\nl}{\\[5mm]}
+
+\newcommand{\1}{\bbm{1}}
+\newcommand{\Bij}{\scr{B} \hspace{-0.5mm} i \! j}
+
+\title{Schémas Algorithmiques}
 \author{}
 \date{}
 
 \begin{document}
 	\maketitle
 	\begin{center}
-		\textsl{Dans ce chapitre, on présente différents paradigmes d'algorithmes qui permettent de développer des algorithmes résolvant des problèmes (d'optimisation)
-		mettant en jeu des textes, des noms, des listes, des graphes, des expressions algorithmiques, des points du plan, des ordonnancements ...}
+		\textsl{Dans ce chapitre, on présente différents paradigmes algorithmiques qui permettent de développer des algorithmes résolvant des problèmes (souvent d'optimisation) mettant en jeu des textes, des nombres, des listes, des graphes, des expressions arithmétiques, des points du plan, des ordonnancements...}
 	\end{center}
-
-	\section{Introduction}
-		On rappelle qu'un problème d'optimisation consiste à maximiser ou minimiser (on se placera, pour la suite du cours, dans le premier cas) une fonction à valeurs réelles donnée, 
-		sur un ensemble de solutions donné. 
-		Ainsi, un tel problème $\mathcal{P}$ est défini par la fonction dite \textbf{fonction objectif} $f$, 
-		et l'ensemble des solutions $\mathscr{S}$.
-		
-		On appelle alors \textbf{valeur du problème $\mathcal{P}$}, notée $\val(\mathcal{P})$, la donnée $\max \set{f(x) \tq x \in \mathscr{S}}$,
-		et \textbf{ensemble des solutions optimales} l'ensemble $\argmax_{x\in\mathscr{S}} f(x) = \set{x \in \mathscr{S} \tq f(x) = \val(\mathcal{P})}$
 	
-		\rem Il y a unicité de la valeur du problème, mais pas forcément de la solution optimale.
+	\plabel{Rappel :} On rappelle qu'un problème d'optimisation consiste à minimiser une fonction à valeurs réelles données sur un ensemble de solutions donné.
 
-		Si $\mathscr{S} \subset \widetilde{\mathscr{S}} \subset D_f$ (où $D_f$ désigne l'ensemble de définition de $f$), 
-		on dit que $\widetilde{\mathcal{P}} = (\widetilde{\mathscr{S}},f)$, 
-		de solution optimale $\widetilde{P} = \argmax_{x \in \widetilde{\mathscr{S}}} f(x)$, 
-		est un \textbf{relâché de $\mathcal{P}$}, et on a alors $\val(\widetilde{\mathcal{P}}) \geq \val(\mathcal{P})$. 
-		
-		\warnwipnext
-	\section{Preuves par argument d'échange}
+	\definition Ainsi, un tel problème $\mathcal{P}$ est défini par la fonction dite fonction-objectif $f$ et l'ensemble des solutions $\mathcal{S}$. \\
+	On note 
+	$\mathcal{P} : \max_{X \in \, \mathcal{S}} f(X) $ 
+	(ou bien $ \mathcal{P} : \min_{X \in \, \mathcal{S}} f(X) $ s'il s'agit de minimiser $f$). \\
+	On appelle alors valeur du problème $\mathcal{P}$ :
+	$\mathrm{val} (\mathcal{P}) = \max \, \! \left\{ f(X) \ \middle| \, X \in \mathcal{S} \right\} $. \\
+	On note aussi $\displaystyle \underset{X \in \, \mathcal{S}}{\mathrm{argmax}} \: f(X) = \set{X \in \mathcal{S} \ \tq \, f(X) = \mathrm{val} (\mathcal{P})}$ l'ensemble des solutions optimales.
+
+	\rem L'unicité de la valeur optimale n'entraîne pas celle des solutions optimales.
+
+	\rem Si \( \mathcal{S} \subseteq \widetilde{\mathcal{S}} \subseteq \mathcal{D} (f)\), on dit que \( \widetilde{\mathcal{P}} = \displaystyle \max_{X \in \, \mathcal{S}} f(X) \) est un relâché de $\mathcal{P}$. 
+	On a alors \( \mathrm{val} (\widetilde{\mathcal{P}}) \geq \mathrm{val} (\widetilde{\mathcal{P}}) \).
+	
 	\section{Algorithmes gloutons}
-		\subsection{Définitions}
-			Un algorithme est dit \textbf{glouton} lorsqu'il construit une solution à un problème (d'optimisation généralement), 
-			en prenant des décisions \textsl{localement} pertinentes (optimales) à chaque étape, en ne revenant pas sur ses décisions.
-			Dans le cadre d'un problème d'optimisation, on dit qu'un algorithme glouton est \textbf{optimal} ssi il renvoie toujours une solution optimale.
-			
-			\exemple L'algorithme de Huffman ou "rempli-sac" (voir plus loin) dans le cas fractionnaire sont des algorithmes gloutons optimaux.
-
-			\rem Attention, selon les problèmes, un même algorithme peut être optimal ou non (sac à dos fractionnaire vs sac à dos entier). 
-			En général, les algorithmes gloutons sont efficaces (de faible complexité, à fortiori polynomiale). 
-			Ils ne sont donc pas optimaux pour des problèmes difficiles (sac à dos entier). 
-			Cependant, ils peuvent être utiles pour obtenir rapidement une borne supérieure ou inférieure (c'est à dire un majorant ou un minorant de la valeur optimale).
-
-			\rem Pour savoir si un problème d'optimisation peut être résolu par un algorithme glouton, on se pose deux questions:
-			\begin{enumerate}
-				\item La fonction objectif est-elle décomposable comme somme de fonctions sous des sous parties de l'ensemble des solutions ?
-				\item L'ensemble des solutions est-il décomposable comme produit cartésien ou au contraire défini par des contraintes liantes ?
-			\end{enumerate}
-
-		\subsection{Exemples d'algorithmes gloutons}
-			\subsubsection{Sac à dos}
-				\plabel{Présentation}
-					\begin{center}\begin{tabular}{r l}
-						\pbinlist{Sac à dos}
-							{\( P \in \mathbb{R}^*_+, v=(v_i)_{i \in \intset{1,n}} \in (\mathbb{R}^*_+)^n\) et \(p = (p_i)_{i \in \intset{1,n}} \in (\mathbb{R}^*_+)^n\)}
-							{\(\max\limits_{\substack{\delta \in \set{0,1}^n \\ \delta\cdot p \leq P}} \underbrace{\delta.v}_{=f(v)}\)} \\[20pt]
-						\pbinlist{Sac à dos fractionnaire}
-							{\( P \in \mathbb{R}^*_+, v=(v_i)_{i \in [1,n]} \in (\mathbb{R}^*_+)^n\) et \(p = (p_i)_{i \in \intset{1,n}} \in (\mathbb{R}^*_+)^n\)}
-							{\(\max\limits_{\substack{\delta \in [0,1]^n \\ \delta\cdot p \leq P}} \underbrace{\delta.v}_{=f(v)}\)}
-					\end{tabular}\end{center}	
-
-					\rem L'opérateur $a \cdot b$ correspond au produit scalaire: pour deux $n$-uplets $a = (a_1,...,a_n)$ et $b = (b_1,...,b_n)$, 
-					$a\cdot b = (a_1b_1,a_2b_2,...,a_nb_n)$.
-
-					\rem "$\delta \in \set{0,1}^n$" est une \textbf{contrainte d'intégrité} (son rôle est de vérifier la validité des données), 
-					"$\delta.p \leq P$" est une \textbf{contraine linéaire} (c'est une relation linéaire qui relie les différentes variables).
-
-				\plabel{Pseudo-code pour le sac à dos fractionnaire}
-						\begin{algotext}
-fonction Rempli-sac:
-	Entrée : |$(p_i,v_i)_{i \in \intset{1,n}}$ une suite finie de réels strictement positifs, $P$ un réel.|
-	Sortie : |$\max\limits_{\substack{\delta \in [0,1]^n \\ \delta\cdot p \leq P}} \delta.(v_1,...,v_n)$|
-	Trier les objets par rapport |$\frac{v_i}{p_i}$| décroissant
-	En déduire |$\sigma \in \mathfrak{S}(\intset{1,n})$| telle que |$\left(\frac{v_{\sigma(k)}}{p_{\sigma(k)}}\right)_{k\in\intset{1,n}}$| décroît.
-	|$s \leftarrow 0$|
-	|$\delta \leftarrow $| tableau de réels indicé par |$\intset{1,n}$| initialisé à 0.
-									|\(\text{ Invariant: } s = \sum_{i=1}^n \delta_i \times p_i\)|
-	|$k = 1$|
-	Tant que |$s+ p_{\sigma(k)} \leq P$|
-		|$s \leftarrow  s + p_{\sigma(k)}$|
-		|$\delta_{\sigma(k)} \leftarrow 1$|
-		|$k \leftarrow k+1$|
-	si |$k \leq n$|
-		|$\delta_{\sigma(k)} \leftarrow \frac{P-s}{s_{\sigma(k)}}$|
-		|$s \leftarrow s+ \delta_{\sigma(k)}\times p_\sigma(k)$|
-						\end{algotext}
-
-				\plabel{Preuve de optimalité}
-					On montre l'optimalité de cette stratégie par argument d'échange. On pose:
-					\begin{multicols}{2}
-					\begin{itemize}
-						\item Un entier $n \in \mathbb{N}^*$,
-						\item Deux suites $p = (p_i)_{i\in\intset{1,n}}$ et $v = (v_i)_{i \in \intset{1,n}}$ telles que $\left(\frac{p_i}{v_i}\right)$ décroît strictement,
-						\item Un réel $P \in \mathbb{R}^*_+$,
-						\item L'ensemble $\mathscr{S} = \set{\delta \in [0,1]^n \tq \delta.p \leq P}$.
-					\end{itemize}
-					\end{multicols}
-					On suppose que $p\cdot\mathbbm{1} > P$ (i.e $\sum_{i=1}^n p_{i}\times 1 > P$, donc $\mathbbm{1} \not\in \mathscr{S}$). 
-
-					\rem On note $\mathbbm{1}_k = (0,0,...,0,\underbrace{1}_{\text{en position } k},0,...,0,0)$,
-					et $\mathbbm{1}_{\intset{1,k}} = (\underbrace{1,1,...,1,1}_{\text{jusqu'à la position } k},0,0,...,0,0)$.
-
-					Soit $\delta^* \in \argmax_{\delta \in \mathscr{S}} v\cdot\delta$. On sait que $\mathbbm{1} \not \in \mathscr{S}$ donc $\delta^* \neq \mathbbm{1}$,
-					donc $\set{i\in\intset{1,n} \tq \delta_i^* < 1} \neq \varnothing$.
-					On peut alors définir $m = \min\set{i\in\intset{1,n} \tq \delta_i^* < 1}$. Par définition de $m$, $\forall i \in \llbracket1,m\llbracket, \delta_i^* = 1$.
-		 
-					\lemma{$\forall i \in \intset{m+1,n}, \delta_i^* = 0$.}
-					\begin{demo}
-						\item Par l'absurde, on suppose qu'il existe $i_0 \in \intset{m+1, n}$ tel que $\delta_{i_0}^* \neq 0$. 
-						Posons $\varepsilon = \min (p_{i_0}\delta_{i_0}^*, p_m(1-\delta_m^*))$, et 
-						$\hat{\delta} = \delta^* - \frac{\varepsilon}{p_{i_0}} \mathbbm{1}_{i_0} + \frac{\varepsilon}{p_m} \mathbbm{1}_m$. 
-						Soit $i \in \intset{1,n}$.
-						\begin{itemize}
-							\item Si $i \not\in \set{i_0,m}, \hat{\delta_i} = \delta_i^* \in [0,1]$.
-							\item $\hat{\delta_{i_0}} = \delta_{i_0}^* - \frac{\varepsilon}{p_{i_0}} \leq \delta_{i_0}^* \leq 1$.
-								De plus, $\frac{\varepsilon}{p_{i_0}} \leq \frac{1}{p_{i_0}} \times p_{i_0} \delta_{i_0}^* = \delta_{i_0}^*$.
-								Donc $\delta_{i_0}^* - \frac{\varepsilon}{p_{i_0}} \geq 0$ soit $\hat{\delta_{i_0}} \geq 0$.
-							\item $\hat{\delta_m} = \delta_m^* + \frac{\varepsilon}{p_m} \geq \delta_m^* \geq 0$.
-								De plus $\frac{\varepsilon}{p_m} \leq 1 - \delta_n^*$ soit $\delta_m^* + \frac{\varepsilon}{p_m} \leq 1$
-								soit $\hat{\delta_m} \leq 1$.
-						\end{itemize}
-						Ainsi $\hat{\delta} \in [0,1]^n$. 
-						De plus, 
-						\[
-							\hat{\delta}\cdot p = (\delta^* + \frac{\varepsilon}{p_m}\mathbbm{1}_m - \frac{\varepsilon}{p_{i_0}}\mathbbm{1}_{i_0})\cdot p
-							= (\delta^*\cdot p) + \frac{\varepsilon}{p_m}(\mathbbm{1}_m\cdot p) - \frac{\varepsilon}{p_{i_0}}(\mathbbm{1}_{i_0}\cdot p)
-							= (\delta^*\cdot p + \varepsilon - \varepsilon) = \delta^*\cdot p \stackrel{\delta^* \in \mathscr{S}}{\leq} P.
-						\]
-						Ainsi $\hat{\delta} \in \mathscr{S}$.
-						Par ailleurs, 
-						\[ 
-							\hat{\delta} \cdot v =  
-							\delta^*\cdot v + \frac{\varepsilon}{p_m}(\mathbbm{1}_m \cdot v) - \frac{\varepsilon}{p_{i_0}}(\mathbbm{1}_{i_0} \cdot v) = 
-							\delta^* \cdot v + \varepsilon(\frac{v_m}{p_m} - \frac{v_{i_0}}{p_{i_0}}) > \delta^* \cdot v 
-						\]
-						Ce qui est absurde car $\delta^* \in \argmax_{\delta \in \mathscr{S}} v.\delta$.
-					\end{demo}
-
-				\lemma{$\delta_m^* = \frac{P - \sum_{k=1}^{m-1} p_k}{p_m}$.}
-				\begin{demo}
-					\item Supposons par l'absurde que $\delta_m^* \neq \frac{P-\sum_{i=1}^{m-1}p_k}{p_m}$. 
-						Notons $w = \frac{P-\sum_{i=1}^{m-1} p_k}{p_m} 
-							= \frac{P-(p\cdot \delta^* - p_m\delta_m^*)}{p_m}$ d'après ce que l'on a montré précédemment.
-
-						\item Si $\delta_m^* < w$, alors $\delta_m^*p_m < P - (p\cdot\delta^* - p_m\delta_m^*)$, soit $p\cdot\delta^* < P$.
-						Posons $\hat{\delta} = \delta^* + \frac{\varepsilon}{p_m}\mathbbm{1}_m$ avec $\varepsilon = P - p\cdot\delta^* > 0$.
-						\begin{itemize}
-							\item On alors $\hat{\delta} \in \mathscr{S}$. En effet, on a:
-							\[
-								\hat{\delta}\cdot p = \delta^*\cdot p + \frac{\varepsilon}{p_m}(\mathbbm{1}_m \cdot p) = \delta^*\cdot p + \varepsilon = P
-							\]
-
-							Par ailleurs, pour $k \in \intset{1,n}\setminus\set{m}, \hat{\delta}_k = \delta_k^* \in [0,1]$. 
-							Ensuite, $\hat{\delta}_m = w = \delta^*_m + \frac{\varepsilon}{p_m} > \delta^*_m \geq 0$.
-							$\hat{\delta}_m = \delta_m^* + \frac{P - p\cdot\delta^*}{p_m} = \frac{\delta_m^*p_m + P - p\cdot\delta^*}{p_m} = w$.
-							Enfin, $w < 1$, i.e $P < \sum_{k=1}^m p_k$, car sinon $\mathbbm{1}_{\intset{1,m}} \in \mathscr{S}$ serait une solution plus optimale que $\delta^*$
-							($\mathbbm{1}_{\intset{1,m}}\cdot v - \delta^* \cdot v = (1-p_m)v_m > 0$ donc $\mathbbm{1}_{\intset{1,m}}\cdot v > \delta^*\cdot v$),
-							contredisant le fait que $\delta^*$ soit optimale.
-
-							\item $\hat{\delta}$ est alors une solution vérifiant $\hat{\delta}\cdot v 
-								= (\delta^* + \frac{\varepsilon}{p_m}\mathbbm{1}_m)\cdot v 
-								= \delta^*\cdot v + \frac{v_m}{p_m}\varepsilon 
-								= \delta^*\cdot v + v_m \overbrace{(w-\delta^*_m)}^{> 0 \text{ car } \delta^*_m < w}> \delta^*\cdot v$,
-								ce qui contredit l'optimalité de $\delta^*$. 
-						\end{itemize}
-
-					\item Si $\delta_m^* > v$, on a alons $p\cdot \delta^* > P$, ce qui est absurde car $\delta^* \in \mathscr{S}$. 
-				\end{demo}
-
-				\prop{Sous les hypothèses et les notations de la propriété précédente, 
-					$\argmax_{\delta \in \mathscr{S}} v\cdot \delta$ est réduite à la solution donnée par $M = \min\set{i \in \intset{1,m} \tq \sum_{k=1}^i p_k > P}$}
-				\begin{demo}
-					\item Soit $\delta^* \in \argmax_{\delta\in\mathscr{S}} \delta\cdot v$. Soit $m = \min \set{i \in \intset{1,n} \tq \delta_i^* < 1}$.
-						On veut montrer que $m = M$. Puisque $\delta^* \in \mathscr{S}, \delta^*\cdot p \leq P$ soit $\sum_{k=1}^m \delta_k^* p_k \leq P$.
-						soit $\delta_m^*p_m + \sum_{k=1}{m-1} \delta_k p_k \leq P$ donc $\sum_{k=1}^{i=1}$
-				\end{demo}
-		
-	\section{L'algorithme des $k$ plus proches voisins}
-		\[
-			\pb{TRI}
-				{$(x_i)_{i \in \intset{1,n}} \in X^n$ où $(X, \leq)$ est un ensemble totalement ordonné.}
-				{$\sigma \in \mathscr{S}$ tel que \( (x_{\sigma(i)})_{i \in \intset{1,n}}) \) est croissante pour $\leq$.}
-		\]
-
-		\rem $\min\limits_{\sigma \in \mathfrak{S}_n}$ 
-		$\left( \sum_{i=1}^n \max \set{x_{\sigma(i)} - x_{\sigma(i+1)}, 0}\right) = 0$.
-
-			\subsection{Tri par insertion}
-			\[
-				\pb{Tri-sélection}
-					{\begin{tabular}{l}$(x_i)$ une famille d'éléments comparables avec $\leq$ en $\theta(1)$,\\ rangés dans un tableau.\end{tabular}}
-					{$\sigma \in \mathscr{S}$ tel que \( (x_{\sigma(i)})_{i \in \intset{1,n}}) \) est croissante pour $\leq$.}
-			\]
-			\begin{algotext}
-Soit |$T$| une copie du tableau |(i.e $\forall i \in \intset{1,n}, T[i] = x_i$)|
-Soit |$I$| le tableau identité de |$[1..n]$|
-Soit |$\sigma$| un tableau d'entiers indicé par |$\intset{1,n}$| initialisé à 0
-Pour |$i$| allant de |1 à $n$|:
-			|Invariant: $\forall i \in \intset{1,n}, T[i] = x_{I(i)}$ et $\begin{cases}T[1..k-1] \text{est trié} \\ \forall i \in \intset{k,n}, T[i] \geq \max\set{T[j] \tq j \in \intset{1,k-1}} \\ \forall i \in \intset{1,k-1}, T[i] = x_{\sigma[i]}\end{cases}$|
-	Trouver |$i_0 \in \argmin_{i \in \intset{k,n}} T[i]$|
-	|$\sigma[k] \leftarrow i_0$|
-	Échanger |$T[k]$| et |$T[i_0]$|
-Renvoyer |$\sigma$|
-			\end{algotext}
-
-			Implémentation en Ocaml:
-			\begin{code}{ocaml}
-let tri_selec (t_init : 'a array) : int array =
-  (* hypothèse : Array.length t_init >0 *)
-  (* calcule une permutation qui trie les valeurs de t_init*)
-  
-  let n =  Array.length t_init in
-  let t = Array.make n t_init.(0) in 
-  let sigma = Array.make n 0 in
-  for i = 0 to (n-1) do 
-    t.(i) <- t_init.(i) ;
-    sigma.(i) <- i 
-  done;
-  (* à ce stade t est une copie de t_init et sigma est l'identité*)
-  
-  (* invariant : sigma est une permutation, 
-     et pour i de k à n t.(sigma.(i))=t_init.(i)
-     et t_init.(sigma.(i)) pour i de 1 à k-1 est croissante 
-	 et si k>1, pour tout i de k à n, t.(k-1) <= t.(i) *)
-  for k=0 to n-1 do 
-    (* trouvons i0 l'argmin de t[k..n]*)
-    let i0 = ref k in
-    for j = k+1 to n-1 do
-      if t.(j) < t.(!i0) then i0:=j else()
-    done;
-    (* on veut retenir ds sigma.(k) l'indice ds t_init de la valeur t.(i0), 
-	   retenir  ds sigma.(k) = sigma.(i0)
-	   de plus on veut séparer cette valeur des valeurs restant à trier dans t  
-	   donc on échange  sigma.(i0) et sigma.(k) et  t.(i0) et t.(k)*)
-    let temp = t.(k) in t.(k) <- t.(!i0) ; t.(!i0) <- temp;
-    let temp = sigma.(k) in sigma.(k) <- sigma.(!i0); sigma.(!i0) <- temp;
-  done;
-  sigma 
-  
-let test_tri_selec :unit =
-  assert(tri_selec [|1;2;3|] = [|0;1;2|]);
-  assert(tri_selec [|4;2;3|] = [|1;2;0|]);
-  assert(tri_selec [|'a';'d';'c';'e';'f'|] = [|0;2;1;3;4|])
-			\end{code}
-
-			\prop{Soit $I$ un ensemble fini non vide de cardinal $n$ (typiquement $\intset{1,n}$ ou $\intset{0,n-1}$).
-			Soit $(x_i)_{i\in I} \in X^I$ où $(X, \leq)$ est un ensemble totalement ordonné.
-			Soit $i_1\in \argmin_{i\in I} x_i$. 
-			On note $\tilde{I} = I \setminus \set{i_1}$.
-			Si $\tilde{\sigma} \in \text{Bij}(\intset{1,n-1},\tilde{I})$ est telle que $(x_{\tilde{\sigma}(i)})$ est croissante, 
-			alors le prolongement $\sigma$ de $\tilde{\sigma}$ défini ci-dessous est une bijection telle que $(x_{\sigma(i)})_{i\in\intset{[1,n}}$  est croissante.}
-			\[
-				\sigma = \left(
-				\begin{tabular}{c c c}
-					$\intset{1,n}$ & $\rightarrow$ & $I$ \\
-					1 & $\mapsto$ & $i_1$ \\
-					$i \geq 2$ & $\mapsto$ & $\tilde{\sigma}(i-1)$
-				\end{tabular}\right)
-			\]
-
-			\begin{demo}
-				\item Comme $\tilde{\sigma}$ est bijective, on a $\card{\tilde{I}} = \card{\intset{1,n-1}} = n-1$. Par ailleurs, comme $i_1 \not\in \tilde I$,
-				$\card{I}= \card{\tilde{I} \cup \set{i_1}} = \card{\tilde{I}} + 1 = n$.
-
-				\item Par définition de $\sigma$, $\sigma(1) = i_1$ et $\sigma(\intset{2,n}) = \tilde{\sigma}(\intset{1,n-1})$, or comme $\tilde{\sigma}$ est en particulier
-				surjective, $\tilde{\sigma}(\intset{1,n-1}) = \tilde{I}$. On a donc $\sigma(I) = \tilde{I} \cup \set{i_1} = I$, autrement dit $\sigma$ est surjective.
-				$\sigma$ est alors une application surjective entre deux ensembles de même cardinal fini, $\sigma$ est donc bijective.
-
-				\item Soit $(i, j) \in \intset{1,n}^2$ tel que $i < j$.
-				Si $i = 1$, nécessairement $j \in \intset{2,n}$, 
-				donc $\sigma(i) = i_1$ et $\sigma(j) = \tilde{\sigma}(j-1) \in \tilde{I}$ donc $x_{\sigma(i)} = x_{i_1} \leq x_{\sigma(j)}$ 
-				par définition de $i_1$ comme argmin.
-				Sinon, $(i, j) \in \intset{2..n}^2$ donc $\sigma(i) = \tilde{\sigma}(i-1)$ et $\sigma(j) = \tilde{\sigma}(j -1)$, 
-				or par croissance de $(x_{\tilde{\sigma}(i)})_{i\in\intset{1,n-1}}$, on a
-				$x_{\tilde{\sigma}(i-1)}$ et $x\tilde{\sigma}(j-1)$ donc $x\sigma(i) \leq x\sigma(j)$.
-				Dans les deux cas on a $x_{\sigma(i)} \leq x_{\sigma(j)}$. On en déduit que $(x_{\sigma(i)})_{i\in\intset{1,n}}$ est croissante. 
-			\end{demo}
-		\subsection{Autres exemples d'algorithmes gloutons}
-			\begin{itemize}
-				\item L'algorithme de Huffman, qui permet de générer un codage de score minimal (voir DM n°3)
-			\end{itemize}
-	\section{Programmation dynamique}
-		\subsection{Le problème du sac à dos entier}
-			Voir TP.
-		\subsection{Plus long sous-mot commun}
-			Soit $\Sigma$ un alphabet (i.e un ensemble fini de symboles).
-			Soit $(u,v) \in \Sigma^*\times\Sigma^*$. Soit $n = |u|$ et $m =|v|$.
-			On dit que $u$ est un \textbf{sous-mot} de $v$, et on note $u \leq v$ ssi il existe une extractrice
-			$\varphi \in \mathcal{F}(\intset{1,n},\intset{1,m})$ strictement croissante telle que 
-			$u = v_{\varphi(1)}v_{\varphi(2)}...v_{\varphi(n)}$, i.e $\forall i \in \intset{1,n}, u_i = v_{\varphi(i)}$.
-
-			\lemma{Soit $(u,v) \in \Sigma^*\times\Sigma^*$ de longueurs respectives $n$ et $m$. Si $u$}
-			\prop{Soit $(u,v \in \Sigma^* \times \Sigma^*)$, de longueur $n$ et $m$.
-		 	Pour $(i,j) \in \intset{1,n}\times\intset{1,m}$, 
-			on note $\mathscr{L}(i,j) = \max\set{|w| \tq w \in \Sigma^*, w \leq u_1...u_i, w \leq v_1...v_j}$.
-			On a alors:}
-			\begin{enumerate}
-				\item $\forall i \in \intset{0,n}, \mathscr{L}(i,0) = |\varepsilon| = 0$
-				\item $\forall j \in \intset{0,n}, \mathscr{L}(0,j) = 0$
-				\item $\forall (i,j) \in \intset{1,n}\times\intset{1,m}, \mathscr{L}(i,j) = 
-					\begin{cases}
-						\mathscr{L}(i-1,j-1) + 1 \text{ si } u_i = v_j \\
-						\max(\mathscr{L}(i-1,j),\mathscr{L}(j-1,i))
-					\end{cases}$
-			\end{enumerate}
-			\begin{demo}
-				\item Soit $i \in \intset{0,n}$. 
-				\[
-					\mathscr{L}(i,0) 
-					= \max\set{|w| \tq w \in \Sigma^* , w \leq u_1...u_i, w \leq \varepsilon}
-					%\overbrace{\leq}^{\text{par relâché}} \max \set{|w| \tq w \in \Sigma^*, w \leq \varepsilon}
-					\leq \max \set{|w| \tq w \in \Sigma^*, w \leq \varepsilon}
-					%\underbrace{=}_{\varepsilon \text{ est le seul sous-mot de } \epsilon} 
-					= |\varepsilon| = 0
-				\]
-				Or $\varepsilon \leq u_1...u_i$ et $\varepsilon \leq \varepsilon$ donc $|\varepsilon| \leq \mathscr{L}(1,0)$,
-				soit $0 \leq \mathscr{L}(i,0)$ d'où $\mathscr{L}(i,0) = 0$ par double inégalité. On prouve (2) de la même façon.
-
-				\item Soit $(i,j) \in \intset{1,n}\times\intset{1,m}$. Supposons que $u_i = v_j$. 
-				\[
-					\mathscr{L}(i,j) = 
-					\max\set{|w| \tq w \in \Sigma^*, w \leq u_1u_2...u_{i-1}u_i, w \leq v_1v_2...v_{j-1}v_j}
-				\]
-				\[
-					\geq \max\set{|w| \tq w \in \Sigma^*, w_{|w|} = u_i, w \leq u_1u_2...u_{i-1}u_i, w \leq v_1v_2...v_{j-1}v_j}
-				\]
-				\[
-					= \max\set{|x| + 1 \tq x \in \Sigma^*, x \leq u_1...u_{i-1}, x \leq v_1...v_{j-1}}
-					= \mathscr{L}(i-1,j-1) + 1
-				\]
-				
-				Inversement, montrons que $\mathscr{L}(i,j)-1 \leq \mathscr{L}(i-1,j-1)$.
-				Il existe $w \in \mathscr{S}_{i,j}$ tq $|w| = \mathscr{L}(i,j)$. 
-				Si $w = \varepsilon$, alors $\mathscr{L}(i,j) = |\varepsilon| = 0$, or $u_i=v_j\in\mathscr{S}_{i,j}$ 
-				donc $\mathscr{L}(i,j) \geq |u_1| = 1$, ce qui est absurde. Plaçons-nous maintenant dans le cas contraire.
-				On pose $p=|w|$ et $x = w_1w_2...w_{p-1}$. Alors $|x| = p-1 = |w| - 1$.
-				Notons $\mathscr{S}_{i,j}=\set{w \in \Sigma^* \tq w \leq u_1...u_i\text{ et }w \leq v_1...v_j}$
-				Montrons que $x \in \mathscr{S}_{i-1,j-1}$. 
-				\begin{itemize}
-					\item Si $w_p = u_i = v_j,$ alors $x \leq u_1,...u_{i-1}$ et $x \leq v_1...v_{j-1}$ par identification.
-					\item Si $w_p \neq u_i$, alors d'après le lemme $w \leq u_1...u_{i-1}$ et $w \leq v_1...v_{j-1}$.
-					De plus, comme $x \leq w$, par transitivité on a $x \leq u_1...u_{i-1}$ et $x \leq v_1...v_{j-1}$.
-					\item Dans les deux cas, $x \in \mathscr{S}_{i-1,j-1}$ donc $|x| \leq \mathscr{L}(i-1,j-1)$ 
-					soit $\mathscr{L}(i,j)-1 = |w| - 1 = |x| \leq \mathscr{L}(i-1,j-1)$
-					\item Si $u_i = v_j$: Montrons que $\mathscr{L}_{i,j} = \max (\mathscr{L}_{i-1,j},\mathscr{L}_{i,j-1})$.
-					Pour cela, montrons que $\mathscr{S}_{i,j} = \mathscr{S}_{i-1,j} \cup \mathscr{S}_{i,j-1}$.
-					\item Soit $w \in \mathscr{S}_{i,j}$. On pose $p = |w|$.
-					Si $w_p = u_i$, alors $w_p \neq v_j$, or on a $w \leq v_i...v_j$,
-					et comme $w \leq u_1...u_i$, on en déduit que $w \in \mathscr{S}_{i,j-1}$.
-					Si $w_p \neq u_i$ et de même on montre que $w \in \mathscr{S}_{i-1,j}$.
-					Conclusion: $\mathscr{S}_{i,j} \leq \mathscr{S}_{i-1,j} \cup \mathscr{S}_{i,j-1}$.
-					Soit $w \in \mathscr{S}_{i-1,j}$. Par définition $w \leq u_1...u_{i-1}$ or
-					$u_1...u_{i-1} \leq u_1...u_i$ car un préfixe est un sous, par transitivité on en déduit que
-					$w \leq u_1...u_i$. Or on a aussi $w \leq v_i...v_j$ (car $w \in \mathscr{S}_{i-1,j}$),
-					donc $w \in \mathscr{S}_{i,j}$. D'où $\mathscr{S}_{i-1,j} \leq \mathscr{S}_{i,j}$.
-					\item De même on montre $\mathscr{S}_{i,j-1} \leq \mathscr{S}_{i,j}$ 
-					donc $\mathscr{S}_{i,j-1} \cup \mathscr{S}_{i-1,j} \subset \mathscr{S}_{i,j}$.
-					On conclut par double inclusion que $\mathscr{S}_{i,j} = \mathscr{S}_{i-1,j} \cup \mathscr{S}_{i,j-1}$.
-					Donc $\mathscr{L}_{i,j} = \max\set{|w| \tq w \in \mathscr{S}_{i,j}} =
-						 \max\set{|w| \tq w \in \mathscr{S}_{i-1,j} \cup \mathscr{S}_{i,j-1}} = \max{\mathscr{L}_{i-1,j},\mathscr{L}_{i,j-1}} $
-				\end{itemize}
-			\end{demo}
-
-		\subsection{Bilan sur la programmation dynamique}
-			Lorsqu'un algorithme récursif résout un problème en faisant appel aux solutions de plusieurs sous-problèmes,
-			une implémentation naïve risque de recalculer de nombreuses fois les valeurs des mêmes sous-problème.
-
-			Dans certains cas, cela conduit à un algorithme de complexité inutilement exponentielle.
-
-			La \textbf{mémoïsation} permet de pallier cette inefficacité.
-			Il s'agit de garder en mémoire la valeur de chaque appel calulé. 
-			Plus précisément, on stocke les associations entre des paramètres caractérisant une instance/sous-instance, et la valeur de la solution.
-			Pour cela, on utilise une structure de dictionnaire, qui peut dans de nombreux cas être implémentée par un tableau.
-
-			La programmation dynamique repose sur la même idée de stockage des sous-problèmes pour résoudre un problème, 
-			mais cette approche n'est pas récursive: on calcule toutes les valeurs d'une famille de sous-problèmes, des plus petits aux plus grands 
-			(selon un ordre à définir).
-
-			\plabel{Comparaison de la mémoïsation et la programmation dynamique: } 
-			\begin{itemize}
-				\item La mémoïsation ne va calculer que les valeurs nécessaires, là où la programmation dynamique risque d'engendrer plus d'appels.
-				\item La programmation dynamique est plus difficile à implémenter que la mémoïsation.
-				\item Selon le contexte, une des deux méthodes aura une meilleure complexité spatiale.
-			\end{itemize}
 	
-	\section{Diviser pour mieux régner}
-		\subsection{L'exemple du tri fusion}
-			Implémentation en Ocaml:
-			\begin{code}{ocaml}
-				let interclassement (t1:'a tableau) (t2:'a tableau) : tableau =
-					let n = Array.length t1 in
-					let m = Array.lenght t2 in
-					let (i,j) = (ref 0,ref 0) in
-					let t : 'a array = Array.make n+m a0 in
-					(* Invariant: t$\llbracket 0,i+j \rrbracket$ est trié, $\set{\set{\mathtt{t1}[k] \tq k \in \llbracket 0,i \rrbracket}} \cup \set{\set{\mathtt{t2}[k] \tq k \in \llbracket 0,j \rrbracket }} = \set{\set{\mathtt{t}[k] \tq \llbracket 0, i+j \rrbracket}}$*)
-					while (!i < n) && (!j < m) do
-						if t1.(!i) <= t2.(!j) then
-							t.(!i+!j) <- t1.(!i);
-							i := !i+1
-						else
-							t.(!i+!j) <- t2.(!j);
-							j := !j+1
-					done; 
-					while !j < m do
-						t.(i+j) <- t2.(j);
-						j := !j +1
-					done;
-					while !i < n do
-						t.(i+j) <- t1.(i);
-						i := !i +1
-					done; t
-
-				let rec tri_fusion (t:'a tableau) (depart:int) (arrivee:int) : 'a tableau =
-					let n : int = arrivee-depart+1 in
-					if (n=0) || (n=1) then sous_tableau(t,depart,arrivee)
-					else 
-						let m = int_from_float ((float n)/2) in
-						let t1 = tri_fusion(t,depart,m) in
-						let t2 = tri_fusion(t,m+1, arrivee) in
-						interclassement t1 t2
-			\end{code}
-
-			Interclassement fait au plus |T1| + |T2| comparaisons. (Il y a moins de comparaisons que de tours de la 1ère boucle tant que, 
-			qui est inférieur à n+m car initialement, i+j = 0, à chaque tour i+j augmente d'un, et par la condition de boucle i+j est inférieur à m+n-2)
-
-			\exo Trouver une famille de pire cas qui atteint cette borne. 
-
-			Pour $n \in \mathbb{N}$, on note $C_n$ le nombre de maximal de comparaisons
-			fait pour trier un sous-tableau de taille $n$. On a:
-			$C_0 = 0, C_1=0$.
-			$\forall n > 1$, $C_n = \underbrace{0}_\text{Coût de division} + \overbrace{C_{\floor{\frac{n}{2}}} + C_{\ceil{\frac{n}{2}}}}^\text{Coût des appels récursifs} 
-			+ \underbrace{\overbrace{\floor{\frac{n}{2}} + \ceil{\frac{n}{2}} - 1}^{=n-1}}_\text{combiner}$.
-			Montrons par récurrence sur $n \in \mathbb{N}^* P(n): "C_n \leq n\log_2{n}"$. 
-			Pour $n=1$, on a $C_1 = 0 = 1\log_2(1)$, donc $P(1)$ est vraie.
+		\subsection{L'exemple du problème du sac à dos}
+		
+			\[\pb{Sac à dos}{SUS}{AMOGUS}\]	
+			\textsf{\textbf{\underline{SAC À DOS}}} \hspace{-0.6mm}
+			\begin{tabular}[t]{|| l }
+				\underline{entrée :}
+					\begin{tabular}[t]{l}
+						$P \in \mathbb{R}$ \\
+						$v = (v_i)_{i \in [1 .. n]} \in (\mathbb{R^{+*}})^n$ \\
+						$p = (p_i)_{i \in [1 .. n]} \in (\mathbb{R}^{+*})^n$ \\
+					\end{tabular}
+				\\
+				\underline{sortie :} \( \, \underset{\substack{\delta \in \{ 0,1 \}^n \\ \delta \cdot p \leq P}}{\max} \delta \dotp v = \!\! \underset{\substack{\delta \in \{ 0,1 \}^n \\ \sum_{i=1}^{n} \delta_i p_i \leq P}}{\max} \displaystyle \sum_{i=1}^{n} \delta_i v_i \)
+			\end{tabular}
 			
-			Soit $n \in \mathbb{N}$. On suppose que $\forall k \in \intset{1,n}, P(k)$ est vraie. Si $n = 2p$ est pair, 
-			$C_n = 2C_p + (n-1) \leq 2(p\log_2(p) + (n-1)) = n(\log_2(n)-1) + (n-1)$  
+			\vspace{2mm}
+			\textsf{\textbf{\underline{SAC À DOS FRACTIONNAIRE}}} \hspace{-0.6mm}
+			\begin{tabular}[t]{|| l }
+				\underline{entrée :}
+				\begin{tabular}[t]{l}
+					$P \in \mathbb{R}$ \\
+					$v = (v_i)_{i \in [1 .. n]} \in (\mathbb{R^{+*}})^n$ \\
+					$p = (p_i)_{i \in [1 .. n]} \in (\mathbb{R}^{+*})^n$ \\
+				\end{tabular}
+				\\
+				\underline{sortie :} \hspace{1mm} \( \underset{\substack{\delta \in [0,1]^n (*) \\ \delta \cdot p \leq P}}{\max} \delta \! \cdot \! v \)
+			\end{tabular}
+		
+			\rem \textsf{\textit{Sac à dos fractionnaire}} est un relâché de \textsf{\textit{Sac à dos}}.
+				%
+				\\[5mm]
+				%
+			\rem La contrainte $(*)$ s'écrit aussi/se traduit aussi par : \hspace{-4.2mm}
+				\begin{tabular}{l}
+					\( \forall \, i \in [1..n], \, \delta \! \cdot \! \mathbbm{1}_{\{i\}} \geq 0 \) \\
+					\( \forall \, i \in [1..n], \, \delta \! \cdot \! \mathbbm{1}_{\{i\}} \leq 1 \). \\
+				\end{tabular}
+				\\[-2mm]
+			En effet, \( \forall \, i \in [1..n], \, \delta \dotp \1_{i} = \displaystyle \sum_{j=1}^{n} \delta_j \x \hspace{-5mm} \underbrace{(\1_i)_j}_{=0 \text{ sauf si } j = i} \hspace{-5mm} = \delta_i \x (\1_i)_i = \delta_i \x 1 = \delta_i \).
+				\nl
+				%
+			\elt{Exemple :} Pour $P = 20$, en choisissant par $v_i$ décroissants, on trouve \( \delta^* = \begin{psmallmatrix} 1 \\ 0 \\ 0 \end{psmallmatrix} \).
+			\\[-3mm]
+				\begin{tabular}[t]{ll}
+					\begin{tabular}[t]{| c | c | c |}
+						\hline
+						$i$ & $p_i$ & $c_i$ \\ \hline
+						1 & 20 & 10 \\ \hline
+						2 & 10 & 9 \\ \hline
+						3 & 10 & 9 \\ \hline
+					\end{tabular}
+					&
+					\parbox[t]{120mm}{
+						\vspace{1mm}
+						Alors, $\delta^* \! \dotp v = v_1 = 10$. \\
+						Or, \( \delta = \begin{psmallmatrix} 0 \\ 1 \\ 1 \end{psmallmatrix} \) vérifie
+						\hspace{-8mm}
+							\begin{tabular}[t]{l}
+								\hspace{3.6mm} \( \delta \dotp p = 1 \x p_2 + 1 \x p_3 = 10 + 10 = 20 \leq P \) \\
+								et \( \delta \dotp v = 1 \x v_2 + 1 \x v_3 = 9 + 9 = 18 > 10 \).
+							\end{tabular} \\
+						Ainsi, cette stratégie n'est pas optimale.
+					}
+				\end{tabular}
+				\nl
+				%
+			\elt{Exemple :} Toujours pour $P = 20$, avec des $p_i$ croissants, on a \( \delta^* = \begin{psmallmatrix} 0 \\ 1 \\ 1 \end{psmallmatrix} \), de valeur $\delta^* \! \dotp v = 2$.
+			\\[-3mm]
+				\begin{tabular}[t]{ll}
+					\begin{tabular}[t]{| c | c | c |}
+						\hline
+						$i$ & $p_i$ & $c_i$ \\ \hline
+						1 & 18 & 10 \\ \hline
+						2 & 10 & 9 \\ \hline
+						3 & 10 & 9 \\ \hline
+					\end{tabular}
+					&
+					\parbox[t]{140mm}{
+						\vspace{1mm}
+						Or, \( \delta = \begin{psmallmatrix} 1 \\ 0 \\ 0 \end{psmallmatrix} \) est une solution, car \( \delta \dotp p = 18 \leq P \), et est de valeur \( \delta \dotp v = 10 > 2 \).
+							\\[2mm]
+						On en déduit donc de même que cette stratégie n'est pas optimale.
+						\hspace{-8mm}
+					}
+				\end{tabular}
+				\nl
+				%
+			\elt{Exemple :} Si on sélectionne maintenant par $(v_i / p_i)$ décroissants, on obtient $\delta^* \! \dotp v = v_1 = 22$.
+			\\[-1mm]
+			\begin{tabular}[t]{ll}
+				\begin{tabular}[t]{| c | c | c | c |}
+					\hline
+					$i$ & $p_i$ & $c_i$ & $v_i/p_i$\\ \hline
+					1 & 11 & 22 & 2\\ \hline
+					2 & 10 & 15 & 1,5 \\ \hline
+					3 & 10 & 15 & 1,5 \\ \hline
+				\end{tabular}
+				&
+				\parbox[t]{130mm}{
+					\vspace{1mm}
+					Or, \( \delta = \begin{psmallmatrix} 0 \\ 1 \\ 1 \end{psmallmatrix} \) est une autre solution de valeur meilleure :
+						\vspace{-5mm}
+						\[ \delta \dotp v = 15 + 15 = 30 > 22 \]
+						
+					\vspace{-3mm}
+					Ainsi, cette stratégie n'est pas optimale non plus.
+				}
+			\end{tabular}
+				\nl
+			\rem Les exemples précédents montrent que pour le problème \textsf{\textit{Sac à dos}}, les stratégies simples consistant à prendre les objets simplement par $v_i$ décroissants, $p_i$ croissants ou $v_i/p_i$ décroissants ne sont pas optimales. En fait, \textsf{\textit{Sac à dos}} est un problème difficile $^{\text{(?)}}$.
+				\\[2mm]
+			Par contre, le dernier des trois exemples précédents s'avèrera utile pour le problème du \textsf{\textit{Sac à dos fractionnaire}}.
+				\nl
+				%
+			\elt{Exemple :} Sur le dernier exemple, \( \delta^* = \left( \!\! \begin{smallmatrix} 1 \\ 9/10 \\ 0 \end{smallmatrix} \!\! \right) \) convient en tant que solution optimale, \\[-2mm] et \( \delta^* \! \dotp v = 22 + \text{13,5} = \text{35,5} \).
+				\nl
+				%
+			\renewcommand{\arraystretch}{0.7}
+			\elt{\underline{$\boldsymbol{*}$ Algorithme en pseudo-code}} \\[2mm]
+				\begin{tabular}{l | l}
+					\hspace{-3.5mm} \underline{\textsf{Rempli-sac}} 
+					&
+					\hspace{-3.8mm} \begin{tabular}[t]{l}
+						$P$ un réel \\
+						\( (p_i, v_i)_{i \in [1..n]} \in \left( \! (\bb{R}^{+*})^2 \right) ^n \) une suite finie de réels strictement positifs.
+					\end{tabular}
+				\end{tabular}
+			\renewcommand{\arraystretch}{1}
+				\\[3mm]
+				%
+				\hspace*{10mm}
+				\begin{tabular}{|| l}
+						\parbox{150mm}{
+							Trier les objets par ratio $v_i / p_i$ décroissant, \emph{i.e.} trouver \( \sigma \in \Bij ([1..n], [1..n]) \) tel que \( \displaystyle \left( v_{\sigma(k)} / p_{\sigma(k)} \right)_{k \in [1..n]} \) soit décroissante.
+							%\bigg( \! \frac{v_{\sigma(k)}}{p_{\sigma(k)}} \! \bigg)_{k \in [1..n]}
+							\\
+							$s \leftarrow 0$
+							\\
+							$\delta \leftarrow$ tableau de réels indicé par $[1..n]$ initialisé à 0
+							\\
+							$k = 1$
+							\begin{center}[M]{Tant que $k \leq n$ et $s + p_{\sigma(k)} \leq P$ \hspace*{4mm} $/ \hspace{-1mm} /$ \textit{Invariant} : \( \textstyle s = \sum_{i=1}^{n} \delta_i p_i \)}
+								\( s \leftarrow s + p_{\sigma(k)} \) \\
+								\( \delta_{\sigma(k)} \leftarrow 1 \) \\
+								\( k \leftarrow k + 1 \)
+							\end{center}
+						}
+				\end{tabular}
+				\\
+				\hspace*{10mm}
+				\begin{tabular}{|| l}
+					\parbox{150mm}{
+						\begin{center}[M]{Si $k \leq n$}
+							\( \delta_{\sigma(k)} \leftarrow (P - s)/p_{\sigma(k)} \) \\
+							\( s \leftarrow s + \delta_{\sigma(k)} p_{\sigma(k)} \)
+						\end{center}
+						Renvoyer $\delta$
+					}
+				\end{tabular}
+			
+			On montre l'optimalité de cette stratégie par un argument d'échange.
+				\\[0mm]
+				%
+			\begin{center}[S]{\elt{\underline{Propriété :}}}
+				Soit $n \in \bb{N}^*$. \\
+				Soit \( (p_i, v_i)_{i \in [1..n]} \in (\bb{R}^{+*} \x \bb{R}^{+*})^2 \) telle que \( \left( v_i/p_i \right)_{i \in [1..n]} \) soit strictement décroissante. \\[-0.8mm]
+				Soit $P \in \bb{R}^{+*}$. \\
+				On note \( \cal{S} = \left\{ \delta \in [0, 1]^n \, \middle| \, \delta \dotp p \leq P \right\} \).
+				\\[1mm]
+				$\trianglerighteq$ Si \( p \dotp \1 > P \) (\emph{i.e.} \( \displaystyle \sum_{i=1}^n p_i > P \) ou encore \( \1 \notin \cal{S} \)), alors si \( \delta^* \in \underset{\delta \in \cal{S}}{\mathrm{argmax}} \: v \dotp \delta \), il existe \( m \in [1..n] \) \\[-3.2mm] tel que :
+				\\[-8mm] \renewcommand{\arraystretch}{1.2}
+					\[
+						\left\lbrace \hspace{-1mm}
+						\begin{tabular}{l}
+							\( \forall \, i \in [1..m[, \, \delta^*_i = 1 \) \\
+							\( \delta^*_m = \displaystyle \frac{P - \sum_{k=1}^{m-1} p_k}{p_m} \) \\
+							\( \forall \, i \in [m+1..n], \delta^*_i = 0 \)
+						\end{tabular} \right.
+					\]
+				\renewcommand{\arraystretch}{1}
+			\end{center}
+				%
+			\elt{Preuve :} Soit \( \delta^* \in \underset{\delta \in \cal{S}}{\mathrm{argmax}} \: v \dotp \delta \). \\
+			$\triangleright$ On sait que $\1 \notin \cal{S}$, donc $\delta^* \neq \1$ et donc \( \left\{ i \in [1..n] \, \middle| \, \delta^*_i < 1 \right\} \neq \emptyset \).
+			On peut alors définir \( m = \min \, \{ i \in [1..n] \, | \, \delta^*_i < 1 \} \).
+			Par définition de $m$, \( \forall \, i \in [1..m[, \, \delta^*_i = 1 \).
+				\\[3mm]
+			$\triangleright$ Par l'absurde, on suppose qu'il existe \( i_0 \in [m+1..n] \) tel que \( \delta^*_{i_0} \neq 0 \). \\
+			Posons \( \varepsilon = \min \big( \!\!\!\!\! \underbrace{p_{i_0} \delta^*_{i_0}}_{> 0 \text{ par hyp.}} \!\!\!\! , \, \underbrace{p_m (1 - \delta^*m)}_{> 0 \text{ car } \delta^*_m < 1} \hspace{-0.6mm} \big) \).
+			On considère alors \( \widehat{\delta} = \delta^* - \displaystyle \frac{\varepsilon}{p_{i_0}} \1_{i_0} + \frac{\varepsilon}{p_m} \1_{i_0}\).
+				\\
+			Soit $i \in [1..n]$. \\
+			\hspace*{5mm} \parbox{170mm}{
+				$\bullet$ Si \( i \notin \{ i_0, m \} \), \( \widehat{\delta}_i = \delta^*_i \in [0, 1] \). \\[1mm]
+				$\bullet$ \( \displaystyle \widehat{\delta}_{i_0} = \delta^*_{i_0} - \frac{\varepsilon}{p_{i_0}} \leq \delta_{i_0} \leq 1 \). \\[-1mm]
+				De plus, \( \displaystyle \frac{\varepsilon}{p_{i_0}} \leq \frac{1}{p_{i_0}} \times p_{i_0} \delta^*_{i_0} = \delta^*_{i_0}\) donc \( \displaystyle \delta^*_{i_0} - \frac{\varepsilon}{p_{i_0}} \geq 0 \) soit \( \widehat{\delta}_{i_0} \geq 0 \), donc \( \displaystyle \delta^*_{i_0} - \frac{\varepsilon}{p_{i_0}} \geq 0 \). \\[1mm]
+				$\bullet$ \(\displaystyle \widehat{\delta}_m = \delta^*_m + \frac{\varepsilon}{p_m} \geq \delta^*_m \geq 0 \). %\\[-1mm]
+				De plus, \( \displaystyle \frac{\varepsilon}{p_m} \leq 1 - \delta^*_m \), soit \( \displaystyle \delta^*_m + \frac{\varepsilon}{p_m} \leq 1 \) soit \( \widehat{\delta}_m \leq 1 \).
+			}
+			Ainsi, \( \widehat{\delta} \in [0, 1]^n \).
+				\\[2.5mm]
+				%
+			\hspace*{-3.5mm}
+				\begin{tabular}[t]{ll}
+					De plus, \hspace{-4mm} &
+					\begin{tabular}[t]{ll}
+						\( \widehat{\delta} \dotp p \) \hspace{-4mm}
+						& \( = \displaystyle \left( \! \delta^* + \frac{\varepsilon}{p_m} \1_m - \frac{\varepsilon}{p_{i_0}} \1_{i_0} \! \right) \! \dotp p \) \\
+						& \( = \displaystyle (\delta^* \dotp p ) + \frac{\varepsilon}{p_m} \underbrace{(\1_m \dotp p)}_{= p_m} - \frac{\varepsilon}{p_{i_0}} \underbrace{(\1_{i_0} \dotp p)}_{= p_{i_0}} \) \\[-2.5mm]
+						& \( = \delta^* \dotp p + \cancel{\varepsilon} - \cancel{\varepsilon} \) \\
+						& \( = \delta^* \dotp p \leq P \) \quad (car $\delta^* \in \cal{S}$)
+					\end{tabular}
+				\end{tabular} \\
+			On a donc bien $\widehat{\delta} \in \cal{S}$.
+				\\[3.5mm]
+				%
+			\hspace*{-3.5mm}
+				\begin{tabular}[t]{ll}
+					Ensuite, \hspace{-4mm} &
+					\begin{tabular}[t]{ll}
+						\( \widehat{\delta} \dotp v \) \hspace{-4mm}
+						& \( = \displaystyle \delta^* \dotp v + \frac{\varepsilon}{p_m} \underbrace{(\1_m \dotp v)}_{=v_m} - \frac{\varepsilon}{p_{i_0}} \underbrace{(\1_{i_0} \dotp v)}_{=v_{i_0}} \) \\
+						& \( = \displaystyle \delta^* \dotp v + \underbrace{\varepsilon}_{> 0 \, ^{(1)}} \Big( \! \underbrace{\frac{v_m}{p_m} - \frac{v_{i_0}}{p_{i_0}}}_{> 0 \, ^{(2)}} \! \Big) \) \\[-4mm]
+						& \( > \delta^* \dotp v \)
+					\end{tabular}
+				\end{tabular} \\
+			C'est absurde car \( \delta^* \in \underset{\delta \in \, \cal{S}}{\rm{argmax}} \: v \dotp \delta \).
+			Donc \( \forall \, i \in [1..m], \, \delta^*_i = 0 \).
+			%
+		\pagebreak
+		\begin{center}[S]{\elt{\underline{Corollaire :}}}
+			Sous les hypothèses et notations de la propriété précédente, \( \underset{\delta \in \cal{S}}{\rm{argmax}} \: v \dotp \delta \) est réduite à la \\[-2.5mm] solution donnée par :
+				\vspace{-5mm}
+				\[
+					M = \min \left\{ i \in [1..n] \, \middle| \, \sum_{k=1}^{i} p_k > P \right\} \!, \hspace{3mm} \text{\emph{c-à-d}} \hspace{3mm} ^t \big(\underset{\underset{\scriptstyle{M-1}}{\textstyle \xleftrightarrow{\hspace*{13mm}}}}{1 \ \, 1 \ \, ... \ \, 1} \ \, w \ \, \underset{\underset{\scriptstyle n-M}{\xleftrightarrow{\hspace*{9mm}}}}{0 \ \, ... \ \, 0} \big)
+				\]
+				\vspace{-4mm}
+		\end{center}
+		\elt{Preuve :} Soit \( \delta^* \in \argmax{\delta \in \cal{S}} \delta \dotp v \). \\
+		Soit \( m = \min \left\{ i \in [1..n] \, \middle| \, \delta^*_i < 1 \right\}\). On veut montrer que \( m = M \). \\
+		\hspace*{-3.6mm}
+		\begin{tabular}{ll}
+			Puisque \( \delta^* \in \cal{S} \), \( \delta^* \dotp p \leq P \)
+			\hspace{-4mm} & soit \( \displaystyle \sum_{k=1}^n \delta^*_k p_k = \sum_{k=1}^{m} \delta^*_k p_k \leq P \) \\
+			\hspace{-4mm} & soit \( \displaystyle \underbrace{\delta^*_m p_m}_{\geq 0} + \sum_{k=1}^{m-1} \delta^*_k p_k \leq P \) \\
+			\hspace{-4mm} & donc \( \displaystyle \sum_{k=1}^{m-1} \underbrace{\delta^*_k}_{=1} p_k \leq P \) \\
+			\hspace{-4mm} & donc \( m - 1 < M \) soit \( m \leq M \).
+		\end{tabular} \\[1mm]
+			%
+		De plus, on a montré que \( \displaystyle \sum_{k=1}^{m} p_k > p \) (\emph{cf.} \( (*) \) dans la preuve précédente), \\[-1mm] donc \( m \in \left\{ i \in [1..n] \, \middle| \, \sum_{k=1}^i p_k > P \right\} \), donc \( m \geq M \) qui est le minimum de cet ensemble.
+		
+	\subsection{Le problème du tri}
+		
+		\textsf{\textbf{\underline{TRI}}} \hspace{-0.6mm}
+			\begin{tabular}[t]{|| l }
+				\underline{entrée :} \( \big( x_i \big)_{i \in [1..n]} \in X^n \), où \( (X, \leq) \) est un ensemble totalement ordonné.
+				\\
+				\underline{sortie :} \( \sigma \in \scr{S}_n \) telle que \( \big( x_{\sigma(i)} \big)_{i \in [1..n]} \) soit croissante pour \( \leq \).
+			\end{tabular}
+			\nl
+		\rem \textsf{\textit{Tri}} est un problème d'optimisation, il consiste en la recherche de :
+			\vspace{-3.8mm}
+			\[
+				\textstyle \underset{\sigma \in \scr{S}_n}{\min} \left( \sum_{i=1}^{n-1} \max (x_{\sigma(i)} - x_{\sigma(i+1)}, 0) \! \right) \! ,
+			\]
+			
+			\vspace{-6.7mm}
+		minimum qui vaut 0 et qui est atteint par n'importe quel \( \sigma \in \scr{S}_n \) solution du problème.
+			\nl
+			%
+		\elt{\underline{$\boldsymbol{*}$ Algorithme en pseudo-code pour le tri par sélection}} \\[2mm]
+			\begin{tabular}{l | l}
+				\hspace{-3.5mm} \underline{\textsf{Tri-sélection}} 
+				& 
+				\hspace{-3.8mm} \begin{tabular}[t]{l}
+					\( \left( x_i \right)_{i \in [1..n]} \) une famille d'éléments comparables avec \( \leq \) en \( \varTheta (1) \), rangés \\ dans un tableau.
+				\end{tabular}
+			\end{tabular}
+		\\[3mm]
+		%
+		\hspace*{10mm}
+		\begin{tabular}{|| l}
+			\parbox{150mm}{
+				Soit \( T \) une copie du tableau (\emph{i.e.} \( \forall \, i \in [1..n], T[\, i \,] = x_i \)) \\
+				Soit \( I \) un tableau identité de \( [1..n] \) \\
+				Soit \( \sigma \) un tableau d'entiers indicé par \( [1..n] \) initialisé à 0 \\
+				\begin{center}[M]{Pour $k$ allant de 1 à $n$}
+					\hspace*{4mm} $/ \hspace{-1mm} /$ \textit{Invariant} : \( \textstyle \forall i \in [1..n], \, T[\, i \,] = x_{I[\, i \,]} \) \\
+					\hspace*{31.5mm} \( T[1..k-1] \) est trié \\
+					\hspace*{31.5mm} \( \forall i \in [k..n], \, T[\, i \,] \geq \max \{ T[\, j \,] \, | \, j \in [1..k-1] \} \) \\
+					\hspace*{31.5mm} \( \forall \, i \in [1..k-1], \, T[\, i \,] = x_{\sigma[\, i \,]}\)
+					 	\\[1mm]
+					Trouver \( i_0 \in \argmin{i \in [k..n]} T[\, i \,] \) \\
+					\( \sigma[\, k \,] \leftarrow I[\, i_0 \,] \) \\
+					Échanger \( T[\, k \,] \) et \( T[\, i_0 \,] \) \\
+					Échanger \( I[\, k \,] \) et \( I[\, i_0 \,] \)
+				\end{center}
+				Renvoyer $\sigma$
+			}
+		\end{tabular}
+			\nl
+			%
+		\rem Cet algorithme peut être optimisé : en effet, si on avait directement initialisé $\sigma$ au tableau identité, on n'aurait pas eu besoin du tableau $I$.
+			\\[-0mm]
+			%
+		\begin{center}[S]{\underline{\elt{Propriété :}}}
+			Soit $I$ un ensemble fini non  vide de cardinal $n$ (typiquement $[1..n]$ ou $[0..n-1]$). \\
+			Soit $(x_i)_{i \in I} \in X^I$ où \( (X, \leq) \) est un ensemble totalement ordonné. \\
+			Soit \( i_1 \in \argmin{i \in I} x_i \). \\
+			On note \( \widetilde{I} = I \backslash \{i_1\} \).
+				\\[1mm]
+			Si \( \widetilde{\sigma} \in \Bij \big( [1..n-1], \widetilde{I} \, \big) \) est telle que \( \left( x_{\widetilde{\sigma}(i)} \right)_{i \in [1..n-1]} \) est croissante, alors le prolongement \( \sigma \) de \( \widetilde{\sigma} \) défini suivant est une bijection telle que \( \left( x_{\sigma(i)} \right)_{i \in [1..n]} \) est croissante :
+				\vspace{-4mm}
+				\setlength{\tabcolsep}{2.2pt}
+					\[ 
+						\sigma = \hspace{-0.2mm} \left( \! \begin{tabular}{rcl}
+							\( [1..n] \) & \( \rightarrow \) & \( I \) \\
+							1 & \( \mapsto \) & \( i_1 \) \\
+							\( i \geq 2 \) & \( \mapsto \) & \( \widetilde{\sigma} (i-1) \)
+						\end{tabular} \! \right)
+					\]
+					
+				\vspace{-5mm}
+		\end{center}
+			%
+		\elt{Preuve :} \emph{cf.} annexe ``Tri par sélection''.
+		
+	\subsection{À retenir sur les algorithmes gloutons}
+		
+		\vspace{2mm}
+		\begin{center}[S]{\elt{\underline{Définition :}}}
+			On dit qu'un algorithme qu'il est glouton lorsqu'il construit une solution à un problème (d'optimisation) en prenant des décisions localement pertinentes (\emph{c-à-d} optimales) à chaque étape et qu'il ne revient par sur ces décisions.
+				\\[3mm]
+			Dans le cadre d'un problème d'optimisation, on dit qu'un algorithme glouton est optimal s'il renvoie toujours une solution optimale.
+		\end{center}
+	
+		\elt{Exemples :} L'algorithme de Huffman (\emph{cf.} DM n°3 - Partie 2/2) et l'algorithme de résolution du problème du \textsf{\textit{Sac à dos fractionnaire}} sont des algorithmes gloutons.
+			%
+			\nl
+		\rem Attention, selon les problèmes, un même algorithme peut être optimal ou non. En général, les algorithmes gloutons sont efficaces (faible complexité, a fortiori polynomiale) : ils ne sont donc pas exacts pour les problèmes difficiles/NP-complets (comme \textsf{\textit{Sac à dos entier}}).
+			\\[2mm]
+		Néanmoins, ils peuvent être utiles pour obtenir rapidement la borne supérieure ou inférieure, \emph{c-à-d} un majorant ou un miniorant de la valeur optimale.
+			%
+			\nl
+		\rem Pour savoir si un problème d'optimisation peut être résolu par un algorithme glouton, on se pose deux questions : \\
+			\hspace*{4mm}
+		\parbox[t]{164mm}{
+			$\bullet$ La fonction-objectif est-elle décomposable comme somme de fonctions sur les sous-parties de la solution ? \\
+			$\bullet$ L'ensemble des solutions est-il décomposable comme produit cartésien ou au contraire défini par des contraintes liantes ?
+		}
+	
+\section{Programmation dynamique}
 
-			Si $n+1$ est impair, $\floor{\frac{n+1}{2}} = \frac{n}{2}$, et $\ceil{\frac{n+1}{2}} = \frac{n}{2} + 1$.
-			$C_{n+1} = C_\frac{n}{2} + (n+1) - 1 \leq \frac{n}{2}\log_2\frac{n}{2} + \left(\frac{n}{2}+1\right)\left(\log_2(n+2)-1\right) + n$
-			$= \frac{n}{2}\left(\log_2(n) + \log_2(n+2)\right) + \log_2(n+2) - 1$
-			$\leq n\log_2\left(\frac{n + (n+2)}{2}\right) + \log_2(n+2) - 1$ 
-			$\leq n \log_2(n+1) + \log_2(n+2) - 1 \leq $ 
-
+	\subsection{Le problème du sac à dos entier}
+		
+		Voir TP n°13 - Introduction à la programmation dynamique.
+		
+	\subsection{Plus long sous-mot commun}
+	
+		\begin{center}
+			\textit{Dans cette section, on fixe $\Sigma$ un alphabet (\emph{i.e} un ensemble fini non vide de symboles).}
+		\end{center}
+			%
+			\vspace{2mm}
+		\begin{center}[S]{\elt{\underline{Rappel :}}}
+			Soit \( (u, v) \in (\Sigma^*)^2 \). Notons \( n = |u| \) et \( m = |v| \).
+				\\[1.5mm]
+			On dit que $u$ est un sous-mot de $v$ et on note \( u \preccurlyeq v \) ssi il existe \( \varphi \in \scr{F} ([1..n], [1..m]) \) strictement croissante, telle que : \quad
+				\( u = v_{\varphi(1)} v_{\varphi(2)} ... v_{\varphi(n)} \), \quad \emph{c-à-d} \quad \( \forall \, i \in [1..n], \, u_i = v_{\varphi(i)} \).
+				\vspace{-1mm}
+		\end{center}
+			%
+			\vspace{1mm}
+		\textsf{\textbf{\underline{PLSMC}}} \hspace{-0.6mm}
+		\begin{tabular}[t]{|| l }
+			\underline{entrée :} \( (u, v) \in (\Sigma^*)^2 \)
+			\\
+			\underline{sortie :} \hspace{1mm} \( \max \left\{ |w| \, \middle| \, w \preccurlyeq u \text{ et } w \preccurlyeq v \right\} \) ou \( w^* \in \text{argmax} \left\{ |w| \, \middle| \, w \preccurlyeq u \text{ et } w \preccurlyeq v \right\} \)
+		\end{tabular}
+			%
+			\nl
+			\renewcommand{\arraystretch}{0.8}
+		\begin{center}[S]{\elt{\underline{Propriété :}}}
+			Soit \( (u, v) \in (\Sigma^*)^2 \). Notons \( n = |u| \) et \( m = |v| \).
+				\\[1.5mm]
+			Pour \( (i,j) \in [0..n] \times [0..m] \), on note
+				\vspace{-4mm}
+				\[
+					\cal{L}_{i,j} = \max \left\{ |w| \, \middle| \, w \in \Sigma^*, \hspace*{-1mm}
+						\begin{tabular}{l}
+							$\scriptsize w \preccurlyeq u_1 ... u_i$ \\
+							$\scriptsize w \preccurlyeq v_1 ... v_j$
+						\end{tabular} \hspace{-2mm}
+					\right\}
+					= \underset{w \in \cal{S}_{i,j}}{\max} \: |w|
+				\]
+			\renewcommand{\arraystretch}{1}
+			\begin{tabular}[t]{ll}
+				On a alors : \hspace*{-6.5mm} &
+				\begin{tabular}[t]{l}
+						$\bullet$ \( \forall \, i \in [0..n], \, \cal{L}_{i,0} = |\varepsilon| = 0 \) \\
+						$\bullet$ \( \forall \, j \in [0..m], \, \cal{L}_{0,j} = 0 \) \\
+						$\bullet$ \( \forall (i, j) \in [0..n] \times [0..m], \displaystyle \cal{L}_{i,j} = \lbrace \)
+				\end{tabular}
+			\end{tabular}
+		\end{center}
 \end{document}

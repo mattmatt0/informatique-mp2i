@@ -7,6 +7,9 @@
 \input{\PATH/../include/it-tools.tex}
 \input{\PATH/../include/math-tools.tex}
 \usepackage{lmodern}
+\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
+\usetikzlibrary{matrix}
 
 \title{Bases de données}
 \author{}
@@ -106,19 +109,17 @@
 		\node[anchor=north west] (tableau1) at (0,0) {
 			\begin{tabular}[t]{|c|}
 				\hline
-				\texttt{Personne : str}\\
+				\texttt{Personne}\\
 				\hline
 				\textcolor{orange}{\texttt{\textbf{id}: int}} \\
 				\texttt{Nom : str} \\
 				\texttt{Prénom : str } \\
 				\texttt{Date de naissance : int} \\
 				\texttt{Ville de naissance : int} \\
+				\texttt{Pays : str} \\
 				\hline
 			\end{tabular}
 		};
-%		0*
-%			Loge à
-%		1..1
 		\node[anchor=north west] (tableau2) at (12,0) {
 		\begin{tabular}[t]{|c|}
 			\hline
@@ -129,12 +130,14 @@
 			\texttt{Nombre d'habitants : int} \\
 			\hline
 		\end{tabular}};
-		\draw[->] (5.6,-0.4) -- (12,-0.4) node[pos=0.1,above]{1..*} node[pos=0.5,above] {Habite} node[pos=0.5,below] {
+		\coordinate (main1) at ($(tableau1.north east) - (0,0.3)$);
+		\coordinate (main2) at ($(tableau2.north west) - (0,0.3)$);
+		\draw (main1) -- (main2) node[pos=0.1,above]{1..*} node[pos=0.5,above] {Habite} node[pos=0.5,below] {
 			\begin{tabular}{|c|}
 				\hline
 				\texttt{Habite} \\
 				\hline
-				\textcolor{orange}{\textbf{\texttt{Date début : int}}} \\
+				\textcolor{orange}{\texttt{\textbf{Date début}: int}} \\
 				\texttt{Date fin : int} \\
 				\hline
 			\end{tabular}} node[pos=0.9,above] {1..1}; 
@@ -142,14 +145,408 @@
 		\textsc{Représentation de deux entités et d'une association entre elles}. Les lignes en orange désignent les clés.
 		\end{center}
 
+		\rem Ici les éléments stockés en \textbf{ligne} dans la table sont réprésentés en \textbf{colonne}.
+
 		Dans le modèle entité-association, on différencie les tables qui modélisent les objets de celles qui modélisent les liens entre ces objets.
 		Les premiers sont appelés entités, et les seconds associations.
 
-		On définit un type d'entité par la donnée de son nom, ses attributs avec leurs domaines, et sa clé.
-		On définit une association binaire par son nom, les deux entités qu'elle relie (A et B), des cardinalités $c_A$ et $c_B$, éventuellement des attributs.
-		Chaque clé de A apparaît autant de fois qu'indiqué par $c_A$ dans la table de la relation.
+		On définit un type d'entité par la donnée de son nom, ses attributs avec leurs domaines, et sa clé,
+		et une association binaire par son nom, les deux entités qu'elle relie (A et B), des cardinalités $c_A$ et $c_B$, éventuellement des attributs.
+		Chaque clé de A apparaît autant de fois qu'indiqué par $c_A$ dans la table de la relation. 
 
-		Toutes ces données se représentent comme ci-dessus.
-		\textsl{Reprendre la notion de cardinalité lundi...}
+		On notera la cardinalité $c_A$ sur la ligne liant les deux entités, à côté de A, et $c_B$ à côté de B (cf figure ci-dessus),
+		de la manière suivante:
+		\begin{itemize}
+			\item $c_A = a..b$ signifie qu'il peut y avoir de $a$ à $b$ éléments de l'entité A en relation avec l'entité B.
+			Si $a=b$, on s'autorisera à écrire $c_A=a$.
+			\item $c_A = a..*$ signifie qu'il y a au moins $a$ éléments de l'entité A en relation avec l'entité B.
+			Si $a=0$, on s'autorisera à noter $c_A=*$.
+		\end{itemize}
+	\section{Simplifications}
+		Dans le cadre du programme, on adoptera les principes suivants:
+		\begin{itemize}
+			\item Éviter les relations ternaires ou plus.
+			\item Éviter les associations 0..* vers 0..*
+		\end{itemize}
 
+		\exemple On cherche à gérer les différents emplois du temps des élèves et des professeurs dans un lycée. 
+		Il faut donc organiser les séances, avec un horaire précis, une classe qui aura une certaine matière avec tel professeur:
+		\begin{center}
+		\begin{tikzpicture}
+			\node[anchor=north west] (tableau1) 
+			{
+				\begin{tabular}[t]{|c|}
+					\hline
+					\texttt{Horaire} \\
+					\hline
+					\textcolor{orange}{\texttt{\textbf{id}}} \\
+					\texttt{heure\_debut} \\
+					\texttt{heure\_fin} \\
+					\hline
+				\end{tabular}		
+			};
+
+			\node[right=of tableau1.north east, anchor=north west] (tableau2)
+			{
+				\begin{tabular}[t]{|c|}
+					\hline
+					\texttt{Classe} \\
+					\hline
+					\textcolor{orange}{\texttt{\textbf{id}}}\\
+					\texttt{nb\_eleves} \\
+					\hline
+				\end{tabular}
+			};
+
+			\node[right=of tableau2.north east, anchor=north west] (tableau3)
+			{
+				\begin{tabular}[t]{|c|}
+					\hline
+					\texttt{Salle} \\
+					\hline
+					\textcolor{orange}{\texttt{\textbf{id}}}\\
+					\texttt{nb\_places} \\
+					\hline
+				\end{tabular}
+			};
+
+			\node[right=of tableau3.north east, anchor=north west] (tableau4)
+			{
+				\begin{tabular}[t]{|c|}
+					\hline
+					\texttt{Classe} \\
+					\hline
+					\textcolor{orange}{\texttt{\textbf{id}}}\\
+					\texttt{professeur} \\
+					\texttt{discipline} \\
+					\hline
+				\end{tabular}
+			};
+			\coordinate (main1) at (tableau1.north);
+			\coordinate (top1) at ($ (tableau1.north) + (0,0.4) $);
+			\coordinate (main2) at (tableau2.north);
+			\coordinate (top2) at ($ (tableau2.north) + (0,0.4) $);
+			\coordinate (main3) at (tableau3.north);
+			\coordinate (top3) at ($ (tableau3.north) + (0,0.4) $);
+			\coordinate (main4) at (tableau4.north);
+			\coordinate (top4) at ($ (tableau4.north) + (0,0.4) $);
+			\draw (main1) -- (top1);
+			\draw (main2) -- (top2);
+			\draw (main3) -- (top3);
+			\draw (main4) -- (top4);
+			\draw (top1) -- (top4) node[pos=0.5,below] (seance) {Séance};
+			\node[above=of seance.center,anchor=center] (tableau5)
+			{
+				\begin{tabular}[t]{|c|}
+					\hline
+					\texttt{Séance} \\
+					\hline
+					\texttt{...} \\
+					\hline
+				\end{tabular}
+			};
+		\end{tikzpicture}\\
+		\textsc{Représentation d'une séance comme association}. Les cardinalités n'ont pas été représentées.
+		\end{center}
+		On peut alors se ramener à utiliser uniquement des relation binaires plutôt qu'une relation quaternaire:
+		\begin{center}
+		\begin{tikzpicture}
+			\matrix[column sep=2em] (lignes)
+			{
+				\node (tableau1) {\begin{tabular}[t]{|c|}\hline \texttt{\quad Horaire \quad} \\ \hline ... \\ \hline \end{tabular}}; &
+				\node (tableau2) {\begin{tabular}[t]{|c|}\hline \texttt{\quad Classe \quad } \\ \hline ... \\ \hline \end{tabular}}; &
+				\node (tableau3) {\begin{tabular}[t]{|c|}\hline \texttt{\quad Salle \quad} \\ \hline ... \\ \hline \end{tabular}}; &
+				\node (tableau4) {\begin{tabular}[t]{|c|}\hline \texttt{\quad Cours \quad} \\ \hline ... \\ \hline \end{tabular}}; \\
+			};
+			\coordinate (main1) at (tableau1.north);
+			\coordinate (main2) at (tableau2.north);
+			\coordinate (main3) at (tableau3.north);
+			\coordinate (main4) at (tableau4.north);
+
+			\path let \p1=(lignes.east), \p2=(lignes.west), \n1={\x1-\x2-2*\pgfkeysvalueof{/pgf/inner xsep}-\pgflinewidth} in
+			node[above=of lignes,text width = \n1] (relation) 
+			{
+				\begin{tabularx}{\n1}{|Y|}\hline \texttt{Séance} \\ \hline \texttt{...} \\ \hline \end{tabularx}
+			};
+
+			\coordinate (top1) at ($(main1) + (0,1.1)$);
+			\coordinate (top2) at ($(main2) + (0,1.1)$);
+			\coordinate (top3) at ($(main3) + (0,1.1)$);
+			\coordinate (top4) at ($(main4) + (0,1.1)$);
+			\draw (main1) -- (top1) node[pos=0.1,right] {1..1} node[pos=0.9,right] {0..*} node[pos=0.5,right] {a lieu à};
+			\draw (main2) -- (top2) node[pos=0.1,right] {1..1} node[pos=0.9,right] {0..*} node[pos=0.5,right] {assurée par};
+			\draw (main3) -- (top3) node[pos=0.1,right] {1..1} node[pos=0.9,right] {0..*} node[pos=0.5,right] {dans la salle};
+			\draw (main4) -- (top4) node[pos=0.1,right] {1..1} node[pos=0.9,right] {0..*} node[pos=0.5,right] {est un cours de};
+		\end{tikzpicture}\\
+		\textsc{Représentation d'une séance comme entité}.\\
+		\end{center}
+
+		\exemple Se pose aussi la question des relations \texttt{0..*} - \texttt{0..*}. 
+		Prenons l'exemple d'un musée qui embauche un guide, parlant plusieurs langues.
+		On souhaite savoir s'il est possible d'organiser des visites pour les malvoyants:
+		\begin{center}	
+		\begin{tikzpicture}
+			\node[anchor=north west] (tableau1) at (0,0) {
+				\begin{tabular}[t]{|c|}
+					\hline
+					\texttt{Guide}\\
+					\hline
+					\textcolor{orange}{\texttt{\textbf{nom}}}\\
+					\texttt{Prénom} \\
+					\texttt{Parle français} \\
+					\texttt{Parle anglais} \\
+					\hline
+				\end{tabular}
+			};
+			\node[anchor=north west] (tableau2) at (12,0) {
+			\begin{tabular}[t]{|c|}
+				\hline
+				\texttt{Musée}\\
+				\hline
+				\textcolor{orange}{\texttt{\textbf{id}}} \\
+				\texttt{Nom} \\
+				\texttt{Thème} \\
+				\hline
+			\end{tabular}};
+			\coordinate (main1) at ($(tableau1.north east) - (0,0.3)$);
+			\coordinate (main2) at ($(tableau2.north west) - (0,0.3)$);
+			\draw (main1) -- (main2) node[pos=0.05,above]{1..*} node[pos=0.5,above] {Propose une visite pour les malvoyants} node[pos=0.95,above] {0..*};
+		\end{tikzpicture} \\
+		\end{center}
+		Pour éviter d'avoir à écrire cette relation, on va créer une nouvelle entité, \texttt{visite}:
+		\begin{center}
+		\begin{tikzpicture}[node distance=5em]
+			\node[anchor=north west] (guide)
+			{
+				\begin{tabular}{|c|}
+					\hline
+					\texttt{Guide}\\
+					\hline
+					\textcolor{orange}{\texttt{\textbf{nom}}}\\
+					\texttt{Prénom} \\
+					\texttt{Parle français} \\
+					\texttt{Parle anglais} \\
+					\hline
+				\end{tabular}
+			};
+			\node[right=of guide.north east, anchor=north west] (visite)
+			{
+				\begin{tabular}{|c|}
+					\hline
+					\texttt{Visite} \\
+					\hline
+					\textcolor{orange}{\texttt{\textbf{id}}} \\
+					\texttt{date} \\
+					\texttt{pour les malvoyants} \\
+					\hline
+				\end{tabular}
+			};
+			\node[right=of visite.north east, anchor=north west] (musee)
+			{
+				\begin{tabular}{|c|}
+					\hline
+					\texttt{Musée}\\
+					\hline
+					\textcolor{orange}{\texttt{\textbf{id}}} \\
+					\texttt{Nom} \\
+					\texttt{Thème} \\
+					\hline
+				\end{tabular}
+			};
+			\coordinate (main1) at ($(guide.north east) - (0,0.3)$);
+			\coordinate (main2) at ($(visite.north west) - (0,0.3)$);
+			\coordinate (main3) at ($(visite.north east) - (0,0.3)$);
+			\coordinate (main4) at ($(musee.north west) - (0,0.3)$);
+			\draw (main1) -- (main2) node[pos=0.1,above] {1} node[pos=0.9,above] {*};
+			\draw (main3) -- (main4) node[pos=0.1,above] {*} node[pos=0.9,above] {1};
+		\end{tikzpicture}
+		\end{center}
+
+
+	\section{Requêtes SQL}
+		Une fois notre base de données créée, on va pouvoir travailler avec via le SQL. 
+		\subsection{Sélection simple}
+			\subsubsection{Agir sur les colonnes}
+				\semidef Le code suivant permet de récupérer certaines colonnes d'une table dans notre base de données.
+				\begin{code}{sql}
+					SELECT <colonne1>,<colonne2>,<colonne3>,...,<colonneN>
+					FROM <table1>
+				\end{code}
+				où \texttt{<table1>} est une table de la base et \texttt{<colonne1>,<colonne2>,...<colonneN>} sont des colonnes de \texttt{<table1>}.
+
+				\rem Les mots-clés sont ici écrits en majuscules. Même si ça n'est pas obligatoire, c'est recommandé pour des raisons de lisibilité
+				(les noms de colonnes/tables seront alors en minuscule).
+				
+				\rem Si il y a plusieurs tables dans notre base de données contenant des colonnes portant le même nom,
+				on pourra les distinguer en écrivant \texttt{tableau1.colonneA} et \texttt{tableau2.colonneB}.
+				
+				\semidef On peut récupérer les colonnes sous un nom modifié grâce au mot-clé \texttt{as}:
+				\begin{code}{sql} 
+					SELECT <nom_colonne> as <nouveau_nom>
+					FROM <table1>
+				\end{code}
+				récupérera la colonne \texttt{<nom\_colonne>} sous le nom \texttt{<nouveau\_nom>}.
+
+				Il est aussi possible de faire certaines opérations sur les éléments d'une même ligne (en spécifiant les colonnes de chaque élemnt), avant de récupérer le résultat:
+				\begin{code}{sql}
+					SELECT <nom_colonne> + 20 AS colonnePlus20, fin-debut AS duree
+				\end{code}
+
+				\rem Si jamais les colonnes n'ont pas les mêmes tailles, les éléments manquants seront interprétés comme nuls (valeur \texttt{NULL}).
+				Tout opérateur appliqué à \texttt{NULL} renvoie \texttt{NULL}.
+
+				\exemple Si le jour de naissance de différents éléments est stocké dans la colonne \texttt{jour\_de\_naissance} de la table \texttt{personnes},
+				(comme un entier, mettons le nombre de jours depuis une date donnée)
+				et que l'on a stocké le jour de leur dernier anniversaire dans la colonne \texttt{dernier\_anniversaire},
+				on peut connaître l'âge de la personne
+				\begin{code}{sql}
+					SELECT (dernier_anniversaire-jour_de_naissance)/365 AS age
+					FROM personnes 
+				\end{code}
+
+				\rem On notera \texttt{AS} pour les colonnes, on aura tendance à l'omettre pour les tables, même si la présence ou l'absence du mot clé n'a pas d'importance.
+
+				\rem Pour selectionner toutes les colonnes, on peut utiliser une astérisque (*).
+				
+				Le mot clé \texttt{WHERE} permet de sélectionner dans les colonnes les lignes respectant certaines conditions:
+				\begin{code}{sql}
+					SELECT <colonne1>,...,<colonneN>
+					FROM <table1>
+					WHERE <cond>
+				\end{code}
+				où \texttt{<cond>} est une expression booléenne sur les attributs construite grâce aux opérateurs suivants:
+				\begin{multicols}{4}
+				\begin{itemize}
+					\item \texttt{=}
+					\item \texttt{<>}
+					\item \texttt{<=}
+					\item \texttt{>=}
+					\item \texttt{<}
+					\item \texttt{>}
+					\item \texttt{BETWEEN .. AND}
+					\item \texttt{AND}
+					\item \texttt{OR}
+					\item \texttt{NOT}
+					\item \texttt{IS NULL}
+					\item \texttt{IS NOT NULL}
+				\end{itemize}
+				\end{multicols}
+
+				On peut sélectionner des lignes ayant deux valeurs distinctes sur des colonnes différentes via le mot-clé \texttt{DISTINCT}
+				(attention cela-dit: cela supprime certains éléments, on ne sait pas lesquels!). 
+				La distinction se fera alors sur \textsl{toutes} les colonnes spécifiées, pas seulement la première.
+
+				\exemple Si on a une table \texttt{personnes} contenant une colonne \texttt{prenom} et une colonne \texttt{pays}, 
+				et que l'on veut lister - sans doublon - les noms des personnes en France:
+				\begin{code}{sql}
+					SELECT DISTINCT prenom
+					FROM personnes
+					WHERE pays == "France"
+				\end{code}
+
+				\exemple Si maintenant on veut TOUS les prénoms, sans distinction de pays. 
+				Ici, deux personnes ayant le même prénom, même si elles ne sont pas nées dans le même pays, seront regroupées en un seul enregistrement contenant leur prénom.
+				\begin{code}{sql}
+					SELECT DISTINCT prenom
+					FROM personnes
+				\end{code}
+
+				\exemple Ici, si deux personnes ont le même prénom mais un pays différent, elles ne seront pas regroupées dans le même enregistrement:
+				\begin{code}{sql}
+					SELECT DISTINCT prenom,pays
+					FROM personnes
+				\end{code}
+
+			\subsubsection{Tronquer et trier les résultats}
+				Le mot clé \texttt{ORDER BY} trie les lignes selon les valeurs dans la colonne juste après.
+				En cas d'égalité, il utilise la colonne éventuellement spécifiée après pour trancher, et ainsi de suite...
+				Il faut à chaque fois préciser si le tri se fait par ordre croissant ou décroissant, via le mot clé \texttt{ASC} ou \texttt{DESC}
+				
+				Pour limiter le nombre de lignes récupérées, on peut utiliser le mot-clé \texttt{OFFSET n} qui efface les \texttt{n}-premières lignes,
+				ainsi que le mot-clé \texttt{LIMIT k} qui ne garde que les \texttt{k} premières lignes.
+
+				\begin{code}{sql}
+					SELECT <colonne1>,<colonne2>,...,<colonneN>
+					FROM <table1>
+					WHERE <condition>
+					ORDER BY <colonneA> <ASC | DESC>, <colonneB> <ASC | DESC>
+					LIMIT <nombre_limite>
+					OFFSET <decalage>
+				\end{code}
+
+		\subsection{Agrégation}
+			\semidef On peut être ammené à faire des calculs opérant sur les valeurs de différentes lignes d'une même colonne,
+			par exemple le nombre de lignes, leur moyenne, ou leur somme.
+			Si par exemple on veut compter le nombre de personnes s'appelant Paul dans la table \texttt{personnes}:			
+			\begin{code}{sql}
+				SELECT COUNT(id)
+				FROM personnes
+				WHERE prenom == "Paul"
+			\end{code}
+			Les principales fonctions d'agrégation sont \texttt{SUM}, \texttt{AVG}, \texttt{COUNT}, \texttt{MAX}, \texttt{MIN}.
+
+			\rem Si l'on applique une fonction d'agrégation à une colonne, et que l'on sélectionne une autre colonne en même temps,
+			la fonction d'agrégation s'appliquera séparément sur toutes les lignes coïncidant sur l'autre colonne.
+
+			\exemple Si on a une table \texttt{achat} contenant les ventes d'une boutique:
+			\begin{center}
+			\begin{tabularx}{0.5\textwidth}{|Y|Y|Y|Y|}
+				\hline identifiant & client & tarif & date \\
+				\hline 1           & Pierre & 102   & 2012-10-23\\
+				\hline 2           & Simon  & 47    & 2012-10-27\\
+				\hline 3           & Marie  & 18    & 2012-11-05\\
+				\hline 4           & Marie  & 20    & 2012-11-14\\
+				\hline 5           & Pierre & 160   & 2012-12-03\\
+				\hline
+			\end{tabularx}
+			\end{center}
+			La requête SQL
+			\begin{code}{sql}
+				SELECT client, SUM(tarif)
+				FROM achat
+			\end{code}
+			renverrra:
+			\begin{center}
+			\begin{tabularx}{0.5\textwidth}{|Y|Y|Y|}
+				\hline client & tarif \\
+				\hline pierre & 262   \\
+				\hline simon  & 47    \\
+				\hline marie  & 38    \\
+				\hline marie  & 38    \\
+				\hline pierre & 262   \\
+				\hline
+			\end{tabularx}
+			\end{center}
+
+			\semidef On voit sur l'exemple précédent qu'il y des doublons. 
+			Pour les éviter, il faut "grouper" les éléments par nom, via la commande \texttt{GROUP BY} 
+			(qui se place TOUJOURS après la commande \texttt{WHERE}):
+			\begin{code}{sql}
+				SELECT client, SUM(tarif)
+				FROM achat
+				GROUP BY client
+			\end{code}
+			Renverra:
+			\begin{center}
+			\begin{tabularx}{0.5\textwidth}{|Y|Y|}
+				\hline client & tarif \\
+				\hline pierre & 262   \\
+				\hline simon  & 47    \\
+				\hline marie  & 38    \\
+				\hline
+			\end{tabularx}
+			\end{center}
+
+			Si l'on veut alors appliquer encore appliquer un filtre, on ne peut pas utiliser \texttt{WHERE}.
+			La commande à utiliser est \texttt{HAVING}, qui fonctionne comme \texttt{WHERE}.
+
+		\subsection{Jointure}
+			\semidef Reprenons l'exemple des personnes et de leur pays de résidence.
+			Si l'on veut connaître la capitale du pays dans lequel vivent les différentes personnes, on procèdera comme suit:
+			\begin{code}{sql}
+				SELECT pers.nom, pers.prenom, pays.capitale
+				FROM personne AS pers
+				JOIN pays
+				ON pers.pays = pays.capitale
+			\end{code}
 \end{document}
