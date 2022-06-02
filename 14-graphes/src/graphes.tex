@@ -7,9 +7,6 @@
 \input{\PATH/../include/it-tools.tex}
 \input{\PATH/../include/math-tools.tex}
 \usepackage{lmodern}
-%\usetikzlibrary{calc}
-%\usetikzlibrary{positioning}
-%\usetikzlibrary{matrix}
 \usepackage{bbm}
 
 \title{Graphes}
@@ -20,39 +17,38 @@
 	\maketitle
 	\section{Définitions}
 		\subsection{Graphes}
-			\semidef Un graphe \textbf{non orienté} est la donnée 
+			\definition Un graphe \textbf{non orienté} est la donnée 
 			d'un couple $G = (V,E)$,
 			où $V$ est un ensemble fini non vide 
 			et $E \subset \set{\set{x,y} \tq (x,y) \in V^2}$.
+			Un graphe \textbf{orienté} est la donnée d'un couple $H = (S,A)$,
+			où $S$ est un ensemble fini non vide et 
+			$A \in \mathcal{P}(S^2)$.
 
-			\definition Un graphe \textbf{orienté} est la donnée d'un couple $G = (V,E)$,
-			où $V$ est un ensemble fini non vide et 
-			$E \in \mathcal{P}(V^2)$
+			Les éléments de $V$ et $A$ sont appelés \textbf{sommets du graphe}, 
+			ceux de $E$ sont ses \textbf{arrêtes}, et ceux de $A$ ses \textbf{arcs}.
 
-			Les éléments de $V$ et $A$ sont appelés \textbf{sommets du graphe}.
-			Les éléments de $E$ sont appelés \textbf{arrêtes du graphe}.
-			Les éléments de $A$ sont appelés \textbf{arcs du graphe}.
+			Si $e = \set{x} \in E$ (avec $x \in V$), $e$ est une \textbf{boucle} sur $x$
+			(idem pour $e = (x,x)$ pour $x \in S$). 
+			Pour $(x,y) \in V^2$, on dit que $x$ et $y$ sont \textbf{voisins} ssi ${x,y} \in E$.
+			Dans un graphe orienté, $x \in S$ est \textbf{successeur (resp. prédecesseur)de $y \in V$} ssi $(y,x)$ (resp. $(x,y)$) $\in A$.
 
-			Si $e = \set{x} \in E$ (avec $x \in V$), $e$ est une \textbf{boucle} sur
-			
-			Pour $(x,y) \in \mathbb{V}^2$, on dit que $x$ et $y$ sont voisins ssi
+			On appelle \textbf{voisinnage} de $x \in E$ l'ensemble de ses voisins.
+			Le \textbf{degré} de $x$, noté $\deg x$, est le cardinal de ce voisinnage.
 
-			On dit que $x$ est \textbf{successeur de $y$} ssi $(y,x) \in A$
-			On dit que $x$ est \textbf{prédécesseur de $y$} ssi $(x,y) \in A$
+			Pour les graphes orientés, on distingue le \textbf{degré sortant} de $x$, noté $\deg^+ x$, le nombre de successeurs de $x$,
+			du \textbf{degré entrant} de $x$, noté $\deg^- x$,le nombre de prédecesseurs de $x$.
 
-			On appelle \textbf{voisinnage} de $x \in E$ le nombre de voisins d'un
-			Le \textbf{degré} de $x$ est le cardinal de l'ensemble
-			On appelle degré sortant de $x$, noté $\deg^+ x$ le nombre de successeurs de $x$
-			On appelle degré entrant de $x$, noté $\deg^- x$ le nombre de prédecesseurs de $x$
-
-			\notecentrale{On supposera par la suite que l'on travaille avec des graphes non orientés.}
+			\notecentrale{On supposera par la suite que l'on travaille avec des graphes sans boucles}
 
 			\prop{Soit $G = (V,E)$ un graphe. On a $\sum_{x \in V} \deg(x) = 2\card(E)$ }
 			\begin{demo}
 				\item On a:
 				\[
-					\sum_{x \in V} \deg(x)= \sum_{x\in V} \sum_{y\in V} \mathbbm{1}_{{x,y}} = 
+					\sum_{x \in V} \deg(x)= \sum_{x\in V} \sum_{y\in V} \mathbbm{1}_\set{x,y} = \sum_{(x,y) \in V^2} \mathbbm{1}_\set{x,y}
+					= 2\sum_{\set{x,y} \in V^2} \mathbbm{1}_\set{x,y} = 2\,\card(E).
 				\]
+				Car le graphe est sans boucle. Il faudrait sinon ajouter le nombre de boucles présentes dans le graphe.
 			\end{demo}
 
 		\subsection{Accessibilité, connexité}
@@ -87,15 +83,18 @@
 				\item Soit $x \in V$. On a bien $x\mathcal{R}x$: la chaîne de longueur $n=0$ $s = (x)$ convient.
 				\item Soit $(x,y) \in V^2$, tel que $x \mathcal{R}y$. 
 					Alors par définition il existe $s = (s_0,...,s_n) \in V^{n+1}$ tel que $s_0 = x$ et $s_n = y$,
-					et $\forall i \in \intsete{0,n}$, $\set{s_i,s_{i+1}} \in A$.
+					et $\forall i \in \intsete{0,n}$, $\set{s_i,s_{i+1}} \in E$.
 					Considérons $s' = (s_n,s_{n-1},...,s_1,s_0)$. $s'$ est une chaîne reliant $y$ et $x$.
 					En effet, $s'_0 = s_n = y$ et $s'_n = s_0 = x$, et $\forall i \in \intsete{0,n}, 
-					\set{s'_{i},s'_{i+1}} = \set{s_{n-i},\set{n-i-1} = \set{s_k,s_{k+1}}} \in A$ en posant $k = n-i-1 \in \intsete{0,n}$.
+					\set{s'_{i},s'_{i+1}} = \set{s_{n-i},\set{n-i-1} = \set{s_k,s_{k+1}}} \in E$ en posant $k = n-i-1 \in \intsete{0,n}$.
 				\item Soit $(x,y,z) \in V^3$ tel que $x\mathcal{R}y$ et $y\mathcal{R}z$.
 					Comme $x\mathcal{R}y$, il existe $s = (s_0,...,s_n) \in V^{n+1}$ une chaîne avec $s_0 = x$ et $s_n = y$.
 					Comme $y\mathcal{R}x$, il existe $t = (t_0,...,t_m) \in V^{m+1}$ une chaîne avec $t_0 = y$ et $t_m = z$.
-					Considérons $u = (s_0,...s_n,t_0,...t_m)$.
-					$u$ est bien une chaîne car $\forall i \in \intsete{0,n+m}$
+					Considérons $u = (s_0,...s_n,t_1,...t_m)$.
+					$u$ est bien une chaîne car $\forall i \in \intsete{0,n+m}$, soit $i \in \intsete{0,n}$ et dans ce cas on a 
+					$\set{u_i, u_{i+1}} = \set{s_i,s_{i+1}} \in A$, soit $i = n$ et on a $\set{u_i,u_{i+1}} = \set{t_0,t_1} \in E$,
+					soit $i \in \inteset{n,n+m}$ et $\set{u_i,u_{i+1}} = \set{t_{i-n},t_{i-n+1}} \in E$.
+					On a par ailleurs $u_0 = x$ et $u_{m+n} = z$, donc $x\mathcal{R}z$.
 			\end{demo}
 
 			\exo Définir une relation d'équivalence similaire pour $H$, où l'on doit avoir un chemin dans chaque sens entre deux points en relation.
