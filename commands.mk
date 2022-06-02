@@ -26,5 +26,5 @@ hide:
 	sed -i "1s:.*:\\\\newcommand\\\\PATH{Lancez \`make adapt avant de compiler!\`}:" $(SRC)
 	
 clean:
-	-rm -r *.pdf
+	-rm -r $(NAME).pdf
 	rm -r $(OBJ_DIR)/*
