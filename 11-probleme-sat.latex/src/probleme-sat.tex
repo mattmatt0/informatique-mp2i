@@ -1,4 +1,4 @@
-\newcommand\PATH{Lancez `make adapt avant de compiler!`}
+\newcommand\PATH{/home/matthieu/Documents/Ecole/Informatique/cours/11-probleme-sat.latex}
 
 \RequirePackage{fix-cm}
 
@@ -21,10 +21,7 @@
 		En effet, une formule propositionnelle peut modéliser un problème concret dont une solution serait donnée par un environnement satisfaisant la formule.}\end{center}
 
 	\section{Définitions}
-		\exemple La valeur de vérité d'une variable $p_{i,j,k}$ indique si la case en $(i,j)$ contient la valeur $k$, 
-			l’environnement complet décrit une solution, et s’il satisfait la formule, alors c’est une solution valide.
-
-		Mais on s’intéresse déjà au problème de décision (plus simple) de savoir si une formule est satisfiable, sans demander par quel environnement.
+		On s’intéresse au problème de décision de savoir si une formule est satisfiable, sans demander par quel environnement.
 		\[
 			\pb{SAT}{$A \in \fpq$}{oui si $A$ est satifsiable, non sinon.}
 		\]
@@ -67,22 +64,23 @@
 				\item \textbf{2-SAT} se réduit en temps polynomial à \textbf{FNC-SAT} (pour $\varphi = \Id$).
 				\item \textbf{3-SAT} se réduit en temps polynomial à \textbf{FNC-SAT} (pour $\varphi = \Id$).
 			\end{itemize}
-			\item \textbf{FNC-SAT} se réduit à \textbf{3-SAT}:
-			\begin{itemize}
-				\item On transforme chaque clause de taille inférieure à 3 en clause de taille 3:
-				\begin{center}\begin{tabular}{c c c}
-					$a \equiv (a \vee a \vee a)$ & \quad & $(a \vee b) \equiv (a \vee a \vee b)$
-				\end{tabular}\end{center}
-				\item On transforme chaque clause de taille supérieure à 3 en conjonction de clauses de taille 3 en ajoutant des nouvelles variables:
-				\[
-					(a \vee b \vee c \vee d) \longrightarrow (a \vee b \vee z) \wedge ((\neg z) \vee c \vee d) 
-				\]
-				\[
-					(a \vee b \vee c \vee d \vee e) \longrightarrow (a \vee b \vee z_1) \wedge ((\neg z_1) \vee c \vee z_2) \wedge ((\neg z_2) \vee d \vee e) 
-				\]
-				\item Toutes ces transformations sont en temps polynomial et préservent la satisfiablilité.
-			\end{itemize}
 		\end{itemize}
+
+		\prop{\textbf{FNC-SAT} se réduit en temps polynomial à \textbf{3-SAT}.}
+		\begin{demo}
+			\item On transforme chaque clause de taille inférieure à 3 en clause de taille 3:
+			\begin{center}\begin{tabular}{c c c}
+				$a \equiv (a \vee a \vee a)$ & \quad & $(a \vee b) \equiv (a \vee a \vee b)$
+			\end{tabular}\end{center}
+			\item On transforme chaque clause de taille supérieure à 3 en conjonction de clauses de taille 3 en ajoutant des nouvelles variables:
+			\[
+				(a \vee b \vee c \vee d) \longrightarrow (a \vee b \vee z) \wedge ((\neg z) \vee c \vee d) 
+			\]
+			\[
+				(a \vee b \vee c \vee d \vee e) \longrightarrow (a \vee b \vee z_1) \wedge ((\neg z_1) \vee c \vee z_2) \wedge ((\neg z_2) \vee d \vee e) 
+			\]
+			\item Toutes ces transformations sont en temps polynomial et préservent la satisfiablilité.
+		\end{demo}
 
 		\exo Soit $C = \ell_1 \vee \ell_2 \vee \ell_3 \vee ... \vee \ell_k$ une clause de $\fpq$ de taille $k > 3$.
 		Soit $z$ une nouvelle variable (i.e $z \not\in Q$). 
@@ -91,15 +89,15 @@
 		\begin{itemize}
 			\item $\forall \rho \in \mathbb{B}^Q$, $[C]^\rho = V \Rightarrow 
 				(\exists \rho' \in \mathbb{B}^{Q\cup\set{z}}, \rho'\big|_Q = \rho \text{ et } [C_1\wedge C_2]^{\rho'} = V)$
-			\item $\forall \rho \in \mathbb{B}^{Q\cup\set{z}}, [C_1\wedge C_2] = V \Rightarrow [C]^{\rho'} = V$
+			\item $\forall \rho' \in \mathbb{B}^{Q\cup\set{z}}, [C_1\wedge C_2]^{\rho'} = V \Rightarrow [C]^{\rho'} = V$
 		\end{itemize}
 
-		\rem \textbf{FNC-SAT} ne se réduit pas à \textbf{2-SAT}. 
+		\rem \textbf{FNC-SAT} ne se réduit pas en temps polynomial à \textbf{2-SAT}. 
 		On verra que \textbf{2-SAT} se résout en temps polynomial (cf. chapitre sur les graphes), 
 		que \textbf{3-SAT} est NP-complet (théorème de Cook, au programme de seconde année),
 		et qu'à moins que P = NP, ces deux problèmes ne sont pas équivalents.
 
-		\rem \textbf{FNC-SAT} ne se réduit pas à \textbf{FND-SAT}:
+		\rem \textbf{FNC-SAT} ne se réduit pas non plus en temps polynomial à \textbf{FND-SAT}:
 		La transformation d'une forme à l'autre se fait en temps exponentiel et peut aussi augmenter la taille de l'entrée de manière exponentielle.
 		On verra que \textbf{FND-SAT} se résout en temps polynomial (juste après).
 		À moins que P = NP, ces deux problèmes ne sont pas équivalents.
@@ -144,17 +142,20 @@
 		\[ \set{(\set{a,b},\set{a}),(\set{a}, \set{a,c}), (\varnothing,\set{b,c})} \]
 
 	\section{Algorithme pour FND-SAT}
-		{\parindent0pt \algofor{$j$}{1}{$n$}}
+		Considérons $l = (l_{1,1} \wedge ...\wedge l_{1,n_1}) \vee ... \vee (l_{k,1} \wedge ... \wedge l_{k,n_k})$,
+		contenant $N$ variables propositionnelles $q_1,...,q_N$.
+
+		\parindent0pt\algofor{$i$}{1}{$k$}
 		\tab	Créer $T$ un tableau indicé par $\intset{1,N}$ initialisé à -1 \\
 		\tab	\algotry 
-		\tab	\tab	\algofor{$i$}{1}{$n_j$}
-		\tab	\tab	\tab	\algoif{$\ell_{i,j}$ = $q_k$}
-		\tab	\tab	\tab	\tab	\textbf{alors Si} $T[k]$ = -1, \textbf{alors} $T[k] \leftarrow 1$ \\
-		\tab	\tab	\tab	\algoelif{$T[k]$ = 0} déclencher "\textit{conj. non sat.}" \\
-		\tab	\tab	\tab	\algoif{$\ell_{i,j} = \neg q_k$}
-		\tab	\tab	\tab	\tab	\textbf{alors Si} $T[k]$ = -1, \textbf{alors} $T[k] \leftarrow 0$ \\
-		\tab	\tab	\tab	\algoelif{$T[k] = 1$} déclencher "\textit{conj. non sat.}" \\
-		\tab	\tab	\algoreturn{\algotrue}
+		\tab	\tab	\algofor{$j$}{1}{$n_i$}
+		\tab	\tab	\tab	\algoif{$\ell_{i,j}$ = $q_p$}
+		\tab	\tab	\tab	\tab	\textbf{alors Si} $T[p]$ = -1, \textbf{alors} $T[p] \leftarrow 1$ \\
+		\tab	\tab	\tab	\tab \algoelif{$T[p]$ = 0} déclencher "\textit{conj. non sat.}" \\
+		\tab	\tab	\tab	\algoif{$\ell_{i,j} = \neg q_p$}
+		\tab	\tab	\tab	\tab	\textbf{alors Si} $T[p]$ = -1, \textbf{alors} $T[p] \leftarrow 0$ \\
+		\tab	\tab	\tab	\tab	\algoelif{$T[p] = 1$} déclencher "\textit{conj. non sat.}" \\
+		\tab	\tab	\algoreturn{\algotrue} \\
 		\tab	\algocatch{"\textit{conj. non sat.}"}
 		\algoreturn{\algofalse}
 	\section{Modélisation}
@@ -205,16 +206,12 @@
 			\]
 			Soit $\sigma_1$ et $\sigma_2$ deux substitutions. 
 			On note $\sigma_1\cdot\sigma_2$ et on appelle \textbf{composée de $\sigma_1$ et $\sigma_2$} la fonction
-			\[f=\left(\begin{tabular}{c c c }
+			\[\sigma=\left(\begin{tabular}{c c c }
 			$Q$ & $\rightarrow$ & $\fpq$ \\
 			$q$ & $\mapsto$ & $\sigma_2(q)[\sigma_1]$
 			\end{tabular}\right)\]
 
-			\prop{La composée de substitutions est \textbf{associative}, 
-			c'est à dire que pour tout triplet$(\sigma_1,\sigma_2,\sigma_3) \in \mathcal{F}(Q,\fpq)^3$ vérifiant
-			$\forall i \in \intset{1,3}, \card(\supp(\sigma_i)) \in \mathbb{N}$, 
-			on a $(\sigma_1\cdot\sigma_2)\cdot\sigma_3 = \sigma_1\cdot(\sigma_2\cdot\sigma_3)$
-			et admet pour}
+			\prop{La composée de substitutions est associative.}
 			\begin{demo}
 				\item En exercice.
 			\end{demo}

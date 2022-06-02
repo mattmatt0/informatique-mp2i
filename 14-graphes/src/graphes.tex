@@ -1,0 +1,119 @@
+\newcommand\PATH{/home/matthieu/Documents/Ecole/Informatique/cours/14-graphes}
+
+\RequirePackage{fix-cm}
+\documentclass{scrartcl}
+
+\input{\PATH/../include/preamble.tex}
+\input{\PATH/../include/it-tools.tex}
+\input{\PATH/../include/math-tools.tex}
+\usepackage{lmodern}
+%\usetikzlibrary{calc}
+%\usetikzlibrary{positioning}
+%\usetikzlibrary{matrix}
+\usepackage{bbm}
+
+\title{Graphes}
+\author{}
+\date{}
+
+\begin{document}
+	\maketitle
+	\section{Définitions}
+		\subsection{Graphes}
+			\semidef Un graphe \textbf{non orienté} est la donnée 
+			d'un couple $G = (V,E)$,
+			où $V$ est un ensemble fini non vide 
+			et $E \subset \set{\set{x,y} \tq (x,y) \in V^2}$.
+
+			\definition Un graphe \textbf{orienté} est la donnée d'un couple $G = (V,E)$,
+			où $V$ est un ensemble fini non vide et 
+			$E \in \mathcal{P}(V^2)$
+
+			Les éléments de $V$ et $A$ sont appelés \textbf{sommets du graphe}.
+			Les éléments de $E$ sont appelés \textbf{arrêtes du graphe}.
+			Les éléments de $A$ sont appelés \textbf{arcs du graphe}.
+
+			Si $e = \set{x} \in E$ (avec $x \in V$), $e$ est une \textbf{boucle} sur
+			
+			Pour $(x,y) \in \mathbb{V}^2$, on dit que $x$ et $y$ sont voisins ssi
+
+			On dit que $x$ est \textbf{successeur de $y$} ssi $(y,x) \in A$
+			On dit que $x$ est \textbf{prédécesseur de $y$} ssi $(x,y) \in A$
+
+			On appelle \textbf{voisinnage} de $x \in E$ le nombre de voisins d'un
+			Le \textbf{degré} de $x$ est le cardinal de l'ensemble
+			On appelle degré sortant de $x$, noté $\deg^+ x$ le nombre de successeurs de $x$
+			On appelle degré entrant de $x$, noté $\deg^- x$ le nombre de prédecesseurs de $x$
+
+			\notecentrale{On supposera par la suite que l'on travaille avec des graphes non orientés.}
+
+			\prop{Soit $G = (V,E)$ un graphe. On a $\sum_{x \in V} \deg(x) = 2\card(E)$ }
+			\begin{demo}
+				\item On a:
+				\[
+					\sum_{x \in V} \deg(x)= \sum_{x\in V} \sum_{y\in V} \mathbbm{1}_{{x,y}} = 
+				\]
+			\end{demo}
+
+		\subsection{Accessibilité, connexité}
+			\notecentrale{On fixe $G = (V,E)$ un graphe non orienté, 
+			et $H = (A,S)$ un graphe orienté.}
+			
+			\definition Soit $s = (s_i)\in V^{n+1}$. 
+			On dit que $s$ est une \textbf{chaîne de $G$} ssi
+			$\forall i \in \intsete{1,n}, \set{s_i, s_{i+1}} \in E$
+			On dit alors que $s$ est une chaîne de longueur $n$ et qui relie $s_0$ \textbf{et} $s_n$.
+
+			\definition Soit $s = (s_i)\in A^{n+1}$. 
+			On dit que $s$ est un \textbf{chemin de $G$} ssi
+			$\forall i \in \intsete{1,n}, \set{s_i, s_{i+1}} \in E$	
+			On dit alors que $s$ est une chaîne de longueur $n$ et qui relie $s_0$ \textbf{à} $s_n$.
+
+			On dit alors que $s_n$ est accessible depuis $s_0$.
+			Par ailleurs, si $s_n = s_0$, on dit que $s$ est un \textbf{cycle} pour un graphe non-orienté, 
+			ou un \textbf{circuit} dans un graphe orienté.
+
+			Si tous les $(s_i)$ sont distincts, on dit que $s$ est \textbf{élémentaire}. 
+
+			\rem Il y a toujours un nombre fini de chaînes élémentaires, mais si $G$ (resp. $H$) a des cycles (resp. des circuits),
+			il y a un nombre infini de chaînes (il suffit de tourner en rond...).
+
+			\exo Définir la relation entre les circuits/chemins d'un graphe, 
+			qui met en relation deux circuits/chemins ssi ils relient les mêmes sommets.
+			Est-ce une relation d'équivalence?
+
+			\prop{La relation $\mathcal{R}$ définie sur $V^2$ par $x\mathcal{R}y$ ssi $x$ est accessible depuis $y$ est une relation d'équivalence.}
+			\begin{demo}
+				\item Soit $x \in V$. On a bien $x\mathcal{R}x$: la chaîne de longueur $n=0$ $s = (x)$ convient.
+				\item Soit $(x,y) \in V^2$, tel que $x \mathcal{R}y$. 
+					Alors par définition il existe $s = (s_0,...,s_n) \in V^{n+1}$ tel que $s_0 = x$ et $s_n = y$,
+					et $\forall i \in \intsete{0,n}$, $\set{s_i,s_{i+1}} \in A$.
+					Considérons $s' = (s_n,s_{n-1},...,s_1,s_0)$. $s'$ est une chaîne reliant $y$ et $x$.
+					En effet, $s'_0 = s_n = y$ et $s'_n = s_0 = x$, et $\forall i \in \intsete{0,n}, 
+					\set{s'_{i},s'_{i+1}} = \set{s_{n-i},\set{n-i-1} = \set{s_k,s_{k+1}}} \in A$ en posant $k = n-i-1 \in \intsete{0,n}$.
+				\item Soit $(x,y,z) \in V^3$ tel que $x\mathcal{R}y$ et $y\mathcal{R}z$.
+					Comme $x\mathcal{R}y$, il existe $s = (s_0,...,s_n) \in V^{n+1}$ une chaîne avec $s_0 = x$ et $s_n = y$.
+					Comme $y\mathcal{R}x$, il existe $t = (t_0,...,t_m) \in V^{m+1}$ une chaîne avec $t_0 = y$ et $t_m = z$.
+					Considérons $u = (s_0,...s_n,t_0,...t_m)$.
+					$u$ est bien une chaîne car $\forall i \in \intsete{0,n+m}$
+			\end{demo}
+
+			\exo Définir une relation d'équivalence similaire pour $H$, où l'on doit avoir un chemin dans chaque sens entre deux points en relation.
+
+			\definition \textbf{Une composante connexe} de $G$ est une classe d'équivalence pour la relation d'équivalence définie ci-dessus.
+			Si $G$ n'admet qu'une composante connexe, on dit que $G$ est un graphe connexe. 
+			Dans le cas de la relation d'équivalence sur les graphes orientés, on appelle les classes d'équivalences \textbf{composante fortement connexe}.
+
+			\definition Soit $W \subset V$ avec $W \neq \varnothing$. 
+			$W$ est \textbf{convexe} ssi $\forall(x,y) \in W^2$, il existe une chaîne reliant $x$ et $y$.
+
+			\prop{$W$ est une composante connexe ssi $W$ est connexe minimal, 
+			c'est à dire si $\forall W' \subset V\setminus\set{W}, W \subset W'$, $W'$ n'est pas connexe.}
+
+			\definition Soit $G' = (V',E')$ un graphe.
+			$G'$ est un \textbf{sous-graphe} ssi $V' \subset V$, $E' \subset E$.
+
+			\definition Soit $V' \subset V$
+			Le \textbf{graphe induit par $G$ sur $V'$} est $G' = (V', \set{\set{x,y}\in E \tq (x,y) \in V^2})$.
+
+\end{document}
