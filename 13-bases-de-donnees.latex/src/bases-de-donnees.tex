@@ -1,4 +1,4 @@
-\newcommand\PATH{/home/matthieu/Documents/Ecole/Informatique/cours/13-bases-de-donnees.latex}
+\newcommand\PATH{Lancez `make adapt avant de compiler!`}
 
 \RequirePackage{fix-cm}
 \documentclass[a4paper]{scrartcl}
@@ -551,5 +551,24 @@
 			\end{code}
 
 		\subsection{Jointure gauche}
+			\semidef Imaginons que l'on gère une liste de clients enregistrés dans une table \texttt{clients}, 
+			avec la date de leur dernier achat dans une autre table \texttt{achats}.
+			Certains clients n'auront pas encore fait d'achats. 
+			Si l'on veut cependant obtenir tous les clients en y joignant leurs achats, on ne récupérera pas ces clients!
+			La solution est d'utiliser \texttt{LEFT JOIN}:
+			\begin{code}{sql}
+				SELECT *
+				FROM clients
+				LEFT JOIN achats ON clients.id == achats.id_client
+			\end{code}
 
+			Il est alors possible de récupérer tous les clients n'ayant pas effecué d'achats:
+			\begin{code}{sql}
+				SELECT clients.id, prenom, nom, achats.id_client
+				FROM clients
+				LEFT JOIN achats ON clients.id == achats.id_client
+				WHERE achats.id_clients IS NULL
+			\end{code}
+
+			\rem On utilise bien ici \texttt{IS NULL} et non \texttt{== NULL}, car \texttt{NULL} désigne l'absence de valeur: il n'y a donc rien à comparer!
 \end{document}
