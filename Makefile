@@ -1,6 +1,6 @@
 DIRS:=$(wildcard *.latex)
 PDFS:=$(foreach D,$(DIRS),$(patsubst $D/src/%.tex,$D/%.pdf,$(wildcard $D/src/*.tex)))
-GLOBAL_VIEWER=evince	
+GLOBAL_VIEWER=xdg-open	
 
 
 all: $(PDFS)
