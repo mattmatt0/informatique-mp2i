@@ -541,34 +541,55 @@
 			La commande à utiliser est \texttt{HAVING}, qui fonctionne comme \texttt{WHERE}.
 
 		\subsection{Jointure}
-			\semidef Reprenons l'exemple des personnes et de leur pays de résidence.
-			Si l'on veut connaître la capitale du pays dans lequel vivent les différentes personnes, on procèdera comme suit:
-			\begin{code}{sql}
-				SELECT pers.nom, pers.prenom, pays.capitale
-				FROM personne AS pers
-				JOIN pays
-				ON pers.pays = pays.capitale
-			\end{code}
+			\subsubsection{Jointure générale}
+				\semidef Reprenons l'exemple des personnes et de leur pays de résidence.
+				Si l'on veut connaître la capitale du pays dans lequel vivent les différentes personnes, on procèdera comme suit:
+				\begin{code}{sql}
+					SELECT pers.nom, pers.prenom, pays.capitale
+					FROM personne AS pers
+					JOIN pays
+					ON pers.pays = pays.capitale
+				\end{code}
 
-		\subsection{Jointure gauche}
-			\semidef Imaginons que l'on gère une liste de clients enregistrés dans une table \texttt{clients}, 
-			avec la date de leur dernier achat dans une autre table \texttt{achats}.
-			Certains clients n'auront pas encore fait d'achats. 
-			Si l'on veut cependant obtenir tous les clients en y joignant leurs achats, on ne récupérera pas ces clients!
-			La solution est d'utiliser \texttt{LEFT JOIN}:
-			\begin{code}{sql}
-				SELECT *
-				FROM clients
-				LEFT JOIN achats ON clients.id == achats.id_client
-			\end{code}
+			\subsubsection{Jointure gauche}
+				\semidef Imaginons que l'on gère une liste de clients enregistrés dans une table \texttt{clients}, 
+				avec la date de leur dernier achat dans une autre table \texttt{achats}.
+				Certains clients n'auront pas encore fait d'achats. 
+				Si l'on veut cependant obtenir tous les clients en y joignant leurs achats, on ne récupérera pas ces clients!
+				La solution est d'utiliser \texttt{LEFT JOIN}:
+				\begin{code}{sql}
+					SELECT *
+					FROM clients
+					LEFT JOIN achats ON clients.id == achats.id_client
+				\end{code}
 
-			Il est alors possible de récupérer tous les clients n'ayant pas effecué d'achats:
-			\begin{code}{sql}
-				SELECT clients.id, prenom, nom, achats.id_client
-				FROM clients
-				LEFT JOIN achats ON clients.id == achats.id_client
-				WHERE achats.id_clients IS NULL
-			\end{code}
+				Il est alors possible de récupérer tous les clients n'ayant pas effecué d'achats:
+				\begin{code}{sql}
+					SELECT clients.id, prenom, nom, achats.id_client
+					FROM clients
+					LEFT JOIN achats ON clients.id == achats.id_client
+					WHERE achats.id_clients IS NULL
+				\end{code}
 
-			\rem On utilise bien ici \texttt{IS NULL} et non \texttt{== NULL}, car \texttt{NULL} désigne l'absence de valeur: il n'y a donc rien à comparer!
+				\rem On utilise bien ici \texttt{IS NULL} et non \texttt{== NULL}, car \texttt{NULL} désigne l'absence de valeur: il n'y a donc rien à comparer!
+		
+		\subsection{Sous-requêtes}
+			Il peut parfois être nécessaire, pour des raisons de lisibilité ou à cause des limites de certaines commandes, 
+			d'opérer une requête sur une requête (et non sur une table). La sous-requête doit alors être écrite entre parenthèses,
+			mais fonctionne ensuite comme une table ordinaire.
+			
+			\exemple Imaginons que l'on cherche à obtenir le nom des clients ayant le plus dépensé (il y a multiplicité en cas d'égalité)
+			et le nom des clients ayant le moins dépensé:
+
+			\begin{code}{sql}
+				SELECT achats.client
+				FROM achats
+				JOIN
+				(
+					SELECT MIN(achats.tarif) AS depense_min, MAX(achats.tarif) AS depense_max
+					FROM achats
+				)
+				ON achats.tarif == depense_min OR achats.tarif == depense_max
+			\end{code}
+		
 \end{document}
