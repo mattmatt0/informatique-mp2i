@@ -23,13 +23,11 @@
 
 		Il s'agit de trois choses:
 		\begin{enumerate}
-			\item Stocker les informations de manière persistente,
-			\item Permettre l'ajout, la suppression et la modification de ces informations,
-			\item Rendre facilement (de manière aisée pour des non-spécialistes) et efficacement accessible ces informations.
+			\item Stocker les informations de manière persistente;
+			\item Permettre l'ajout, la suppression et la modification de ces informations;
+			\item Rendre facilement (de manière aisée pour des non-spécialistes) et efficacement accessible ces informations. 
+			On utilise pour cela un langage d'interface simple.
 		\end{enumerate}
-
-		On entend par facilement "de manière aisée pour des non-spécialistes". 
-		On utilise pour cela une langage d'interface simple.
 
 		Les systèmes de gestion de bases de données (abrégé SGBD) assurent le stockage physique des informations,
 		et les opérations de création / ajout / modification et recherche, 
@@ -40,7 +38,7 @@
 		La structure d'une base de données est définie par ses \textbf{tables}, et les \textbf{colonnes} de ces tables.
 		Chaque table est identifiée par son nom, et contient un nombre fixé de colonnes.
 		Chaque colonne est identifiée par son nom, et fixe un \textbf{domaine} de valeurs possibles:
-		entiers, chaînes de caractères, ou flottants.
+		entiers, chaînes de caractères, flottants...
 		Ce sont les lignes de ces tables, appelées \textbf{enregistrements}, qui contiennent ces informations.
 
 		\rem La définition de base de données n'interdit pas la multiplicité des lignes. 
@@ -380,9 +378,9 @@
 				\rem Si il y a plusieurs tables dans notre base de données contenant des colonnes portant le même nom,
 				on pourra les distinguer en écrivant \texttt{tableau1.colonneA} et \texttt{tableau2.colonneB}.
 				
-				\semidef On peut récupérer les colonnes sous un nom modifié grâce au mot-clé \texttt{as}:
+				\semidef On peut récupérer les colonnes sous un nom modifié grâce au mot-clé \texttt{AS}:
 				\begin{code}{sql} 
-					SELECT <nom_colonne> as <nouveau_nom>
+					SELECT <nom_colonne> AS <nouveau_nom>
 					FROM <table1>
 				\end{code}
 				récupérera la colonne \texttt{<nom\_colonne>} sous le nom \texttt{<nouveau\_nom>}.
@@ -572,6 +570,10 @@
 				\end{code}
 
 				\rem On utilise bien ici \texttt{IS NULL} et non \texttt{== NULL}, car \texttt{NULL} désigne l'absence de valeur: il n'y a donc rien à comparer!
+
+				\rem \texttt{LEFT JOIN} permet de s'assurer que tous les éléments de la colonne gauche (la première sélectionnée) 
+				apparaîssent après la jonction. Il y a de la même façon le mot clé \texttt{RIGHT JOIN} qui s'assure que
+				tous les éléments de la table droite (celle qui a été jointe) apparaîssent.
 		
 		\subsection{Sous-requêtes}
 			Il peut parfois être nécessaire, pour des raisons de lisibilité ou à cause des limites de certaines commandes, 
