@@ -26,20 +26,24 @@
 			$A \in \mathcal{P}(S^2)$.
 
 			Les éléments de $V$ et $A$ sont appelés \textbf{sommets du graphe}, 
-			ceux de $E$ sont ses \textbf{arrêtes}, et ceux de $A$ ses \textbf{arcs}.
+			On parlera, pour désigner les éléments de $E$ dans un graphe non-orienté d'\textbf{arrêtes} du graphe,
+			et pour un graphe orienté d'\textbf{arcs}.
 
 			Si $e = \set{x} \in E$ (avec $x \in V$), $e$ est une \textbf{boucle} sur $x$
 			(idem pour $e = (x,x)$ pour $x \in S$). 
 			Pour $(x,y) \in V^2$, on dit que $x$ et $y$ sont \textbf{voisins} ssi $\set{x,y} \in E$.
-			Dans un graphe orienté, $x \in S$ est \textbf{successeur (resp. prédecesseur)de $y \in V$} ssi $(y,x)$ (resp. $(x,y)$) $\in A$.
-
-			On appelle \textbf{voisinnage} de $x \in E$ l'ensemble $\mathscr{V}(x)$ de ses voisins.
+			Cette notion se précise dans un graphe orienté: 
+			on dit que $x \in S$ est un \textbf{successeur} (resp. \textbf{prédecesseur}) de $y$
+			ssi $(y,x) \in A$ (resp. $(x,y)\in A$). 
+			Les \textbf{voisins} de $x$ sont alors ses successeurs et ses prédecesseurs.
+			
+			On appelle \textbf{voisinnage} du sommet $x$ l'ensemble $\mathscr{V}(x)$ de ses voisins.
 			Le \textbf{degré} de $x$, noté $\deg x$, est le cardinal de ce voisinnage.
 
 			Pour les graphes orientés, on distingue le \textbf{degré sortant} de $x$, noté $\deg^+ x$, le nombre de successeurs de $x$,
 			du \textbf{degré entrant} de $x$, noté $\deg^- x$,le nombre de prédecesseurs de $x$.
 
-			\notecentrale{On supposera par la suite que l'on travaille avec des graphes sans boucles}
+			\notecentrale{On supposera par la suite que l'on travaille avec des graphes sans boucles.}
 
 			\prop{Soit $G = (V,E)$ un graphe. On a $\sum_{x \in V} \deg(x) = 2\card(E)$ }
 			\begin{demo}
