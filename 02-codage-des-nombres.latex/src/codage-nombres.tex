@@ -1,4 +1,4 @@
-\newcommand\PATH{/home/quentin/informatique-mp2i/02-codage-des-nombres.latex}
+\newcommand\PATH{Lancez `make adapt avant de compiler!`}
 
 \RequirePackage{fix-cm}
 \documentclass{scrartcl}
@@ -131,13 +131,30 @@
 				Pour $l \in \mathbb{N}$, on note $ec_b^l$ la fonction qui à un entier de $[0..b^l[$ associe son écriture en base $b$ à $l$ chiffres.
 
 		\subsection{Addition en base 2}
-
-			\begin{figure}[H]
-				\centering
-				\fbox{\includegraphics[width = 0.5\textwidth]{addition_base_2.jpeg}}
-				\caption{Addition en base 2}
-				\hfill
-			\end{figure}
+			\begin{center} \begin{tikzpicture}
+				\node[circle,draw] (a) at (0,0) {a};
+				\node[circle,draw] (b) at (3,0) {b};
+				\draw[->] (0,1) -- (a);
+				\draw[->] (a) -- (0,-1);
+				\draw[->] (a) to[bend right] node[pos=0.5,below,scale=0.7] {$\begin{pmatrix}1 \\ 1\end{pmatrix} \rightarrow 0$} (b) ;
+				\draw[->] (b) to[bend right] node[pos=0.5,above,scale=0.7] {$\begin{pmatrix}0 \\ 0\end{pmatrix} \rightarrow 1$} (a) ;
+				\draw[->] (b) edge [loop right] (b) node[right,scale=0.5] at (4,0) 
+				{
+					\begin{tabular}{c}
+						$\begin{pmatrix}0 \\ 1 \end{pmatrix} \rightarrow 0$ \\[12pt]
+						$\begin{pmatrix}1 \\ 0 \end{pmatrix} \rightarrow 0$ \\[12pt]
+						$\begin{pmatrix}1 \\ 1 \end{pmatrix} \rightarrow 1$ 
+					\end{tabular}
+				};
+				\draw[->] (a) edge [loop left] (a) node[left,scale=0.5] at (-1,0) 
+				{
+					\begin{tabular}{c}
+						$\begin{pmatrix}0 \\ 0 \end{pmatrix} \rightarrow 0$ \\[12pt]
+						$\begin{pmatrix}1 \\ 0 \end{pmatrix} \rightarrow 1$ \\[12pt]
+						$\begin{pmatrix}0 \\ 1 \end{pmatrix} \rightarrow 1$ 
+					\end{tabular}
+				};
+			\end{tikzpicture} \end{center}
 
 		\subsection{Application}
 
