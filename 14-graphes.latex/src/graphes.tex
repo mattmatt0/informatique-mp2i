@@ -1,4 +1,4 @@
-\newcommand\PATH{/home/matthieu/Documents/Ecole/Informatique/cours/14-graphes}
+\newcommand\PATH{Lancez `make adapt avant de compiler!`}
 
 \RequirePackage{fix-cm}
 \documentclass{scrartcl}
@@ -26,7 +26,7 @@
 			$A \in \mathcal{P}(S^2)$.
 
 			Les éléments de $V$ et $A$ sont appelés \textbf{sommets du graphe}, 
-			On parlera, pour désigner les éléments de $E$ dans un graphe non-orienté d'\textbf{arrêtes} du graphe,
+			On parlera, pour désigner les éléments de $E$ dans un graphe non-orienté d'\textbf{arêtes} du graphe,
 			et pour un graphe orienté d'\textbf{arcs}.
 
 			Si $e = \set{x} \in E$ (avec $x \in V$), $e$ est une \textbf{boucle} sur $x$
@@ -35,7 +35,6 @@
 			Cette notion se précise dans un graphe orienté: 
 			on dit que $x \in S$ est un \textbf{successeur} (resp. \textbf{prédecesseur}) de $y$
 			ssi $(y,x) \in A$ (resp. $(x,y)\in A$). 
-			Les \textbf{voisins} de $x$ sont alors ses successeurs et ses prédecesseurs.
 			
 			On appelle \textbf{voisinnage} du sommet $x$ l'ensemble $\mathscr{V}(x)$ de ses voisins.
 			Le \textbf{degré} de $x$, noté $\deg x$, est le cardinal de ce voisinnage.
@@ -69,7 +68,7 @@
 			$\forall i \in \intsete{1,n}, \set{s_i, s_{i+1}} \in E$	
 			On dit alors que $s$ est une chaîne de longueur $n$ et qui relie $s_0$ \textbf{à} $s_n$.
 
-			On dit alors que $s_n$ est accessible depuis $s_0$.
+			On dit alors que $s_n$ est \textbf{accessible} depuis $s_0$.
 			Par ailleurs, si $s_n = s_0$, on dit que $s$ est un \textbf{cycle} pour un graphe non-orienté, 
 			ou un \textbf{circuit} dans un graphe orienté.
 
@@ -82,23 +81,23 @@
 			qui met en relation deux circuits/chemins ssi ils relient les mêmes sommets.
 			Est-ce une relation d'équivalence?
 
-			\prop{La relation $\mathcal{R}$ définie sur $V^2$ par $x\mathcal{R}y$ ssi $x$ est accessible depuis $y$ est une relation d'équivalence.}
+			\prop{La relation $\leftrightarrow $ définie sur $V^2$ par $x\leftrightarrow y$ ssi $x$ est accessible depuis $y$ est une relation d'équivalence.}
 			\begin{demo}
-				\item Soit $x \in V$. On a bien $x\mathcal{R}x$: la chaîne de longueur $n=0$ $s = (x)$ convient.
-				\item Soit $(x,y) \in V^2$, tel que $x \mathcal{R}y$. 
+				\item Soit $x \in V$. On a bien $x\leftrightarrow x$: la chaîne de longueur $n=0$ $s = (x)$ convient.
+				\item Soit $(x,y) \in V^2$, tel que $x \leftrightarrow y$. 
 					Alors par définition il existe $s = (s_0,...,s_n) \in V^{n+1}$ tel que $s_0 = x$ et $s_n = y$,
 					et $\forall i \in \intsete{0,n}$, $\set{s_i,s_{i+1}} \in E$.
 					Considérons $s' = (s_n,s_{n-1},...,s_1,s_0)$. $s'$ est une chaîne reliant $y$ et $x$.
 					En effet, $s'_0 = s_n = y$ et $s'_n = s_0 = x$, et $\forall i \in \intsete{0,n}, 
 					\set{s'_{i},s'_{i+1}} = \set{s_{n-i},\set{n-i-1} = \set{s_k,s_{k+1}}} \in E$ en posant $k = n-i-1 \in \intsete{0,n}$.
-				\item Soit $(x,y,z) \in V^3$ tel que $x\mathcal{R}y$ et $y\mathcal{R}z$.
-					Comme $x\mathcal{R}y$, il existe $s = (s_0,...,s_n) \in V^{n+1}$ une chaîne avec $s_0 = x$ et $s_n = y$.
-					Comme $y\mathcal{R}x$, il existe $t = (t_0,...,t_m) \in V^{m+1}$ une chaîne avec $t_0 = y$ et $t_m = z$.
+				\item Soit $(x,y,z) \in V^3$ tel que $x\leftrightarrow y$ et $y\leftrightarrow z$.
+					Comme $x\leftrightarrow y$, il existe $s = (s_0,...,s_n) \in V^{n+1}$ une chaîne avec $s_0 = x$ et $s_n = y$.
+					Comme $y\leftrightarrow x$, il existe $t = (t_0,...,t_m) \in V^{m+1}$ une chaîne avec $t_0 = y$ et $t_m = z$.
 					Considérons $u = (s_0,...s_n,t_1,...t_m)$.
 					$u$ est bien une chaîne car $\forall i \in \intsete{0,n+m}$, soit $i \in \intsete{0,n}$ et dans ce cas on a 
 					$\set{u_i, u_{i+1}} = \set{s_i,s_{i+1}} \in A$, soit $i = n$ et on a $\set{u_i,u_{i+1}} = \set{t_0,t_1} \in E$,
 					soit $i \in \inteset{n,n+m}$ et $\set{u_i,u_{i+1}} = \set{t_{i-n},t_{i-n+1}} \in E$.
-					On a par ailleurs $u_0 = x$ et $u_{m+n} = z$, donc $x\mathcal{R}z$.
+					On a par ailleurs $u_0 = x$ et $u_{m+n} = z$, donc $x\leftrightarrow z$.
 			\end{demo}
 
 			\exo Définir une relation d'équivalence similaire pour $H$, où l'on doit avoir un chemin dans chaque sens entre deux points en relation.
@@ -131,7 +130,7 @@
 
 			\definition Un graphe acyclique décomposé en ses composantes connexes (qui sont donc des arbres), est appelé \textbf{forêt}.
 
-			\definition Un graphe non-orienté $(V,E)$ est dit bipartie ssi il existe une partition $\set{W_1,W_2}$ de $V$ telle que toutes les arrêtes de $E$
+			\definition Un graphe non-orienté $(V,E)$ est dit bipartie ssi il existe une partition $\set{W_1,W_2}$ de $V$ telle que toutes les arêtes de $E$
 			aient une extrémité dans $W_1$ et l'autre dans $W_2$.
 
 			\plabel{Algorithme pour décider si un graphe est bipartie : } Il suffit de créer deux ensembles $W_1$ et $W_2$.
@@ -239,9 +238,9 @@
 			\end{demo}
 
 			\prop{Soit $G = (V,E)$ un graphe non-orienté, et $L = (L_i)_{i \in \intset{1,n}}$ un parcours de $G$.
-			Si l'ensemble des points de regénération s'écrit $\set{L_{r_k}} | k \in \intset{1,K}$ avec $(r_k)$ croissant,
-			alors $G$ admet $K$ composantes connexes, à savoir les $(c_k)_{k \in \intset{1,K}}$ 
-			définis par $c_k = \set{L_i \tq i \in \intsete{r_k,r_k+1}}$ avec $r_{K+1} = n+1$.}
+			Si l'ensemble des points de regénération s'écrit $R = \set{L_{r_k} | k \in \intset{1,K}}$ avec $(r_k)$ croissant,
+			alors $G$ admet $K$ composantes connexes, à savoir les $(C_k)_{k \in \intset{1,K}}$ 
+			définis par $C_k = \set{L_i \tq i \in \intsete{r_k,r_k+1}}$ avec $r_{K+1} = n+1$.}
 			\begin{demo}
 				\item Soit $k \in \intset{1,K}$. Montrons que $C_k$ est connexe maximal.
 				\item Si $C_k = V$, il est trivialement connexe. Sinon, soit $u\in V\setminus C_k$. MQ $\hat{C_k} = C_k\cup\set{u}$  n'est pas connexe.
@@ -252,8 +251,119 @@
 				donc $\hat{C_k}$ n'est pas connexe.
 				Autre cas...
 				Ainsi $C_k$ est maximal.
+
+				\item Par l'absurde, on suppose que $C_k$ n'est pas connexe.
+				On peut donc dire qu'il existe $i \in \intsete{r_k,r_k+1}$ tel que $L_{r_k} \not\leftrightarrow$
+				On considère alors $i_0 = \min\set{j \in \intsete{r_k, r_{k+1}} \tq L_j \not\leftrightarrow L_{r_k}}$.
+				Par minimalité de $i_0$, $\forall j \in \intesete{r_k,i_0}, L_{r_k} \leftrightarrow L_j$.
+				donc $\forall j \in \intsete{r_k,i_0}, L_j \not\leftrightarrow L_{i_0}$ 
+				(sinon on aurait $L_{i_0} \leftrightarrow L_j \leftrightarrow L_{r_k}$).
+				De plus, puisque $L_{r_k} \in R, \mathcal{B}(\set{L_j \tq j \in \intsete{1,r_k}}) = \varnothing $
+				Donc d'après le lemme, $\forall j \in \intsete{1,r_k}, L_{i_0} \not\leftrightarrow L_j$.
+				Donc $L_{i_0} \not\in \mathcal{B}(\set{L_j \tq j \in \intsete{1,i_0}})$.
+				Par définition d'un parcours on a nécessairement
+				$\mathcal{B}(...) = \varnothing$ donc $L_{i_0} \in R$: 
+				Absurde, car $L_{r_k}$ et $L_{r_{k+1}}$ sont 2 points de régénération consécutifs.
 			\end{demo}
 
+			\definition Soit $L = (L_i)_{i \in \intset{1,n}}$ un parcours de $G$.
+			Pour $k \in \intset{0,n}$, on appelle \textbf{sommet ouvert à l'étape $k$} (dans L)
+			un sommet de $O_k = \set{L_j \tq j \in \intsete{1,k} \text{ et } \mathscr{V}(L_j) \not\subset \set{L_i \tq i \in \intset{1,k}}}$.
 
+			$L$ est un \textbf{parcours en largeur} (resp. profondeur) de $G$ ssi
+			$\forall k \in \intset{1,n}$, $L_k$ est un point de régénération 
+			ou bien $L_k \in \mathscr{V}(L_{i_0})$ où $i_0 = \min\set{i\in\intset{1,n} \tq L_i \in O_k}$ (resp. max).	
+			Autrement, chaque sommet du parocurs est point de régérération ou bien voisin du premier (resp.dernier) sommet ouvert.
 
+			\rem Lorsque l'on s'intéresse à la forêt d'arborescence associée à un parcours en largeur / profondeur, 
+			on choisira comme paire d'un sommet $L_k$ le premier / dernier sommet ouvert à l'étape $k$.
+			Autrement dit, la forêt justifiera que le parcours est en largeur / profondeur.
+
+			\exemple Un parcours en largeur du graphe ci-dessous est $\underline{A}BCDE\underline{F}HG$, 
+			et un parcours en profondeur de $\underline{A}CDEB\underline{F}HG$.
+			\begin{center} \begin{tikzpicture}
+				\node[circle,draw] (a) at (0,1) {A};
+				\node[circle,draw] (b) at (0,0) {B};
+				\node[circle,draw] (c) at (1,0) {C};
+				\node[circle,draw] (d) at (2,2) {D};
+				\node[circle,draw] (e) at (3,1) {E};
+				\node[circle,draw] (f) at (2,0) {F};
+				\node[circle,draw] (g) at (2,-1) {G};
+				\node[circle,draw] (h) at (3,0) {H};
+				\draw[-stealth] (a) -- (b);
+				\draw[-stealth] (b) -- (c);
+				\draw[-stealth] (a) -- (c);
+				\draw[-stealth] (c) -- (d);
+				\draw[-stealth] (d) -- (e);
+				\draw[-stealth] (f) -- (h);
+				\draw[-stealth] (f) -- (g);
+				\draw[-stealth] (h) -- (e);
+				\draw[-stealth] (f) -- (c);
+				\draw[-stealth] (h) -- (g);
+			\end{tikzpicture} \end{center}
+
+	\section{Algorithmes de parcours}
+		\subsection{Détection de composantes connexes.}
+			$G = (V,E)$ avec $V = \intset{1,n}$ un graphe non orienté.
+			\begin{algotext}
+				|$n$| <- nb_sommets(|$G$|)
+				|$O$| <- ensemble des sommets initialements vides
+				|$F$| <- ensemble des sommets initialements vides
+				|$T_{res}$| <- tableau indicé par |$\intset{1,n}$|, initialisé à -1.
+				|$n_c$| <- 0  //(Numéro de la composante connexe)
+				racine <- 1
+				|$T_{res}$|[racine] <- |$n_c$|
+				|$O$|.ajouter(racine)
+				|$i$| <- 0
+				Tant que |$i < n$|:
+					Si |$\theta$ est vide|:
+						racine <- un sommet |$S$| tel que |$T_{res}[s] = -1$|
+						|$n_c$| <- |$n_c$| + 1
+						|$O$|.ajouter(racine)
+						|$T_{res}$[racine]| <- |$n_c$|
+					|$u$| <- un sommet |$\texttt{\underline{extrait}}$| de |$O$|
+					|Pour tout $v$ voisin de $u$|
+					|	Si $T_{res}[v]$ = -1:|
+					|		$O$.ajouter($v$)|
+					|		$T_{res}[v]$ <- $n_c$|
+					|$F$.ajouter($u$)|
+					|$i$++|
+				Renvoyer $T_res$
+			\end{algotext}
+		\subsection{Détection de graphe bipartie.}
+
+		\subsection{Plus court chemin en nombre d'arcs.}
+			\definition Dans un graphe non-orienté, on appelle \textbf{distance entre les sommets $a$ et $b$}, notée $\dist(a,b)$,
+			la longueur inimale d'une chaîne reliant $a$ et $b$ (et $+\infty$ s'il n'en existe pas).
+			On généralise cette notion aux graphes orientés, mais il se s'agit alors plus vraiment d'une distance: 
+			la distance de $a$ à $b$ n'est pas forcément égale à la distance de $b$ à $a$! 
+
+			$G = (S,A)$ graphe orienté avec $S = \intset{1,n}$, $(a,b)\in S^2$.
+
+			\begin{algotext}
+				|$n$| <- nb_sommets(|$G$|)
+				|$O_1$ <- pile d'entiers initialisée vide|
+				|$O_2$ <- pile d'entiers initialisée vide|
+				|$F$ <- ensemble initialisé vide|
+				|$D$ <- tableau d'entiers indicé par $\intset{1,n}$ initialisé à $+\infty$|
+				|$P$ <- tableau d'entiers indicé par $\intset{1,n}$ initialisé à $+\infty$|
+				prof <- 0
+				|$O_1$|.ajouter(|$a$|)	
+				|$D[a]$| <- 0
+				|$P[a]$| <- |$a$|
+
+				Tant que |$O_1$| et |$O_2$| ne sont pas vides:
+					Si |$O_1$| est vide:
+						Transvaser |$O_2$| dans |$O_1$|
+						prof = prof + 1
+					|$u$| <- |$O_1$|.extraire_sommet
+					Pour |$v$| successeur de |$u$|:
+						Si |$D[v] = +\infty$|:
+							|$D$| <- |$D[u] + 1$|
+							|$P(v)$| <- |$u$|
+							|$O_2$.ajouter($v$)|
+					|$F$.ajouter($u$)|
+				Renvoyer $D[b]$
+			\end{algotext}
 \end{document}
+
