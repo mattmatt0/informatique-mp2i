@@ -1,4 +1,4 @@
-\newcommand\PATH{Lancez `make adapt avant de compiler!`}
+\newcommand\PATH{/home/quentin/informatique-mp2i/02-codage-des-nombres.latex}
 
 \RequirePackage{fix-cm}
 \documentclass{scrartcl}
@@ -132,7 +132,12 @@
 
 		\subsection{Addition en base 2}
 
-			cf. fig 2
+			\begin{figure}[H]
+				\centering
+				\fbox{\includegraphics[width = 0.5\textwidth]{addition_base_2.jpeg}}
+				\caption{Addition en base 2}
+				\hfill
+			\end{figure}
 
 		\subsection{Application}
 
@@ -147,6 +152,41 @@
 
 			On note $\varphi$ la fonction qui a un algorithme $A$ associe un entier écrit en base $256$ 
 			en remplaçant les caractères de l'algorithme pour un entier entre $1$ et $255$.
+
+			\[
+			\varphi = \left( \begin{array}{ccc}
+			\textrm{l'ensemble des textes des algorithmes} & \to & \mathbb{N} \\
+			n \in \mathbb{N} & \mapsto & p \\
+			\end{array} \right)
+			\]
+
+			$\varphi$ est injective mais pas surjective. $\varphi \Big|_{A}^{Im(\varphi)}$ est bijective.
+
+			On note pour $A$ le texte d'un algo qui prend en entrée un entier et qui rend en sortie un entier, $eval(A,n)$, la valeur
+			absolue en lançant cet algorithme sur l'entrée $n$.
+
+			\rem Si $A$ résout $\mathcal{P}_n$ pour $u \in \mathbb{N}^{\mathbb{N}}$, alors $\forall n \in \mathbb{N}$, 
+			$eval(A,n) = u_n$.
+
+
+			On définit $u \in \mathbb{N}^{\mathbb{N}}, u_n = \left\{ 
+			\begin{array}{ll} eval(\varphi^{-1}(n),n)+1 & \mbox{si } n \in Im(\varphi) \\
+			0 & \mbox{sinon} \\
+			\end{array} \right. $
+
+
+			On suppose que $A$ est un algorithme qui résout le problème $\mathcal{P}_u$. Alors :
+			\begin{align*}
+				eval(A_u, \varphi(A_u)) &= u_{\varphi(A_u)} \mbox{	car } A \mbox{ résout } \mathcal{P}_u \\
+				&= eval(\varphi^{-1} (\varphi(A_u)), \varphi(A_u)+1) \\
+				&= eval(A_u, \varphi(A_u)) +1 \\
+			\end{align*}
+			ABSURDE. Donc il n'existe pas d'algorithme résolvant $\mathcal{P}_u$.
+
+			\underline{Notation de l'addition en base 2 :}
+
+			Pour $l \in \mathbb{N}$ et $\Sigma = \{0,1\}$,
+				
 
 
 \end{document}
