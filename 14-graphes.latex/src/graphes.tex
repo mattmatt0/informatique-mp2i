@@ -338,7 +338,16 @@
 			On généralise cette notion aux graphes orientés, mais il se s'agit alors plus vraiment d'une distance: 
 			la distance de $a$ à $b$ n'est pas forcément égale à la distance de $b$ à $a$! 
 
-			$G = (S,A)$ graphe orienté avec $S = \intset{1,n}$, $(a,b)\in S^2$.
+			Pour cet algorithme, on considère $G = (S,A)$ graphe orienté avec $S = \intset{1,n}$, $(a,b)\in S^2$.
+			On cherche la distance en nombre d'arcs de $a$ à $b$.
+			\begin{itemize}
+				\item $O_1$ représente la liste des sommets à traîter, $O_2$ la liste de leurs successeurs.
+				\item \texttt{prof} est le "numéro de la génération": le premier sommet dont on part représente la génération 0,
+				ses successeurs la génération 1, et ainsi de suite.
+				\item $D$ contient les distances des différents sommets du graphe par rapport au point $a$.
+				\item $P[i]$ est le numéro du point précédent le sommet numéro $i$ dans l'éventuel plus court chemin.
+				\item $F$ est l'ensemble des sommets traités par l'algorithme.
+			\end{itemize}
 
 			\begin{algotext}
 				|$n$| <- nb_sommets(|$G$|)
@@ -352,6 +361,7 @@
 				|$D[a]$| <- 0
 				|$P[a]$| <- |$a$|
 
+				|$\textsl{Invariant: les sommets à la distance \texttt{prof} de $a$ sont tous dans $O_1$}.$|
 				Tant que |$O_1$| et |$O_2$| ne sont pas vides:
 					Si |$O_1$| est vide:
 						Transvaser |$O_2$| dans |$O_1$|
@@ -359,11 +369,12 @@
 					|$u$| <- |$O_1$|.extraire_sommet
 					Pour |$v$| successeur de |$u$|:
 						Si |$D[v] = +\infty$|:
-							|$D$| <- |$D[u] + 1$|
-							|$P(v)$| <- |$u$|
+							|$D[v]$| <- |$D[u] + 1$|
+							|$P[v]$| <- |$u$|
 							|$O_2$.ajouter($v$)|
 					|$F$.ajouter($u$)|
-				Renvoyer $D[b]$
+				Renvoyer |$D[b]$|
 			\end{algotext}
+			
 \end{document}
 
