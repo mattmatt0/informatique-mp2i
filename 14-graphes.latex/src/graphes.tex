@@ -133,21 +133,14 @@
 			\definition Un graphe non-orienté $(V,E)$ est dit bipartie ssi il existe une partition $\set{W_1,W_2}$ de $V$ telle que toutes les arêtes de $E$
 			aient une extrémité dans $W_1$ et l'autre dans $W_2$.
 
-			\plabel{Algorithme pour décider si un graphe est bipartie : } Il suffit de créer deux ensembles $W_1$ et $W_2$.
-			On prend un point au hasard dans le graphe, et on le place dans $W_1$. On place alors tous les voisins de $x$ dans $W_2$,
-			puis tous les voisins des voisins de $x$ dans $W_1$, et ainsi de suite, récursivement. 
-			Si jamais il y a conflit (on doit placer un élément dans $W_1$ alors qu'il est déjà présent dans $W_2$ par exemple),
-			alors le graphe n'est pas bipartie.
-			Une fois que l'on ne peut plus ajouter d'éléments à un des deux ensembles, si des points du graphe n'ont toujours pas été ajoutés, 
-			on recommence le processus sur l'un de ces points, jusqu'à ce que tous les points aient été ajoutés.
-			Si le processus s'est fait sans conflit, le graphe est bipartie.
+
 
 	\section{Parcours}
 		\subsection{Définitions}
 			On définit, pour $W \subset V$ la bordure de $W$ par:
 				\[ 
 					\mathcal{B}(W) = 
-					\set{ y \in V\setminus W \tq \exists x \in W, {x,y} \in E}
+					\set{ y \in V\setminus W \tq \exists x \in W, \set{x,y} \in E}
 				\]
 			Dans le cadre d'un graphe orienté, pour $T \subset S$:
 				\[ 
@@ -305,19 +298,31 @@
 	\section{Algorithmes de parcours}
 		\subsection{Détection de composantes connexes.}
 			$G = (V,E)$ avec $V = \intset{1,n}$ un graphe non orienté.
+			L'algorithme consiste à associer à chaque sommet du graphe le numéro de la composante connexe associée.
+			\begin{itemize}
+				\item $O$ contient les éléments de la composante connexe actuelle que l'on est en train de traiter
+					(les éléments "\textbf{O}uverts" afin de les étudier);
+				\item $n_c$ contient le numéro de la composante connexe que l'on est en train d'explorer;
+				\item $F$ contient tous les sommets traités (les sommets \textbf{F}ermés).
+				\item $T_{res}$ contient les numéros de parties de chaque sommet.
+			\end{itemize}
 			\begin{algotext}
 				|$n$| <- nb_sommets(|$G$|)
-				|$O$| <- ensemble des sommets initialements vides
-				|$F$| <- ensemble des sommets initialements vides
+				|$O$| <- ensemble de sommets, initialement vide
+				|$F$| <- ensemble de sommets, initialement vide
 				|$T_{res}$| <- tableau indicé par |$\intset{1,n}$|, initialisé à -1.
-				|$n_c$| <- 0  //(Numéro de la composante connexe)
+				|$n_c$| <- 0 
 				racine <- 1
 				|$T_{res}$|[racine] <- |$n_c$|
 				|$O$|.ajouter(racine)
 				|$i$| <- 0
+				|$\textsl{Invariants:}$|
+					|- $ \textsl{les éléments de $F$ sont dans $n_c$ composantes connexes différentes;}$|
+					|- $ \textsl{il y a $i$ éléments différents de -1 dans $T$; ce sont les éléments de $F$;}$|
+					|- $ \textsl{les éléments portant le même numéro dans $T$ sont accessibles entre eux.}$|
 				Tant que |$i < n$|:
-					Si |$\theta$ est vide|:
-						racine <- un sommet |$S$| tel que |$T_{res}[s] = -1$|
+					Si |$O$ est vide|:
+						racine <- numéro d'un sommet |$S$| tel que |$T_{res}[s] = -1$|
 						|$n_c$| <- |$n_c$| + 1
 						|$O$|.ajouter(racine)
 						|$T_{res}$[racine]| <- |$n_c$|
@@ -328,9 +333,47 @@
 					|		$T_{res}[v]$ <- $n_c$|
 					|$F$.ajouter($u$)|
 					|$i$++|
-				Renvoyer $T_res$
+				Renvoyer |$T_{res}$|
 			\end{algotext}
 		\subsection{Détection de graphe bipartie.}
+			\plabel{Algorithme pour décider si un graphe est bipartie : } Considérons un graphe $G$.
+			On parcourt récursivement (à partir d'un point de régénération, puis ses successeurs...)
+			les composantes connexes graphe en associant à chaque sommet une couleur (ici représentée par 0 ou 1).
+			Si jamais il y a conflit entre deux associations de couleur 
+			(un sommet qui s'est vu associer la couleur 0 auquel on essaierait d'associer la couleur 1 par exemple),
+			le graphe n'est pas bipartie.
+			Si par contre on arrive à parcourir tout le graphe sans conflit, le graphe est bien bipartie.
+
+			Dans le cas où $G=(V,E)$ avec $V = \intset{1,n}$:
+			\begin{itemize}
+				\item $T$ est un tableau contenant la couleur du sommet $i$, -1 si aucune couleur ne lui a été assignée;
+				\item $O$ désigne l'ensemble des sommets déjà colorés desquels on colorie les voisins.
+			\end{itemize}
+			\begin{algotext}
+				|$n$| <- nb_sommets(|$G$|)
+				|$T$| <- tableau d'entiers indicé par |$\intset{1,n}$| initialisé à -1
+				|$O$| <- |$\set{1}$|
+				couleur <- 0
+				|$T[1]$| <- couleur
+				|$\textsl{Invariants: }$|
+					|- $ \textsl{le sous graphe induit par $G$ sur $V' = \set{i \in \intset{1,n} \tq T[i] \neq -1}$ est bipartie;}$|
+					|- $ \textsl{il y a $i$ éléments différents de -1 dans $T$.}$|
+				Pour |$i$| allant de |$1$| à |$n$|:
+					Si |$O$| est vide:
+						|$u$| <- élément de |$\intset{1,n}$| tel que |$T[u] = -1$|
+						|$T[u]$| = couleur
+					Sinon:
+						|$u$| <- élément extrait de |$O$|
+					couleur = 1-couleur |				// $\textsl{échange }1 \leftrightarrow 0$|
+					Pour |$v$| voisin de |$u$|:
+						Si |$T[v] = -1$|
+							|$T[v]$| <- couleur
+							ajouter |$v$| à |$O$|
+						Sinon:
+							Si |$T[v] \neq$| couleur:
+								Renvoyer Faux
+				Renvoyer Vrai
+			\end{algotext}
 
 		\subsection{Plus court chemin en nombre d'arcs.}
 			\definition Dans un graphe non-orienté, on appelle \textbf{distance entre les sommets $a$ et $b$}, notée $\dist(a,b)$,
@@ -338,15 +381,18 @@
 			On généralise cette notion aux graphes orientés, mais il se s'agit alors plus vraiment d'une distance: 
 			la distance de $a$ à $b$ n'est pas forcément égale à la distance de $b$ à $a$! 
 
-			Pour cet algorithme, on considère $G = (S,A)$ graphe orienté avec $S = \intset{1,n}$, $(a,b)\in S^2$.
-			On cherche la distance en nombre d'arcs de $a$ à $b$.
+			Pour cet algorithme, on considère $G = (S,A)$ graphe orienté avec $S = \intset{1,n}$ et $(a,b)\in S^2$.
+			On cherche la distance en nombre d'arcs de $a$ à $b$. 
+			On parcourt récursivement le graphe à partir de $a$, et dès que l'on rencontre un sommet, 
+			on lui assigne sa distance à $a$ - alors minimale - jusqu'à atteindre $b$.
+			Pour garder une trace du chemin optimal, on stocke pour chaque élément son prédecesseur.
 			\begin{itemize}
 				\item $O_1$ représente la liste des sommets à traîter, $O_2$ la liste de leurs successeurs.
 				\item \texttt{prof} est le "numéro de la génération": le premier sommet dont on part représente la génération 0,
 				ses successeurs la génération 1, et ainsi de suite.
 				\item $D$ contient les distances des différents sommets du graphe par rapport au point $a$.
 				\item $P[i]$ est le numéro du point précédent le sommet numéro $i$ dans l'éventuel plus court chemin.
-				\item $F$ est l'ensemble des sommets traités par l'algorithme.
+				\item $F$ est l'ensemble des sommets traités par l'algorithme dont les successeurs ont aussi été traités.
 			\end{itemize}
 
 			\begin{algotext}
@@ -361,7 +407,10 @@
 				|$D[a]$| <- 0
 				|$P[a]$| <- |$a$|
 
-				|$\textsl{Invariant: les sommets à la distance \texttt{prof} de $a$ sont tous dans $O_1$}.$|
+				|$\textsl{Invariants: }$|
+					|- $ \textsl{pour tout sommet $f$ de $F$, $d(a,f) = D[a] \leq \mathtt{prof}$ ;}$|
+					|- $ \textsl{$F$ est inclus dans la composante connexe $W$ contenant $a$;}$|
+					|- $ \textsl{$O_2$ est la bordure de $F$.}$|
 				Tant que |$O_1$| et |$O_2$| ne sont pas vides:
 					Si |$O_1$| est vide:
 						Transvaser |$O_2$| dans |$O_1$|
@@ -376,5 +425,101 @@
 				Renvoyer |$D[b]$|
 			\end{algotext}
 			
+	\section{Plus court chemin}
+		\definition Pour un graphe orienté $G = (V,E)$, on dit que $w$ est une \textbf{pondération des arêtes}		
+		ssi $w \in \mathcal{F}(E,\mathbb{R})$.
+
+		On dit alors que $G$ est un \textbf{graphe pondéré}.
+
+		\definition Soit $H = (S,A,w)$ un graphe orienté.
+		Si $\gamma = (\gamma_i)_{i\in\intset{0,n}}$ est une chaîne ou un chemin de $G$,
+		sa longueur est $\text{long}(\gamma) = \sum_{i=0}^{n+1}w(\gamma_i,\gamma_{i+1})$.
+
+		On définit alors la distance entre deux sommets de $S$ par
+		\[
+			d(a,b) = \min\set{\text{long}(\gamma) \tq \gamma \text{ est un chemin reliant $a$ et $b$}}
+		\]
+
+		\rem Ces définition se généralisent naturellement aux graphes non-orientés.
+		
+		\subsection{Algorithme de Dijkstra}
+			Considérons $G = (S,A,w)$ orienté, pondéré \textbf{positivement}, où $S = \intset{1,n}$, $s \in S$ un sommet de départ. 
+			\begin{itemize}
+				\item 
+			\end{itemize}
+			\begin{algotext}
+				|$n$| <- nombre de sommets de |$G$|
+				|$D$| <- tableau indicé par |$\intset{1,n}$|, initialisé à |$+\infty$|
+				|$P$| <- tableau indicé par |$\intset{1,n}$|, initialisé à -1.
+				|$D[S] = 0$|
+				|$P[S] = s$|
+
+				|$O$| <- |$\set{0}$|
+				|$F$| <- |$\varnothing$|
+				Tant que |$O$| est non vide :
+					|$u$| <- extraire de |$O$| l'élément minimisant |$D$| 		// (|$u = \argmin\set{D[i] \tq i \in O}$|)
+					Pour |$v \in \text{succ}(u)$|:
+						Si |$D[v] = +\infty$|:
+							|$O$|.ajouter(|$v$|)
+						Si |$D[u] + w(u,v) < D[v]$|:
+							|$D[v]$| <- |$D[u] + w(u,v)$| 
+							|$P[v]$| <- |$u$|
+					|$F$|.ajouter(|$u$|)
+				renvoyer |$D$|
+			\end{algotext}
+
+			\prop{Soit $G = (S,A,w)$ un graphe orienté pondéré positivement. Soit $s \in S$. 
+			Le tableau $D$ retourné par l'algorithme ci-dessus est tel que $\forall u \in S,  D[u] = d(s,u)$.}
+		\subsection{Démonstration}
+			\definition Pour $X \subset S$, et $(u,v) \in S^2$, on note $C_X(u,v)$ l'ensemble des chemins élémentaires de $u$ à $v$ dans $G$,
+			dont tous les sommets sauf éventuellement $v$ sont dans $X$ et $d_X(u,v)$ la longueur minimale d'un chemin dans $C_X(u,v)$.
+
+			\plabel{Invariant : } \textsl{Soit $(G,S)$ une entrée de l'algorithme. On admet que l'appel termine. 
+			Soit $K$ le nombre de tours de boucle \texttt{tant que} effectués.
+			Pour $k \in \intset{0,K}$, on note $O_k, F_k, D_k$ l'état des ensembles $O$ et $F$ et le tableau $D$ à la fin du $k$-ième tour de boucle.}
+			\begin{enumerate}[label=(\alph*)]
+				\item Pour tout $u \in S$, pour tout $k \in \intset{0,K}, D_k[u] = d_{D_k}{s,u}$;
+				\item $\forall u \in F_k, D_k[u] = d_(s,u)$;
+				\item $O_k \cap F_k \neq \varnothing$ et $O_k\cup F_k = \set{i \in \intset{1,n} D[i] < +\infty}$.
+			\end{enumerate}
+
+			\begin{demo}
+				\item On procède par récurrence finie:
+				\item Au rang $k=0$, on a:
+				\begin{itemize}
+					\item $F_0 \neq \varnothing$ donc $(b)$ est vraie;
+					\item On a aussi $O_k \cap F_k = \varnothing$.
+					De plus $O_0 = \set{s}$ donc $O_0\cup F_0 = \set{s}$, 
+					or $s$ est le seul sommet $i$ pour lequel $D_0[i] \neq +\infty$, donc on a bien (c).
+					\item $\forall u \in S$, $C_{F_0}(s,u) = \set{(s)}$ si $u=s$, $\varnothing$ sinon.
+					donc $d_{F_0}(s,u) = 0$ si $u = s$, $+\infty$ sinon
+					On a donc bien (a)
+				\end{itemize}
+				\item Soit $k \in \intsete{0,K}$. On suppose $P_k$. On veut montrer $P_{k+1}$.
+				Soit $x \in O_k$ le sommet extrait de $O$ à l'étape $k+1$.
+				On a alors $F_{k+1} = F_k \cup {x}$.
+				De plus, $D_k[x] = \min\set{D_k[i] \tq i \in O_k}$.
+				$D_{k+1}[u] = D_k[u]$ si $u \not\in\text{succ}(x)$, $\min\set{D_k{x} + w(x,u),D_k[u]}$ sinon.
+				$F_k \subset F_{k+1}$, donc $\forall u \in S$, $D_{F_k}(s,u) \geq d_{F_{k+1}}(s,u)$.
+				$O_{k+1} = (O_k \cup \set{u \in \text{succ}(x) \tq D_k[u] = +_\infty})\setminus\set{x}$
+				\begin{itemize}
+					\item On remarque que nécessairement $D_k[s] = 0$, $s \in F_k$ (car $F_1 = \set[{s}$ et $(F_i)$ croissante), donc $d_{F_k}(s,s) \leq \text{long}(s) = 0$,
+					soit $d_{F_{k+1}}(s,s) = 0 = D_{k+1}[s]$.
+					\item Soit $u \in S \setminus{s}$.
+					Soit $c = (c_i)_{i \in \intset{0,l}}\in C_{F_{k+1}}(s,u)$ (nécessairement $c_0 = s$ et $c_l = u$).
+					On note alors $p = c_{l-1}$. Aini $c = \overbrace{s..p}^{\widetilde{c}} u$.
+
+					\plabel{Cas 1: $p \neq x$ : } Alors $p \in F_{k+1} \setminus \set{x} = F_k$.
+					[On remarque que $\forall y \in F_k, d_{F_k}(s,y) = D_k[y] = d(S,y)$.
+					Donc $\forall y \in F_k, \exists c \in C_{F_k}(s,y)$ de longueur $(d,x,y)$.] ($\theta$)
+					Ici en particulier, il existe $\widetilde{b} \in C_{F_k}(s,p)$ de longueur $d(s,p)$.
+					Ainsi, le chemin $d = \widetilde{b}.u \in C_{F_k}(s,u)$, 
+					et $\text{long}(b) = \text{long}(\widetilde{b}) + w(p,u) = d(s,p) + w(p,u) \leq \underbrace{\text{long}(\widetilde{c}) + w(p,u)}_{\text{long}(c)}$.
+					donc $d_{F_k}(s,u) \leq \text{long}(b) \leq \text{long}(c)$ d'où long$(c) \geq D_k[u]$.
+
+					\plabel{Cas 2: $p = x$ :}
+					... long$(c) \geq D_k[x] + w(x,u)$. 
+				\end{itemize}	
+			\end{demo}
 \end{document}
 
