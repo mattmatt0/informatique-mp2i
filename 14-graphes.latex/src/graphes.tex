@@ -130,7 +130,7 @@
 
 			\definition Un graphe acyclique décomposé en ses composantes connexes (qui sont donc des arbres), est appelé \textbf{forêt}.
 
-			\definition Un graphe non-orienté $(V,E)$ est dit bipartie ssi il existe une partition $\set{W_1,W_2}$ de $V$ telle que toutes les arêtes de $E$
+			\definition Un graphe non-orienté $(V,E)$ est dit \textbf{biparti} ssi il existe une partition $\set{W_1,W_2}$ de $V$ telle que toutes les arêtes de $E$
 			aient une extrémité dans $W_1$ et l'autre dans $W_2$.
 
 
@@ -335,14 +335,14 @@
 					|$i$++|
 				Renvoyer |$T_{res}$|
 			\end{algotext}
-		\subsection{Détection de graphe bipartie.}
-			\plabel{Algorithme pour décider si un graphe est bipartie : } Considérons un graphe $G$.
+		\subsection{Détection de graphe biparti.}
+			\plabel{Algorithme pour décider si un graphe est biparti : } Considérons un graphe $G$.
 			On parcourt récursivement (à partir d'un point de régénération, puis ses successeurs...)
 			les composantes connexes graphe en associant à chaque sommet une couleur (ici représentée par 0 ou 1).
 			Si jamais il y a conflit entre deux associations de couleur 
 			(un sommet qui s'est vu associer la couleur 0 auquel on essaierait d'associer la couleur 1 par exemple),
-			le graphe n'est pas bipartie.
-			Si par contre on arrive à parcourir tout le graphe sans conflit, le graphe est bien bipartie.
+			le graphe n'est pas biparti.
+			Si par contre on arrive à parcourir tout le graphe sans conflit, le graphe est bien biparti.
 
 			Dans le cas où $G=(V,E)$ avec $V = \intset{1,n}$:
 			\begin{itemize}
@@ -356,7 +356,7 @@
 				couleur <- 0
 				|$T[1]$| <- couleur
 				|$\textsl{Invariants: }$|
-					|- $ \textsl{le sous graphe induit par $G$ sur $V' = \set{i \in \intset{1,n} \tq T[i] \neq -1}$ est bipartie;}$|
+					|- $ \textsl{le sous graphe induit par $G$ sur $V' = \set{i \in \intset{1,n} \tq T[i] \neq -1}$ est biparti;}$|
 					|- $ \textsl{il y a $i$ éléments différents de -1 dans $T$.}$|
 				Pour |$i$| allant de |$1$| à |$n$|:
 					Si |$O$| est vide:
@@ -364,7 +364,7 @@
 						|$T[u]$| = couleur
 					Sinon:
 						|$u$| <- élément extrait de |$O$|
-					couleur = 1-couleur |				// $\textsl{échange }1 \leftrightarrow 0$|
+					couleur = 1 - |$T[u]$|
 					Pour |$v$| voisin de |$u$|:
 						Si |$T[v] = -1$|
 							|$T[v]$| <- couleur
