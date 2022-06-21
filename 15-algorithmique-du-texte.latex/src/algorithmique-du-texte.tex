@@ -1,0 +1,94 @@
+\newcommand\PATH{Lancez `make adapt avant de compiler!`}
+
+\RequirePackage{fix-cm}
+\documentclass{scrartcl}
+
+\input{\PATH/../include/preamble.tex}
+\input{\PATH/../include/it-tools.tex}
+\input{\PATH/../include/math-tools.tex}
+\usepackage{lmodern}
+\usepackage{algorithmicx}
+\usepackage{bbm}
+
+\title{Algorithmique du texte}
+\author{}
+\date{}
+
+\begin{document}
+	\maketitle
+	\definition On appelle \textbf{texte} une suite finie de caractères (ce que l'on a appelé mot jusqu'à présent).
+	L'algorithmique du texte consiste à résoudre des problèmes sur des textes, qui peuvent en réalité modéliser des informations diverses:
+	\begin{itemize}
+		\item des textes à proprement parler;
+		\item une séquence ADN;
+		\item de la musique;
+		\item des images...
+	\end{itemize}
+	Par exemple,
+	\begin{itemize}
+		\item les recherches de similarité, dont notamment:
+		\begin{itemize}
+			\item la recherche du plus long sous-mot commun;
+			\item la recherche du plus long facteur commun;
+			\item la distance d'édition / alignement;
+		\end{itemize}
+		\item la recherche de motif;
+		\item la compression;
+		\item l'encodage par facteurs...
+	\end{itemize}
+	
+	\section{Rappels}
+		On fixe $\Sigma$ un ensemble, appelé \textbf{alphabet}, dont les élément sont appelés \textbf{caractères}.
+		On définit alors l'ensemble $\Sigma*$ des textes sur $\Sigma$ et celui des textes non vides $\Sigma^+$ par:
+		\[
+			\Sigma^* = \bigcup_{n \in \mathbb{N}} \Sigma^n \quad \quad \Sigma^+ = \bigcup_{n\in \mathbb{N}^*} \Sigma^n
+		\]
+		On note $\varepsilon$ le texte vide, c'est à dire le seul 0-uplet de $\Sigma^*$.
+		On munit alors $\Sigma^*$ de la \textbf{concaténation} définie ainsi:
+		\[
+			\forall (u = (u_i)_{i \in \intset{1,n}},(v_j)_{j \in \intset{1,m}}) \in (\Sigma^*)^2, u.v = u_1u_2...u_{n-1}u_nv_1v_2...v_{m-1}v_m 
+		\]
+		On vérifie alors que $(\Sigma^*,.)$ est un monoïde.
+		
+		On appelle \textbf{sous-texte} d'un texte $u$ de $\Sigma^*$ toute suite extraite de $u$.
+		Par ailleurs, on dit que $v \in \Sigma^*$ est un \textbf{facteur} de $u = u_1...u_n$ ssi il existe $(i,j)\in\intset{1,n}^2$ tel que $v = u_i...u_j$.
+		Dans le cas où $i=1$, on dit que $v$ est un \textbf{préfixe} de $u$. Si $j=n$, alors c'est un \textbf{suffixe} de $u$.
+
+	\section{Plus long facteur commun}
+		\subsection{Description}
+		\[
+			\pb{\begin{minipage}{0.2\textwidth}\begin{center}Plus long facteur commun\end{center}\end{minipage}}
+			{$u \in \Sigma^*$ de longueur $n$ et $v \in \Sigma^*$ de longueur $m$}
+			{\begin{minipage}{0.6\textwidth} max$\set{|f| | f \text{ facteur de $u$ et de $v$} }$ i.e \\ 
+			\begin{tabular}{l}
+				$\exists (i,j) \in \intset{1,n}^2, f=(u_k)_{k \in \intset{i,j}}$ ou encore \\ 
+				$\exists (p,q) \in \intset{1,m}^2, f=(v_k)_{k\in\intset{p,q}}$
+			\end{tabular} \end{minipage}
+			}
+		\]
+		On abgrègera \textbf{Plus long facteur commun} en \textbf{PLFC}.
+
+		\subsection{Résolution}
+			On pose pour $(i,j) \in \intset{0,n} \times \intset{0,m}$:
+			\[
+				A_{i,j} = \max\set{|s| \tq s \text{ est un suffixe de } u_1...u_i, v_1...v_j} \leq \min (i,j)
+			\]
+			On a immédiatement, pour tout $(i,j) \in \intset{1,n} \times \intset{1,m}$:
+			\begin{itemize}
+				\item $i=0$ ou $j=0 \rightarrow A_{i,j} = 0$
+				\item $A_{i,j} = A_{i-1,j-1} + 1$ si $u_i = v_j$, 0 sinon.
+			\end{itemize}
+
+			D'ou \textbf{PLFC}$(u,v) = \max_{(i,j) \in \intset{0,n} \times \intset{0,m}} A_{i,j}$
+
+	\section{Recherche de motif}
+		\subsection{Définitions}
+			\[
+				\pb{Trouve motif}
+				{$t \in \Sigma^*$ un texte de longueur $n$, $x \in \Sigma^*$ un motif de longueur $m$ (avec $m \leq n$)}
+				{$\underbrace{\set{i \in \intset{1,n} \tq (t_{i+k})_{k \in \intsete{0,m} = x}}}_\text{l'ensemble des indices de début des occurences de $x$ dans $t$}$}
+			\]
+			\exo{Proposer un algorithme de résolution naïve pour ce problème.}
+
+		\subsection{Algorithme de }
+\end{document}
