@@ -1,4 +1,4 @@
-\newcommand\PATH{Lancez `make adapt avant de compiler!`}
+\newcommand\PATH{/home/matthieu/Documents/Ecole/Informatique/cours/14-graphes.latex}
 
 \RequirePackage{fix-cm}
 \documentclass{scrartcl}
@@ -148,7 +148,9 @@
 					\set{ y \in V\setminus T \tq \forall x \in T, y \in \mathscr{V}(x) }
 				\]
 
-			On dit que $L\in V^n$ (ou $S^n$ pour un graphe orienté) est un parcours ssi $\forall i \in \intset{1,n}, L_i \in \mathcal{B}(\set{L_j \tq j \in \intsete{1,i}})$.
+			On dit que $L\in V^n$ (ou $S^n$ pour un graphe orienté) est un parcours ssi 
+			$\forall i \in \intset{1,n}, L_i \in \mathcal{B}(\set{L_j \tq j \in \intsete{1,i}})$ ou $\mathcal{B}(\set{L_j \tq j \in \intsete{1,i}})$ est vide.
+			
 			
 			\begin{center}	
 			\begin{tikzpicture}
@@ -173,7 +175,7 @@
 			
 
 			De plus, on dit que $L_i$ est un \textbf{point de regénération du parcours} 
-			ssi $\mathcal{B}(\set{L_j \tq j \in \intsete{1,i}}) = \varnothing$. [??]
+			ssi $\mathcal{B}(\set{L_j \tq j \in \intsete{1,i}}) = \varnothing$. 
 
 			Enfin, en notant $\mathcal{R}$ l'ensemble des points de régénération de $L$,
 			on dit que $F = (V,P)$ est une forêt d'arborescences associée au parcours $L$ ssi $F$ respecte les trois propriétés suivantes:
@@ -220,7 +222,7 @@
 
 
 			\prop{Soit $G = (V,E)$ un graphe non-orienté. Soit $W \subset V$. Si $\mathcal{B}(W) = \varnothing$, 
-			alors il n'existe aucune chaîne reliant un sommet de $W$ et un sommet de $V \subset W$.}
+			alors il n'existe aucune chaîne reliant un sommet de $W$ et un sommet de $V \setminus W$.}
 			\begin{demo}
 				\item Par l'absurde, supposons qu'il existe une chaîne $\gamma$ de lngueur $l$ telle que $\gamma_0 \in W$ et $\gamma_l \in V\setminus W$.
 				On a $\gamma_0 \neq \gamma_l$ donc $l > 0$.
