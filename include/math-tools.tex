@@ -12,8 +12,10 @@
 \newcommand{\dist}{\text{dist}}
 
 % Partie entière, arrondi supérieur
-
 \DeclarePairedDelimiter\ceil{\lceil}{\rceil}
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 
-
+% mathbbm - solution temporaire aux problèmes liés à bbm, qui devra être remplacé par \mathbb via le package bbold
+\usepackage{bbold}
+\newcommand{\bbm}[1]{\mathbb{#1}}
+\newcommand{\mathbbm}[1]{\mathbb{#1}}

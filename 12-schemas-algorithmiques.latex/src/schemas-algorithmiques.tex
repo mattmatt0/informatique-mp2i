@@ -5,14 +5,12 @@
 \input{\PATH/../include/preamble.tex}
 \input{\PATH/../include/math-tools.tex}
 \input{\PATH/../include/it-tools.tex}
-\usepackage{bbm}
 \usepackage{lmodern}
 
 \renewcommand{\cal}[1]{\mathcal{#1}}
 \newcommand{\scr}[1]{\mathscr{#1}}
 \newcommand{\bb}[1]{\mathbb{#1}}
-\newcommand{\bbm}[1]{\mathbbm{#1}}
-\renewcommand{\rm}[1]{\mathrm{#1}}
+\newcommand{\rm}[1]{\mathrm{#1}}
 
 \newcommand{\elt}[1]{\textbf{#1}}
 \newcommand{\dotp}{\! \cdot \!}
@@ -51,11 +49,11 @@
 	
 	\definition On définit le produit scalaire de deux $n$-uplets $(u,v)$ par $u \cdot v = \sum_{i=1}^n u_iv_i$.
 
-	\notecentrale{Dans tout ce chapitre, $\mathbbm{1}_S$ désigne le $n$-uplet 
+	\notecentrale{Dans tout ce chapitre, $\bbm{1}_S$ désigne le $n$-uplet 
 	($n$ dépendant du contexte, par exemple si cette notation est employée dans un produit scalaire, ce sera la taille de l'autre $n$-uplet) 
 	constitué uniquement de 0, sauf pour les éléments dont les positions sont dans $S$, qui vaudront 1. 
-	Ainsi $\mathbbm{1}_{\set{1,3,4}} = (0,1,0,1,1,0,0...)$. 
-	On écrira $\mathbbm{1}_i$ pour $\mathbbm{1}_{\set{i}}$ et $\mathbbm{1}$ pour $\mathbbm{1}_{\intset{1,n}}$.}
+	Ainsi $\bbm{1}_{\set{1,3,4}} = (0,1,0,1,1,0,0...)$. 
+	On écrira $\bbm{1}_i$ pour $\bbm{1}_{\set{i}}$ et $\bbm{1}$ pour $\bbm{1}_{\intset{1,n}}$.}
 
 	\section{Algorithmes gloutons}
 		\subsection{L'exemple du problème du sac à dos}
@@ -91,12 +89,12 @@
 
 			\rem \textbf{Sac à dos fractionnaire} est un relâché de \textbf{Sac à dos}.
 
-			\rem La contrainte $(*)$ se traduit aussi par  $\forall i \in \intset{1,n}, 1 \geq \delta \cdot \mathbbm{1}_i \geq 0 $.
+			\rem La contrainte $(*)$ se traduit aussi par  $\forall i \in \intset{1,n}, 1 \geq \delta \cdot \bbm{1}_i \geq 0 $.
 			En effet,
 			\[
 				\forall i \in \intset{1,n}, \delta \cdot \1_{i} = 
-				\sum_{j=1}^{n} \delta_j \times \mathbbm{1}_{ij} = 
-				\delta_i \times \mathbbm{1}_{ii} = 
+				\sum_{j=1}^{n} \delta_j \times \bbm{1}_{ij} = 
+				\delta_i \times \bbm{1}_{ii} = 
 				\delta_i \times 1 = 
 				\delta_i 
 			\].

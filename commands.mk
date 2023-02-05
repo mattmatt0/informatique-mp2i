@@ -17,6 +17,7 @@ view: $(NAME).pdf
 	$(VIEWER) $(OUTPUT)
 
 adapt:
+	mkdir -p obj
 	-mv $(SRC_DIR)/* $(SRC_DIR)/$(NAME).tex
 	-mv *.pdf $(NAME).pdf
 	-rm -r $(OBJ_DIR)/*
@@ -26,5 +27,5 @@ hide:
 	sed -i "1s:.*:\\\\newcommand\\\\PATH{Lancez \`make adapt avant de compiler!\`}:" $(SRC)
 	
 clean:
-	-rm -r $(NAME).pdf
-	rm -r $(OBJ_DIR)/*
+	-rm -rf $(NAME).pdf
+	rm -rf $(OBJ_DIR)/*
