@@ -132,6 +132,19 @@
 
 			\rem Pour un comptage décroissant, on pourra utiliser \textcolor{teal}{\texttt{downto}} à la place de \textcolor{teal}{\texttt{to}}.
 
+			\rem Contrairement à C, OCaml ne propose pas de rupture de boucle avec un mot clé \textcolor{teal}{\texttt{break}}. 
+			On peut cela dit obtenir un comportement similaire en utilisant des exceptions (\url{https://discuss.ocaml.org/t/how-to-break-a-for-loop-in-a-nice-way/9852}):
+			\begin{code}{ocaml}
+				exception Break
+				try
+					for i = 0 to 9 do
+						if i = 4 then raise Break
+						else ()
+					done
+				with
+				| Break -> ()
+			\end{code}
+
 		\subsection{Tableaux}
 			Les \texttt{array} sont en Ocaml la même chose que les tableaux en C. Ils permettent de stocker un nombre fini d'éléments de même type
 			\plabel{Création d'un tableau à une dimension:}
