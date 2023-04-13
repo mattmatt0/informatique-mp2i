@@ -457,7 +457,7 @@
 
 			\subsubsection{Tronquer et trier les résultats}
 				Le mot clé \texttt{ORDER BY} trie les lignes selon les valeurs dans la colonne juste après.
-				En cas d'égalité, il utilise la colonne éventuellement spécifiée après pour trancher, et ainsi de suite...
+				En cas d'égalité, il utilise la colonne éventuellement spécifiée après pour trancher, et ainsi de suite...(ordre lexicographique).
 				Il faut à chaque fois préciser si le tri se fait par ordre croissant ou décroissant, via le mot clé \texttt{ASC} ou \texttt{DESC}
 				
 				Pour limiter le nombre de lignes récupérées, on peut utiliser le mot-clé \texttt{OFFSET n} qui efface les \texttt{n}-premières lignes,
@@ -548,6 +548,8 @@
 					JOIN pays
 					ON pers.pays = pays.capitale
 				\end{code}
+
+				\rem Il est tout à fait possible de chaîner les appels à \texttt{JOIN}.
 
 			\subsubsection{Jointure gauche}
 				\semidef Imaginons que l'on gère une liste de clients enregistrés dans une table \texttt{clients}, 
