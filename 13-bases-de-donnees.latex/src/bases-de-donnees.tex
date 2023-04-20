@@ -460,8 +460,9 @@
 				En cas d'égalité, il utilise la colonne éventuellement spécifiée après pour trancher, et ainsi de suite...(ordre lexicographique).
 				Il faut à chaque fois préciser si le tri se fait par ordre croissant ou décroissant, via le mot clé \texttt{ASC} ou \texttt{DESC}
 				
-				Pour limiter le nombre de lignes récupérées, on peut utiliser le mot-clé \texttt{OFFSET n} qui efface les \texttt{n}-premières lignes,
-				ainsi que le mot-clé \texttt{LIMIT k} qui ne garde que les \texttt{k} premières lignes.
+				Pour limiter le nombre de lignes récupérées, on peut utiliser l'opération \texttt{LIMIT k} qui ne garde que les \texttt{k} premières lignes.
+				Si on veut prendre \texttt{k} lignes à partir de la \texttt{n}-ième ligne (incluse, en partant de 0),
+				on utilisera l'opération \texttt{LIMIT k OFFSET n}. (\texttt{OFFSET} "décale" les valeurs de \texttt{n} crans avant d'appliquer \texttt{LIMIT}).
 
 				\begin{code}{sql}
 					SELECT <colonne1>,<colonne2>,...,<colonneN>
