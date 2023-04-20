@@ -483,8 +483,8 @@
 			\end{code}
 			Les principales fonctions d'agrégation sont \texttt{SUM}, \texttt{AVG}, \texttt{COUNT}, \texttt{MAX}, \texttt{MIN}.
 
-			\rem Si l'on applique une fonction d'agrégation à une colonne, et que l'on sélectionne une autre colonne en même temps,
-			la fonction d'agrégation s'appliquera séparément sur toutes les lignes coïncidant sur l'autre colonne.
+			\semidef Si on veut effectuer l'agrégation en regroupant les enregistrements selon une valeur, 
+			on peut utiliser \texttt{GROUP BY} (qui se place toujours après \texttt{WHERE})
 
 			\exemple Si on a une table \texttt{achat} contenant les ventes d'une boutique:
 			\begin{center}
@@ -498,27 +498,8 @@
 				\hline
 			\end{tabularx}
 			\end{center}
-			La requête SQL
-			\begin{code}{sql}
-				SELECT client, SUM(tarif)
-				FROM achat
-			\end{code}
-			renverrra:
-			\begin{center}
-			\begin{tabularx}{0.5\textwidth}{|Y|Y|Y|}
-				\hline client & tarif \\
-				\hline pierre & 262   \\
-				\hline simon  & 47    \\
-				\hline marie  & 38    \\
-				\hline marie  & 38    \\
-				\hline pierre & 262   \\
-				\hline
-			\end{tabularx}
-			\end{center}
 
-			\semidef On voit sur l'exemple précédent qu'il y des doublons. 
-			Pour les éviter, il faut "grouper" les éléments par nom, via la commande \texttt{GROUP BY} 
-			(qui se place TOUJOURS après la commande \texttt{WHERE}):
+			L'exécution de la requête
 			\begin{code}{sql}
 				SELECT client, SUM(tarif)
 				FROM achat
@@ -537,6 +518,10 @@
 
 			Si l'on veut alors appliquer encore appliquer un filtre, on ne peut pas utiliser \texttt{WHERE}.
 			La commande à utiliser est \texttt{HAVING}, qui fonctionne comme \texttt{WHERE}.
+
+			\rem Attention, sans \texttt{GROUP BY}, l'appel à une fonction d'agrégation ne renvoie qu'un seul enregistrement
+			contenant la valeur de la fonction appliquée à tous les enregistrements de la colonne sur laquelle on applique la fonction.
+
 
 		\subsection{Jointure}
 			\subsubsection{Jointure générale}
@@ -568,7 +553,7 @@
 					SELECT clients.id, prenom, nom, achats.id_client
 					FROM clients
 					LEFT JOIN achats ON clients.id == achats.id_client
-					WHERE achats.id_clients IS NULL
+					WHERE achats.id_client IS NULL
 				\end{code}
 
 				\rem On utilise bien ici \texttt{IS NULL} et non \texttt{== NULL}, car \texttt{NULL} désigne l'absence de valeur: il n'y a donc rien à comparer!
