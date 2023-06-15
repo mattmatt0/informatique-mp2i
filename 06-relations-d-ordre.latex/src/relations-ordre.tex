@@ -8,7 +8,7 @@
 \input{\PATH/../include/math-tools.tex}
 \usepackage{lmodern}
 
-\title{Ordres et induction}
+\title{Ordres}
 \author{}
 \date{}
 
@@ -16,10 +16,27 @@
 	\maketitle
 	\section{Relations}
 		\subsection{En général}
-			\begin{definition}{Relation $n$-aire}
-				Soit $X$ un ensembele. Soit $n \in \mathbb{N}^*$.
-				$\mathcal{R}$ est une relation $n$-aire sur $X$ si et seulement si $\mathcal{R} \subset{X}^n$.
-			\end{definition}
+			\semidef Soit $X$ un ensemble non vide. Soit $n \in \mathbb{N}^*$.
+			$\mathcal{R}$ est une relation $n$-aire sur $X$ si et seulement si $\mathcal{R} \subset{X}^n$.
+			Pour $n=1$, on parle de relation unaire, pour $n=2$ de relation binaire, et $n=3$ de relation ternaire.
+
+			\semidef Soit $X$ un ensemble non vide. Soit $\mathcal{R}$ une relation binaire sur $X$.
+			Pour $(x,y) \in X^2$, on note $x\mathcal{R}y$ pour signifier $(x,y) \in \mathcal{R}$.
+			On dit alors que $x$ est en relation avec $y$.
+
+		\subsection{Relations binaires}
+			\semidef Une relation $\mathcal{R}$ binaire sur $X$ est:
+			\begin{itemize}
+				\item réflexive si et seulement si $x \mathcal{R} x$ pour tout $x \in \mathcal{R}$;
+				\item transitive si et seulement si $x \mathcal{R} y$ et $y \mathcal{R} z \Rightarrow x \mathcal{R} z$ pour tout $(x,y,z) \in X^3$;  
+				\item symétrique si et seulement si $x \mathcal{R} y \Rightarrow y \mathcal{R} x$ pour tout $(x,y) \in X^2$;
+				\item antisymétrique si et seulement si $x \mathcal{R} y$ et $y \mathcal{R} x \Rightarrow x = y$ pour tout $(x,y) \in X^2$. 
+			\end{itemize}
+
+			\prop{Soit $X$ un ensemble non vide. Soit $Y$ un sous-ensemble non vide de $X$.
+			Si $\mathcal{R}$ est une relation binaire sur $X$, alors $\mathcal{R}' = \mathcal{R} \cap Y^2$
+			est une relation binaire sur $Y$ qui a les mêmes propriété de transitivité, réflexivité, symétrie, antisymétrie que $\mathcal{R}$.}
+
 	\section{Ordre}
 		\subsection{Élements particuliers}
 			Soit $x\in X$. On dit que:
