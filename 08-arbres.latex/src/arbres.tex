@@ -230,16 +230,16 @@
 			On dit que $(n_i)$ est une branche de $t$ si et seulement si $n_0 = \varepsilon$ et $n_i$ est le père de $n_{i+1}$ pour tout $i \in \intsete{0,k}$.
 			
 			Soient $t$ et $t'$ deux arbres binaires sur $\mathcal{S}$. On dit que $t'$ est le \textbf{sous-arbre droit} (resp \textbf{sous-arbre gauche}) de $t$
-			si et seulement si il existe $g \in \mathcal{A}_B(\mathcal{S})$ (resp. $d \in \mathcal{A}_B(\mathcal{S})$) tel que $t = N(x,g,t')$ (resp. $t = N(x,t',d)$).
+			si et seulement si il existe $g \in \mathscr{A}_B(\mathcal{S})$ (resp. $d \in \mathscr{A}_B(\mathcal{S})$) tel que $t = N(x,g,t')$ (resp. $t = N(x,t',d)$).
 			On dit que $t'$ est un \textbf{sous-arbre} de $t$ si et seulement si $t' \leq t$.
 
 			\rem Notons qu'un arbre binaire peut-être sous-arbre d'un autre tout en étant ni un sous-arbre droit, ni un sous-arbre gauche.
 
 		\subsection{Hauteur}
-			On définit par induction la hauteur $h(t)$ d'un arbre binaire $t \in \mathcal{A}_B(\mathcal{S})$ comme valant 
+			On définit par induction la hauteur $h(t)$ d'un arbre binaire $t \in \mathscr{A}_B(\mathcal{S})$ comme valant 
 			-1 si $t = V$ et $1 + \max(h(g),h(d))$ si $t = N(x,g,d)$.
 
-			\prop{Soit $t \in \mathcal{A}_B(\mathcal{S}) \setminus \set{V}$. 
+			\prop{Soit $t \in \mathscr{A}_B(\mathcal{S}) \setminus \set{V}$. 
 				Alors $h(t) = \max_{n \in \text{ch}(t)} \mathrm{prof}(n)$.
 				$h(t)+1$ est alors la longueur maximale d'une branche.}
 			\begin{demo}
@@ -248,7 +248,7 @@
 					le seul chemin admissible pour cet arbre est $\varepsilon$ qui est de longueur 0,
 					et la seule branche de $t$ est alors $(\varepsilon)$, qui est de taille 1.
 
-				\item Soit $t = N(x,g,d) \in \mathcal{A}_B(\mathcal{S})$ avec $g$ et $d$ deux arbres binaires non vides vérifiant la propriété.
+				\item Soit $t = N(x,g,d) \in \mathscr{A}_B(\mathcal{S})$ avec $g$ et $d$ deux arbres binaires non vides vérifiant la propriété.
 					On a 
 					\[
 						\max_{n \in \text{ch}(t)} \mathrm{prof}(n) = \max(\max_{0\cdot n \in \text{ch}(t)} \mathrm{prof}(n), \max_{1\cdot n \in \text{ch}(t)} \mathrm{prof}(n), 0)
@@ -268,10 +268,10 @@
 				\item Les cas $t = N(x,g,V)$ et $t = N(x,V,d)$ se traitent de la même manière (la séparation des maximums donne alors un maximum d'un ensemble vide, soit $- \infty$, qui est neutre pour le maximum, ce qui traduit l'inexistance de branches / noeuds à droite ou à gauche de la racine).
 			\end{demo}
 
-			\prop{Pour $t \in \mathcal{A}_B(\mathcal{S})$, on a $h(t) + 1 \leq s(t) \leq 2^{h(t)+1}-1$.}
+			\prop{Pour $t \in \mathscr{A}_B(\mathcal{S})$, on a $h(t) + 1 \leq s(t) \leq 2^{h(t)+1}-1$.}
 			\begin{demo}
 				\item Montrons-le par induction sur $t$ : pour $t = V$, on a $h(t) + 1= 0$, $s(t) = 0$ et $2^{h(t)+1}-1 = 0$.
-				\item Soit $t = N(x,g,d) \in \mathcal{A}_B(\mathcal{S})$, où $g$ et $d$ respectent la propriété énoncée.
+				\item Soit $t = N(x,g,d) \in \mathscr{A}_B(\mathcal{S})$, où $g$ et $d$ respectent la propriété énoncée.
 					Alors 
 					\[
 						h(t) + 1 = 2 + \max(h(d), h(g)) \leq 2 + h(d) + h(g) 
@@ -284,5 +284,31 @@
 					\]
 					En combinant ces inégalités, il vient le résultat attendu.
 			\end{demo}
-\end{document}
+
+		\subsection{Parcours}
+			Soit $t \in \mathscr{A}_B(\mathcal{S})\setminus\set{V}$.
+			$(a_i)_{i\in\intset{1,s(t)}}$ est un \textbf{parcours} de $t$ si et seulement si il existe $\varphi \in \mathcal{F}(\mathrm{ch}(t), \intset{1,s(t)})$ bijective telle que $\forall n \in \mathrm{ch}(t), a_{\varphi(n)} = \text{etiq}(t)(n)$.
+
+			Pour $n \in \mathrm{ch}(t)$ on note 
+			\begin{itemize}
+				\item $\mathscr{G}(n) = \set{n\cdot 0 \cdot u \tq u \in \Sigma^*} \cap \mathrm{ch}(t)$ l'ensemble des descendants gauches de $n$ ;
+				\item $\mathscr{D}(n) = \set{n\cdot 1 \cdot u \tq u \in \Sigma^*} \cap \mathrm{ch}(t)$ l'ensemble des descendants droits de $n$.
+			\end{itemize}
+
+			
+			Un parcours $(\mathrm{etiq}(t)(\varphi^{-1}(i))_{i \in \intset{1,s(t)}}$ (où $\varphi$ est une bijection de $\mathrm{ch}(t)$ dans $\intset{1, s(t)}$)
+			est dit \textbf{préfixe} (resp. postfixe, infixe) si et seulement si pour tout $n \in \mathrm{ch}(t)$, pour tout $g \in \mathscr{G}(n)$ et $d \in \mathscr{D}(n)$,
+			on a $\varphi(n) \leq \varphi(g) \leq \varphi(d)$ (resp. $\varphi(g) \leq \varphi(d) \leq \varphi(n)$ et $\varphi(g) \leq \varphi(n) \leq \varphi(d)$).
+
+			\exemple Pour l'arbre suivant : 
+			\begin{center}
+				\begin{tikzpicture}
+					\draw (0,0) circle(.3) node {1};
+					\draw (0,-1) circle(.3) node {2};
+					\draw (0,-1) circle(.3) node {36};
+					\draw (0,0) circle(.3) node {1};
+				\end{tikzpicture}
+			\end{center}
+
+	\end{document}
 	
