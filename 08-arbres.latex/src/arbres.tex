@@ -79,7 +79,7 @@
 			ll existe cela dit une structure qui permet d'avoir une complexité d'ajout / suppression et de recherche
 			en $\theta(\log(n))$, sous certaines conditions: il s'agit des \textbf{arbres binaires de recherche (ABR)}.
 
-	\section{Arbre minimal}
+	\section{Arbre binaires}
 		\subsection{Ensemble $\mathscr{A}_B$}
 			Soit $\mathcal{S}$ un ensemble.
 			On définit l'ensemble des arbres binaires étiquetés par $\mathcal{S}$ 
@@ -155,7 +155,7 @@
 				\forall t \in \abins: \quad \text{ch}(t) = 
 				\begin{cases}
 					\varnothing \text{ si } t = V \\ 
-					\set{\epsilon}\cup\set{0.\text{ch}(g)}\cup\set{1.\text{ch}(d)} \text{ si } t = N(x,g,d)
+					\set{\varepsilon}\cup\set{0.\text{ch}(g)}\cup\set{1.\text{ch}(d)} \text{ si } t = N(x,g,d)
 				\end{cases}
 			\]
 
@@ -217,5 +217,72 @@
 			\end{itemize}
 			
 			
-			Soient $n$ et $m$ deux chemins
+			Soient $n$ et $m$ deux chemins admissibles pour $t$ un arbre binaire non vide.
+			$m$ est le \textbf{fils gauche} (resp. \textbf{fils droit}) de $n$ si et seulement si $m = n\cdot 0$ (resp. $m = n \cdot 1$).
+			Dans les deux cas, $n$ est alors le \textbf{père} de $m$.
+
+			On dit que $m$ est un \textbf{descendant} de $n$ si et seulement si il existe $u \in \Sigma^*$ tel que $m = n \cdot u$.
+			Dans ce cas $n$ est un \textbf{ascendant} de $m$.
+
+			\rem Les feuilles sont les noeuds sans enfant, et la racine est le seul noeud sans père.
+
+			Soit $(n_i)_{i \in \intset{0,k}} \in \text{ch}(t)^{k+1}$.
+			On dit que $(n_i)$ est une branche de $t$ si et seulement si $n_0 = \varepsilon$ et $n_i$ est le père de $n_{i+1}$ pour tout $i \in \intsete{0,k}$.
+			
+			Soient $t$ et $t'$ deux arbres binaires sur $\mathcal{S}$. On dit que $t'$ est le \textbf{sous-arbre droit} (resp \textbf{sous-arbre gauche}) de $t$
+			si et seulement si il existe $g \in \mathcal{A}_B(\mathcal{S})$ (resp. $d \in \mathcal{A}_B(\mathcal{S})$) tel que $t = N(x,g,t')$ (resp. $t = N(x,t',d)$).
+			On dit que $t'$ est un \textbf{sous-arbre} de $t$ si et seulement si $t' \leq t$.
+
+			\rem Notons qu'un arbre binaire peut-être sous-arbre d'un autre tout en étant ni un sous-arbre droit, ni un sous-arbre gauche.
+
+		\subsection{Hauteur}
+			On définit par induction la hauteur $h(t)$ d'un arbre binaire $t \in \mathcal{A}_B(\mathcal{S})$ comme valant 
+			-1 si $t = V$ et $1 + \max(h(g),h(d))$ si $t = N(x,g,d)$.
+
+			\prop{Soit $t \in \mathcal{A}_B(\mathcal{S}) \setminus \set{V}$. 
+				Alors $h(t) = \max_{n \in \text{ch}(t)} \mathrm{prof}(n)$.
+				$h(t)+1$ est alors la longueur maximale d'une branche.}
+			\begin{demo}
+				\item Montrons-le par induction sur $t$ : c'est bien le cas pour $t = N(x,V,V)$
+					car $h(t) = 0$, 
+					le seul chemin admissible pour cet arbre est $\varepsilon$ qui est de longueur 0,
+					et la seule branche de $t$ est alors $(\varepsilon)$, qui est de taille 1.
+
+				\item Soit $t = N(x,g,d) \in \mathcal{A}_B(\mathcal{S})$ avec $g$ et $d$ deux arbres binaires non vides vérifiant la propriété.
+					On a 
+					\[
+						\max_{n \in \text{ch}(t)} \mathrm{prof}(n) = \max(\max_{0\cdot n \in \text{ch}(t)} \mathrm{prof}(n), \max_{1\cdot n \in \text{ch}(t)} \mathrm{prof}(n), 0)
+					\]
+					en séparant les chemins admissibles de $t$ selon leur première lettre.
+					Par définition des chemins admissibles et de la profondeur, on a alors 
+					\[
+						\max_{n \in \text{ch}(t)} \mathrm{prof}(n) = \max(1 + \max_{n \in \text{ch}(g)} \mathrm{prof}(n), 1 + \max_{n \in \text{ch}(d)} \mathrm{prof}(n) , 1)
+					\]
+					soit, par hypothèse sur $g$ et $d$, 
+					\[
+						\max_{n \in \text{ch(t)}} \mathrm{prof}(n) = 1 + \max(h(g), h(d), 0) = 1 + \max(h(g), h(d)) = h(t)
+					\] 
+					car $g$ et $d$ ne sont pas vides et ont donc une hauteur plus grande que 0.
+					On établit le résultat sur la longueur maximale des branches de la même manière.
+				
+				\item Les cas $t = N(x,g,V)$ et $t = N(x,V,d)$ se traitent de la même manière (la séparation des maximums donne alors un maximum d'un ensemble vide, soit $- \infty$, qui est neutre pour le maximum, ce qui traduit l'inexistance de branches / noeuds à droite ou à gauche de la racine).
+			\end{demo}
+
+			\prop{Pour $t \in \mathcal{A}_B(\mathcal{S})$, on a $h(t) + 1 \leq s(t) \leq 2^{h(t)+1}-1$.}
+			\begin{demo}
+				\item Montrons-le par induction sur $t$ : pour $t = V$, on a $h(t) + 1= 0$, $s(t) = 0$ et $2^{h(t)+1}-1 = 0$.
+				\item Soit $t = N(x,g,d) \in \mathcal{A}_B(\mathcal{S})$, où $g$ et $d$ respectent la propriété énoncée.
+					Alors 
+					\[
+						h(t) + 1 = 2 + \max(h(d), h(g)) \leq 2 + h(d) + h(g) 
+					\]
+					\[
+						1 + (h(g)+1) + (h(d)+1) = 3 + h(g) + h(d) \leq 1 + s(g) + s(d)
+					\]
+					\[
+						s(g) + s(d) + 1 \leq 2^{h(t) + 1} - 1 + 2^{h(d) + 1} \leq 2^{\max(h(t),h(d)) + 1} - 1 = 2^{h(t)+1}-1
+					\]
+					En combinant ces inégalités, il vient le résultat attendu.
+			\end{demo}
 \end{document}
+	
