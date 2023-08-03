@@ -388,19 +388,61 @@
 			\begin{demo}
 				\item Montrons-le par récurrence sur la profondeur du noeud $n$ : le prédicat à prouver est, pour $k \in \mathbb{N}$
 				\begin{center}
-					$\mathcal{P}(k)$ : pour tout noeud de taille $k$ d'un arbre $t \in \mathsrc{A}_B(E)$, s'il n'existe pas d'autre noeud dans $t$ de même étiquette que $n$,
-					alors le nombre de comparaison lors de la recherche de $x = \mathrm{etiq}(t)(n)$ dans $t$ vaut $2k+1$.
+					$\mathcal{P}(k)$ : pour tout noeud de taille $k$ d'un arbre $t \in \mathscr{A}_B(E)$, s'il n'existe pas d'autre noeud dans $t$ de même étiquette que $n$,
+					alors le nombre de comparaison lors de la recherche de $e = \mathrm{etiq}(t)(n)$ dans $t$ vaut $2k+1$.
 				\end{center}
 				\item Pour $k=0$, on a nécessairement $n = \varepsilon$, ce qui implique que l'arbre sur lequel on appelle la fonction n'est pas vide,
-					et que sa racine est étiquetée par $x$ : ainsi, on effectue une seule comparaison
+					et que sa racine est étiquetée par $e$ : ainsi, on effectue une seule comparaison (l.5) avant de renvoyer vrai. D'où $\mathcal{P}(0)$.
+				\item Soit $k \in \mathbb{N}$. Supposons $\mathcal{P}(k)$. Soit $n$ un chemin de profondeur $k+1$ d'un arbre binaire de recherche $t$.
+					Lors de l'appel initial à la recherche, le test d'égalité ligne 5 échoue (sinon on aurait deux noeuds étiquettés par $e$, ce qui est exclu par hypothèse).
+					On engendre donc un appel au sous-arbre gauche ou droit (cela dépend du premier caractère de $n = 0\cdot m$ ou $n = 1\cdot m$) après une seconde comparaison.
+					Dans ce sous-arbre, le noeud étiqueté par $e$ dans l'arbre initial est $m$ (par définition inductive de l'étiquetage), et est toujours le seul à être étiqueté par $e$.
+					Comme $m$ est de profondeur $k$, on sait d'après $\mathcal{P}(k)$ que la suite de la recherche va alors engendrer $2k+1$ nouvelles comparaisons.
+					Sommées avec les comparaisons déjà effectuées, on obtient un total de $2k+1+2 = 2(k+1) + 1$ comparaisons, d'où $\mathcal{P}(k+1)$.
 			\end{demo}
 
-			\corro{Pour tout $e \in E$, la recherche de $e$ dans $t$ engendrera au plus $2h(t)+2$ comparaisons.}
+			\corro{Pour tout $e \in E$, la recherche de $x$ dans $t$ engendrera au plus $2h(t)+2$ comparaisons.}
 			\begin{demo}
-				\item Todo
+				\item Si $e$ n'est pas dans $t$, on le prouve par une induction élémentaire sur $t$. 
+					Sinon, soit $n$ un noeud de profondeur minimale parmi tous les noeuds étiquetés par $e$.
+					En reprenant la preuve précédente en utilisant la minimalité de la profondeur de $n$ plutôt que le fait que $n$ soit le seul noeud à être étiquetté par $x$,
+					on prouve que l'algorithme effectue $2\mathrm{prof}(n)+1$ comparaisons. D'après la remarque sur le lien entre profondeur des noeuds est hauteur,
+					le nombre total de comparaisons effectuées est bien majoré par $2h(t)+1$.
 			\end{demo}
 
 		\subsection{Ajout en feuille}
+			\begin{algorithm}[H]
+				\caption{Ajout en feuille dans un arbre binaire de recherche}
+				\Entree{$t \in \mathscr{A}_B(E)$ un ABR, $e \in E$ un élément à ajouter dans $t$}
+				\Sortie{$t'$ un ABR contenant tous les éléments de $t$ (avec multiplicité) et $e$.}
+				\eSi{$t = V$}
+				{
+					Renvoyer $N(e,V,V)$
+				}
+				{
+					Poser $t = N(x,g,d)$ \;
+					\eSi{$e \leq x$}
+					{
+						Ajouter $e$ en feuille à $g$. On note $g'$ l'arbre obtenu \;
+						Renvoyer $N(x,g',d)$
+					}
+					{
+						Ajouter $e$ en feuille à $d$. On note $d'$ l'arbre obtenu \;
+						Renvoyer $N(x,g,d')$
+					}
+				}
+			\end{algorithm}
+
+			\prop{Si $t$ est un ABR, l'arbre obtenu en ajoutant à $t$ un élément en feuille est toujours un ABR}
+			\begin{demo}
+				\item En exercice (par induction sur $t$).
+			\end{demo}
+
+			\prop{La complexité temporelle de l'ajout en feuille est en $O(h(t))$.}
+			\begin{demo}
+				\item On montre par induction sur $t$ que l'ajout en feuille engendre au plus $h(t) + 1$ comparaisons entre éléments de $E$.
+			\end{demo}
+
 		\subsection{Suppression}
 		\subsection{Limitation de la hauteur}
 
