@@ -348,6 +348,66 @@
 
 		\subsection{Recherche d'éléments}
 			Profitons de la structure ordonnée de l'ABR. On procède par dichotomie pour la recherche d'un élément (d'une étiquette).
+			
+			\begin{algorithm}[H]
+				\caption{Recherche d'élément dans un ABR}
+				\Entree
+				{
+					$t \in \mathscr{A}_B(E)$ un ABR à étiquettes dans $E$,
+					$e \in E$ l'élément à rechercher dans $t$.
+				}
+				\Sortie
+				{
+					Vrai s'il existe un noeud dans $t$ ayant pour étiquette $e$, faux sinon.
+				}
+				\eSi{$t = V$}
+				{
+					Renvoyer faux
+				}
+				{
+					Poser $t = N(x,g,d)$ \;
+					\eSi{$e = x$}
+					{
+						Renvoyer vrai
+					}
+					{
+						\eSi{$e < x$}
+						{
+							Rechercher $e$ dans $g$
+						}
+						{
+							Rechercher $e$ dans $d$
+						}
+					}
+				}
+			\end{algorithm}
+			($\mathbb{B}$ désigne l'ensemble des booléens : vrai ou faux)
+
+			\prop{Pour tout noeud $n$ d'un arbre binaire de recherche $t \in \mathscr{A}_B(E)$, s'il n'existe pas d'autre noeud dans $t$ ayant la même étiquette que $n$,
+				alors le nombre de comparaison effectuées lors de la recherche de $\mathrm{etiq}(t)(n)$ dans $t$ vaut $2\mathrm{prof}(n)+1$.}
+			\begin{demo}
+				\item Todo
+			\end{demo}
+
+			\corro{Pour tout $e \in E$, la recherche de $e$ dans $t$ engendrera au plus $2h(t)+2$ comparaisons.}
+			\begin{demo}
+				\item Todo
+			\end{demo}
+
+		\subsection{Ajout en feuille}
+		\subsection{Suppression}
+		\subsection{Limitation de la hauteur}
+
+	\section{Arbres 2-3-4}
+		\subsection{Définitions}
+		\subsection{Scission d'un 4-noeud}
+		\subsection{Insertion dans un arbre 2-3-4}
+		\subsection{Suppression dans un arbre 2-3-4}
+	\section{Arbres rouge-noir}
+	\section{Hachage}
+	\section{Implémentation des tas}
+		\subsection{Introdution}
+		\subsection{Opérations en pseudo-code}
 
 \end{document}
 	
