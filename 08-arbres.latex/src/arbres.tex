@@ -168,5 +168,54 @@
 
 			\exo Donner une définition inductive de $s(t)$.
 
+			On appelle \textbf{étiquetage} d'un arbre non vide la fonction qui à un noeud de l'arbre associe son étiquette.
 			
+			Formellement, l'étiquetage est défini inductivement comme suit 
+			(on note $\mathcal{E}$ l'ensemble des étiquetages des arbres, c'est à dire des fonctions d'une partie de $\Sigma^*$ dans $\mathcal{S}$):
+			\[
+				\text{etiq}
+				\left(\text{\begin{tabular}{r c l}
+					$\mathscr{A}_B(\mathcal{S})\setminus\set{V}$ & $\rightarrow$ & $\mathcal{E}$ \\\vspace{5pt}
+					$N(x,V,V)$ & $\mapsto$ & 
+						$\left(\text{\begin{tabular}{r c l} 
+							$\text{ch}(x,V,V) = \set{\varepsilon}$ & $\to$ & $\mathcal{S}$ \\
+							$\varepsilon$ & $\mapsto$ & $x$
+						\end{tabular}}\right)$ \\\vspace{5pt}
+					$N(x,g,V)$ & $\mapsto$ &
+						$\left(\text{\begin{tabular}{r c l}
+							$\text{ch}(N,x,g,V)$ & $\to$ & $\mathcal{S}$ \\
+							$\varepsilon$ & $\mapsto$ & $x$ \\
+							$0 \cdot u$ & $\mapsto$ & $\text{etiq}(g) (u)$
+						\end{tabular}}\right)$ \\\vspace{5pt}
+					$N(x,V,d)$ & $\mapsto$ &
+						$\left(\text{\begin{tabular}{r c l}
+							$\text{ch}(N,x,V,d)$ & $\to$ & $\mathcal{S}$ \\
+							$\varepsilon$ & $\mapsto$ & $x$ \\
+							$1 \cdot u$ & $\mapsto$ & $\text{etiq}(d) (u)$
+						\end{tabular}}\right)$ \\\vspace{5pt}
+					$N(x,g,d)$ & $\mapsto$ &
+						$\left(\text{\begin{tabular}{r c l}
+							$\text{ch}(N,x,g,d)$ & $\to$ & $\mathcal{S}$ \\
+							$\varepsilon$ & $\mapsto$ & $x$ \\
+							$0 \cdot u$ & $\mapsto$ & $\text{etiq}(g) (u)$ \\
+							$1 \cdot u$ & $\mapsto$ & $\text{etiq}(d) (u)$ 
+						\end{tabular}}\right)$
+				\end{tabular}}\right)
+			\]
+
+			Soit $t \in \mathscr{A}_B(\mathcal{S})$, $\text{etiq}(t)$ est l'étiquetage de $t$.
+			Si $n \in \text{ch}(t)$, alors l'étiquette de $n$ dans $t$ est $\left(\text{etiq}(t)\right)(n)$
+
+		
+		\subsection{Vocabulaire}
+			Soit $t \in \mathscr{A}_B(\mathcal{S})$.
+			Soit $n \in \text{ch}(t)$.
+			\begin{itemize}
+				\item $n$ est une \textbf{feuille} de $t$ si et seulement si pour tout $u \in \Sigma^*$, $n\cdot u \in \text{ch}(t) \Rightarrow u=\varepsilon$
+				\item $n$ est \textbf{racine} de $t$ si et seulement si $n = \varepsilon$
+				\item $n$ est un \textbf{noeud interne} de $t$ si et seulement si $n$ n'est pas une feuille.
+			\end{itemize}
+			
+			
+			Soient $n$ et $m$ deux chemins
 \end{document}
