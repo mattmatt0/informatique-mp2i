@@ -297,8 +297,8 @@
 
 			
 			Un parcours $(\mathrm{etiq}(t)(\varphi^{-1}(i))_{i \in \intset{1,s(t)}}$ (où $\varphi$ est une bijection de $\mathrm{ch}(t)$ dans $\intset{1, s(t)}$)
-			est dit \textbf{préfixe} (resp. postfixe, infixe) si et seulement si pour tout $n \in \mathrm{ch}(t)$, pour tout $g \in \mathscr{G}(n)$ et $d \in \mathscr{D}(n)$,
-			on a $\varphi(n) \leq \varphi(g) \leq \varphi(d)$ (resp. $\varphi(g) \leq \varphi(d) \leq \varphi(n)$ et $\varphi(g) \leq \varphi(n) \leq \varphi(d)$).
+			est dit \textbf{préfixe} (resp. \textbf{postfixe}, \textbf{infixe}) si et seulement si pour tout $n \in \mathrm{ch}(t)$, pour tout $g \in \mathscr{G}(n)$ et $d \in \mathscr{D}(n)$,
+			on a $\varphi(n) \leq \varphi(g) \leq \varphi(d)$ (resp. $\varphi(g) \leq \varphi(d) \leq \varphi(n)$, $\varphi(g) \leq \varphi(n) \leq \varphi(d)$).
 
 			\exemple Pour l'arbre suivant (les noeuds vides n'ont pas été représentés): 
 			\begin{center}
@@ -322,8 +322,32 @@
 					\draw (-90+60:0.5) -- (-90+60:1.5);
 					\draw ($(n2)+(-90-40:0.5)$) -- ($(n2)+(-90-40:1.5)$);
 					\draw ($(n2)+(-90+40:0.5)$) -- ($(n2)+(-90+40:1.5)$);
+					\draw ($(n36)+(-90+40:0.5)$) -- ($(n36)+(-90+40:1.5)$);
+					\draw ($(n12)+(-90+20:0.5)$) -- ($(n12)+(-90+20:1.5)$);
 				\end{tikzpicture}
 			\end{center}
+			\begin{itemize}
+				\item Un parcours préfixe est 1; 2; 4; 12; 18; 36; 42;
+				\item Un parcours postfixe est 4; 18; 12; 2; 42; 36; 1;
+				\item Un parcours infixe est 4; 2; 12; 18; 1; 36; 42.
+			\end{itemize}
 
-	\end{document}
+			\prop{Il y a unicité des parcours préfixes, infixes et postfixes.}
+			\begin{demo}
+				\item En exercice.
+			\end{demo}
+			
+			On définit aussi le \textbf{parcours en largeur}, pour lequel $\left(\mathrm{prof}\left(\varphi^{-1}(i)\right)\right)_{i \in \intset{1,s(t)}}$ doit être croissante,
+			et de parcours en profondeur (hors programme dans le cadre des arbres, mais cela suit le même principe que les parcours en profondeur dans les graphes).
+
+	\section{Arbres binaires de recherches (ABR)}
+		\notecentrale{Dans cette partie, $E$ désigne un ensemble muni d'une relation d'ordre totale, notée $\preceq$.}
+
+		Soit $t \in \mathscr{A}_B(E) \setminus \set{V}.$ On pose $e = \mathrm{etiq}(t)$.
+		$t$ est un arbre binaire de recherche (abgrégé ABR) si et seulement si pour tout $n \in \mathrm{ch}(t), \max\limits_{g \in \mathscr{G}(n)} e(g) \leq e(n) < \min\limits_{d \in \mathscr{D}(n)} e(n)$. Par convention, l'arbre vide est un arbre de recherche.
+
+		\subsection{Recherche d'éléments}
+			Profitons de la structure ordonnée de l'ABR. On procède par dichotomie pour la recherche d'un élément (d'une étiquette).
+
+\end{document}
 	
