@@ -300,13 +300,28 @@
 			est dit \textbf{préfixe} (resp. postfixe, infixe) si et seulement si pour tout $n \in \mathrm{ch}(t)$, pour tout $g \in \mathscr{G}(n)$ et $d \in \mathscr{D}(n)$,
 			on a $\varphi(n) \leq \varphi(g) \leq \varphi(d)$ (resp. $\varphi(g) \leq \varphi(d) \leq \varphi(n)$ et $\varphi(g) \leq \varphi(n) \leq \varphi(d)$).
 
-			\exemple Pour l'arbre suivant : 
+			\exemple Pour l'arbre suivant (les noeuds vides n'ont pas été représentés): 
 			\begin{center}
 				\begin{tikzpicture}
-					\draw (0,0) circle(.3) node {1};
-					\draw (0,-1) circle(.3) node {2};
-					\draw (0,-1) circle(.3) node {36};
-					\draw (0,0) circle(.3) node {1};
+					\coordinate (n2) at (-90-60:2);
+					\coordinate (n36) at (-90+60:2);
+					\coordinate (n4) at ($(n2) + (-90-40:2)$);
+					\coordinate (n12) at ($(n2) + (-90+40:2)$);
+					\coordinate (n18) at ($(n12) + (-90+20:2)$);
+					\coordinate (n42) at ($(n36) + (-90+40:2)$);
+
+					\draw (0,0) circle(.5) node {1};
+					\draw (n2) circle(.5) node {2};
+					\draw (n36) circle(.5) node {36};
+					\draw (n4) circle(.5) node {4};
+					\draw (n12) circle(.5) node {12};
+					\draw (n18) circle(.5) node {18};
+					\draw (n42) circle(.5) node {42};
+
+					\draw (-90-60:0.5) -- (-90-60:1.5);
+					\draw (-90+60:0.5) -- (-90+60:1.5);
+					\draw ($(n2)+(-90-40:0.5)$) -- ($(n2)+(-90-40:1.5)$);
+					\draw ($(n2)+(-90+40:0.5)$) -- ($(n2)+(-90+40:1.5)$);
 				\end{tikzpicture}
 			\end{center}
 
