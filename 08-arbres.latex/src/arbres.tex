@@ -80,7 +80,7 @@
 			en $\theta(\log(n))$, sous certaines conditions: il s'agit des \textbf{arbres binaires de recherche (ABR)}.
 
 	\section{Arbre binaires}
-		\subsection{Ensemble $\mathscr{A}_B$}
+		\subsection{Ensemble \texorpdfstring{$\mathscr{A}_B$}{}}
 			Soit $\mathcal{S}$ un ensemble.
 			On définit l'ensemble des arbres binaires étiquetés par $\mathcal{S}$ 
 			comme l'ensemble construit par induction à partir de ces deux règles:
@@ -850,10 +850,12 @@
 				\Sortie
 				{
 					$t'$ un ABPT vérifiant 
-					\begin{itemize}
-						\item $\card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = e}) = \card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = e}) + 1$ 
-						\item $\forall x \in E\setminus\set{e}, \card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = x}) = \card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = x})$
-					\end{itemize}
+					\[
+						\card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = e}) = \card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = e}) + 1
+					\] 
+					\[
+						\forall x \in E\setminus\set{e}, \card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = x}) = \card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = x})
+					\]
 				}
 					Trouver $p$ le premier noeud ayant un fils vide \;
 					Ajouter un noeud $n$ d'étiquette $e$ en fils du père à la place du fils vide (ou d'un des fils vides s'il y en a deux) \;
@@ -876,10 +878,12 @@
 				{
 					En notant $e = \min\limits_{c \in \mathrm{ch}(t)} \set{\left(\mathrm{etiq}(t)\right)(c)}$,
 					modifie $t$ en un ABCT $t'$ vérifiant :
-					\begin{itemize}
-						\item $\card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = e}) = \card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = e}) - 1$ 
-						\item $\forall x \in E\setminus\set{e}, \card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = x}) = \card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = x})$
-					\end{itemize}
+					\[
+						\card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = e}) = \card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = e}) - 1
+					\]
+					\[
+						\forall x \in E\setminus\set{e}, \card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = x}) = \card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = x})
+					\]
 				}
 				Soit $n$ le dernier noeud de $t$ ; on note $v$ sa valeur \;
 				Remplacer $n$ par Vide dans $t$ \;
