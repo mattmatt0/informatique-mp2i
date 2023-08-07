@@ -1,4 +1,4 @@
-\newcommand\PATH{Lancez `make adapt avant de compiler!`}
+\newcommand\PATH{/home/matthieu/Documents/Ecole/Informatique/cours/informatique-mp2i/08-arbres.latex}
 
 \RequirePackage{fix-cm}
 \documentclass{scrartcl}
@@ -236,7 +236,7 @@
 			\rem Les feuilles sont les noeuds sans enfant, et la racine est le seul noeud sans père.
 
 			Soit $(n_i)_{i \in \intset{0,k}} \in \text{ch}(t)^{k+1}$.
-			On dit que $(n_i)$ est une branche de $t$ si et seulement si $n_0 = \varepsilon$ et $n_i$ est le père de $n_{i+1}$ pour tout $i \in \intsete{0,k}$.
+			On dit que $(n_i)$ est une \textbf{branche} de $t$ si et seulement si $n_0 = \varepsilon$ et $n_i$ est le père de $n_{i+1}$ pour tout $i \in \intsete{0,k}$.
 			
 			Soient $t$ et $t'$ deux arbres binaires sur $\mathcal{S}$. On dit que $t'$ est le \textbf{sous-arbre droit} (resp \textbf{sous-arbre gauche}) de $t$
 			si et seulement si il existe $g \in \mathscr{A}_B(\mathcal{S})$ (resp. $d \in \mathscr{A}_B(\mathcal{S})$) tel que $t = N(x,g,t')$ (resp. $t = N(x,t',d)$).
@@ -622,9 +622,70 @@
 				Cette borne est atteinte pour un arbre binaire complet (en exercice), d'où le résultat.
 			\end{demo}
 	\section{Arbres 2-3-4}
+		\notecentrale{On fixe dans cette partie $\mathcal{S}$ un ensemble totalement ordonnée.}
 		\subsection{Définitions}
-		\subsection{Scission d'un 4-noeud}
+			On définit par induction l'ensemble $\mathscr{A}_{2,3,4}(\mathcal{S})$ à partir des règles de construction suivantes :
+			\begin{multicols}{4}
+			\begin{itemize}
+				\item $V\Big|_{\set{-}}^0$ 
+				\item $N^2\Big|_{\mathcal{S}}^2$ 
+				\item $N^3\Big|_{\mathcal{S}^\leq}^3$ 
+				\item $N^2\Big|_{\mathcal{S}^{\leq\leq}}^4$ 
+			\end{itemize}
+			\end{multicols}
+			où $S^\leq = \set{(i,j) \in \mathcal{S}^2 \tq i \leq j}$ et $S^{\leq\leq} = \set{(i,j,k) \in \mathcal{S}^3 \tq i \leq j \leq k}$.
+
+			On peut étendre les définitions données pour $\mathscr{A}_B(\mathcal{S})$ à $\mathscr{A}_{2,3,4}(\mathcal{S})$, notamment : 
+			\begin{multicols}{2}
+			\begin{itemize}
+				\item Les noeuds comme des chemins / mots sur $\Sigma = \set{0,1,2,3}$;
+				\item ch (en exercice);
+				\item la hauteur (par induction ou par hauteur maximale d'un noeud) ;
+				\item les feuilles ;
+				\item la taille (le nombre de noeuds) ;
+				\item la profondeur ;
+				\item la notion d'arbre "de recherche".
+			\end{itemize}
+			\end{multicols}
+
+			On ajoute la notion de 2-noeud ($N^2(...)$), de 3-noeud ($N^3(...)$) et de 4-noeud($N^4(...)$).
+
+			Un arbre de $\mathscr{A}_{2,3,4}(\mathcal{S})$ est dit \textbf{parfaitement équilibré} si et seulement si toutes ses feuilles ont la même profondeur.
+			On appelle alors \textbf{arbre 2-3-4} tout arbre de recherche de $\mathscr{A}_{2,3,4}(\mathcal{S})$ parfaitement équilibré.
+			En généralisant les propriétés sur les arbres binaires de recherches, un arbre 2-3-4 a alors une hauteur logarithmique en son nombre d'éléments.
+
 		\subsection{Insertion dans un arbre 2-3-4}
+			Pour insérer une clé $e \in \mathcal{S}$ dans $t$ un arbre 2-3-4, on procède comme suit : 
+			\begin{itemize}
+				\item Si $n$ est une feuille, 
+			\end{itemize}
+		\subsection{Scission d'un 4-noeud}
+			La scission d'un 4-noeud $n$ de clés $a \leq b \leq c$ consiste à le transformer en deux 2-noeuds de clés $a$ et $c$ et à faire remonter $b$ dans le père de $n$:
+			\begin{itemize}
+				\item si $n$ n'a pas de père, alors un 2-noeud est créé pour la clé $b$ : la hauteur augmente de 1 ; 
+				\item si le père de $n$ est un 2-noeud, il devient un 3-noeud, et si c'est un 3-noeud, il devient un 4-noeud ;
+				\item si le père de $n$ est un 4-noeud, l'opération est impossible (il faut préalablement effectuer la scission du père) ;
+			\end{itemize}
+			Dans tous les cas, l'arbre reste équilibré et de recherche.
+
+			\begin{center}
+				\begin{tikzpicture}[
+				level 1/.style={sibling distance=10em}, 
+				level 2/.style={sibling distance=5em}, 
+				level 3/.style={sibling distance=2em}]
+					\node [circle,draw](a) {4}
+						child {node [ellipse,draw] (b) {$a \leq b \leq c$}
+							child {node (c) {$\times$}}
+							child {node (c) {$\times$}}}
+						child {node [circle,draw] (b) {3}
+							child {node [circle,draw] {4}
+								child  {node {$\times$}}
+								child  {node {$\times$}}}
+							child {node (d) {$\times$}}};
+				\end{tikzpicture} \\
+				\textsc{Scission d'un 4-noeud racine}
+			\end{center}
+			
 		\subsection{Suppression dans un arbre 2-3-4}
 	\section{Arbres rouge-noir}
 	\section{Hachage}
