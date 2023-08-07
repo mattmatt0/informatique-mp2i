@@ -1,4 +1,4 @@
-\newcommand\PATH{/home/matthieu/Documents/Ecole/Informatique/cours/informatique-mp2i/08-arbres.latex}
+\newcommand\PATH{Lancez `make adapt avant de compiler!`}
 
 \RequirePackage{fix-cm}
 \documentclass{scrartcl}
@@ -654,11 +654,8 @@
 			On appelle alors \textbf{arbre 2-3-4} tout arbre de recherche de $\mathscr{A}_{2,3,4}(\mathcal{S})$ parfaitement équilibré.
 			En généralisant les propriétés sur les arbres binaires de recherches, un arbre 2-3-4 a alors une hauteur logarithmique en son nombre d'éléments.
 
-		\subsection{Insertion dans un arbre 2-3-4}
-			Pour insérer une clé $e \in \mathcal{S}$ dans $t$ un arbre 2-3-4, on procède comme suit : 
-			\begin{itemize}
-				\item Si $n$ est une feuille, 
-			\end{itemize}
+			L'intérêt des arbres 2-3-4 réside dans la possibilité de "stocker" plusieurs clés dans un noeud, permettant de conserver (temporairement) la structure d'arbre 2-3-4. 
+			Une fois que 3 clés sont stockées dans un noeud, il est possible de "convertir" le 4-noeud de manière à obtenir des 2-noeud / des trois noeuds sans perdre la structure d'arbre 2-3-4.
 		\subsection{Scission d'un 4-noeud}
 			La scission d'un 4-noeud $n$ de clés $a \leq b \leq c$ consiste à le transformer en deux 2-noeuds de clés $a$ et $c$ et à faire remonter $b$ dans le père de $n$:
 			\begin{itemize}
@@ -670,28 +667,238 @@
 
 			\begin{center}
 				\begin{tikzpicture}[
-				level 1/.style={sibling distance=10em}, 
-				level 2/.style={sibling distance=5em}, 
-				level 3/.style={sibling distance=2em}]
-					\node [circle,draw](a) {4}
-						child {node [ellipse,draw] (b) {$a \leq b \leq c$}
-							child {node (c) {$\times$}}
-							child {node (c) {$\times$}}}
-						child {node [circle,draw] (b) {3}
-							child {node [circle,draw] {4}
-								child  {node {$\times$}}
-								child  {node {$\times$}}}
-							child {node (d) {$\times$}}};
+				level 1/.style={sibling distance=5em}, 
+				level 2/.style={sibling distance=2em}, 
+				level 3/.style={sibling distance=1em}]
+					\node [ellipse,draw] {$a \leq b \leq c$}
+						child {node[regular polygon,regular polygon sides=3,draw,color=green!70!black,thick] {}}
+						child {node[regular polygon,regular polygon sides=3,draw,color=red!70!black,thick] {}}
+						child {node[regular polygon,regular polygon sides=3,draw,color=blue!70!black,thick] {}}
+						child {node[regular polygon,regular polygon sides=3,draw,color=black,thick] {}};
+					\draw[-{>[width=3mm,length=2mm]}] (4,-1) -- (6,-1) node[midway, above] {Scission};
+					\node [circle,draw] at(8,0) {$b$}
+						child 
+						{node [circle,draw] {$a$}
+							child {node[regular polygon,regular polygon sides=3,draw,color=green!70!black,thick] {}}
+							child {node[regular polygon,regular polygon sides=3,draw,color=red!70!black,thick] {}}}
+						child 
+						{node [circle,draw] {$c$}
+							child {node[regular polygon,regular polygon sides=3,draw,color=blue!70!black,thick] {}}
+							child {node[regular polygon,regular polygon sides=3,draw,color=black,thick] {}}};
 				\end{tikzpicture} \\
-				\textsc{Scission d'un 4-noeud racine}
+				\textsc{Scission d'un 4-noeud racine.} Les triangles représentent des sous-arbres : le vert contient les éléments $x$ vérifiant $x \leq a$, le rouge $a < x \leq b$, le bleu $b < x \leq c$, et le noir $c < x$.
 			\end{center}
-			
-		\subsection{Suppression dans un arbre 2-3-4}
+
+			\begin{center}
+				\begin{tikzpicture}[
+				level 1/.style={sibling distance=5em}, 
+				level 2/.style={sibling distance=2em}, 
+				level 3/.style={sibling distance=1em}]
+					\node [circle,draw] {$x$}
+						child {node [ellipse,draw] {$a \leq b \leq c$}
+							child {node[regular polygon,regular polygon sides=3,draw,color=green!70!black,thick] {}}
+							child {node[regular polygon,regular polygon sides=3,draw,color=red!70!black,thick] {}}
+							child {node[regular polygon,regular polygon sides=3,draw,color=blue!70!black,thick] {}}
+							child {node[regular polygon,regular polygon sides=3,draw,color=black,thick] {}}}
+						child {node[regular polygon,regular polygon sides=3,draw,color=orange,thick] {}};
+					\draw[-{>[width=3mm,length=2mm]}] (1.5,-1) -- (3.5,-1) node[midway, above] {Scission};
+					\node [ellipse,draw] at(6,0) {$b \leq x$}
+						child {node [circle,draw] {$a$}
+							child {node[regular polygon,regular polygon sides=3,draw,color=green!70!black,thick] {}}
+							child {node[regular polygon,regular polygon sides=3,draw,color=red!70!black,thick] {}}}
+						child {node [circle,draw] {$c$}
+							child {node[regular polygon,regular polygon sides=3,draw,color=blue!70!black,thick] {}}
+							child {node[regular polygon,regular polygon sides=3,draw,color=black,thick] {}}}
+						child {node[regular polygon,regular polygon sides=3,draw,color=orange,thick] {}};
+				\end{tikzpicture} \\
+				\textsc{Scission d'un 4-noeud fils d'un 2-noeud} Les triangles représentent des sous-arbres avec les mêmes conventions que précédemment 
+				(le triangle noir contient des éléments entre $c$ exclu et $x$ inclus, et le triangle orange est sous-arbre avec des éléments strictement supérieurs à $x$).
+			\end{center}
+
+			\exo{Représenter l'opération de scission d'un 4-noeud fils droit d'un 2-noeud, et d'un 4-noeud fils d'un 3-noeud (à gauche, au milieu ou à droite).}
+	
+
+		\subsection{Insertion dans un arbre 2-3-4}
+			Pour insérer une clé $e \in \mathcal{S}$ dans $t$ un arbre 2-3-4 de racine $n$, on procède comme suit : 
+			\begin{itemize}
+				\item si $n$ est un 4-neoud, alors on scinde $n$ puis on insère $e$ dans le sous-arbre adapté de l'arbre obtenu ;
+				\item sinon, si $n$ est une feuille, on ajoute la clé $e$ dans le noeud $n$ ;
+				\item sinon, on insère $e$ dans le sous-arbre adapté à l'arbre obtenu.
+			\end{itemize}
+			Ces opérations conservent l'équilibre parfait et le caractère de recherche d'un arbre 2-3-4.
+
 	\section{Arbres rouge-noir}
+		\subsection{Définition}
+			Un arbre rouge-noir (ARN) est un arbre binaire de recherche dans lequel les noeuds ont une couleur (rouge ou noir) et :
+			\begin{itemize}
+				\item la racine est noire ;
+				\item chaque noeud rouge a 2 fils noirs ou 2 fils vides ;
+				\item chaque branche contient exactement le même nombre de noeuds noirs que les autres.
+			\end{itemize}
+
+			\rem La hauteur d'un ARN est logarithmique en le nombre de noeuds.
+
+			\rem Ces arbres permettent de présenter les arbres 2-3-4 sous formes d'arbres binaires : on a en effet la correspondance:
+			\begin{itemize}
+				\item pour 2-noeuds, ce sont les noeuds habituels ;
+				\item pour les 3-noeuds, 2 types possibles:
+				\begin{center}
+				\begin{tikzpicture}
+					\node[ellipse,draw] at(0,-1) {$a \leq b$}
+							child {node[regular polygon,regular polygon sides=3,draw,color=green!70!black,thick] {}}
+							child {node[regular polygon,regular polygon sides=3,draw,color=red!70!black,thick] {}}
+							child {node[regular polygon,regular polygon sides=3,draw,color=blue!70!black,thick] {}};
+					\node[circle, draw] at(6,0) {$a$}
+						child {node[regular polygon,regular polygon sides=3,draw,color=green!70!black,thick] {}}
+						child {node[circle, draw, color=red] {$b$}
+							child {node[regular polygon,regular polygon sides=3,draw,color=red!70!black,thick] {}}
+							child {node[regular polygon,regular polygon sides=3,draw,color=blue!70!black,thick] {}}};
+					\node[circle, draw] at(12,0) {$b$}
+						child {node[circle, draw, color=red] {$a$}
+							child {node[regular polygon,regular polygon sides=3,draw,color=green!70!black,thick] {}}
+							child {node[regular polygon,regular polygon sides=3,draw,color=red!70!black,thick] {}}}
+						child {node[regular polygon,regular polygon sides=3,draw,color=blue!70!black,thick] {}};
+					\node at(3,-1.7) {\Huge $\approx$};
+					\node at(9,-1.7) {\Large ou};
+				\end{tikzpicture}
+				\end{center}
+				\item pour les 4-noeuds: 
+				\begin{center}
+				\begin{tikzpicture}[
+					level 1/.style={sibling distance=5em}, 
+					level 2/.style={sibling distance=2em}]
+					\node[ellipse,draw] at(0,-1) {$a \leq b \leq c$}
+							child {node[regular polygon,regular polygon sides=3,draw,color=green!70!black,thick] {}}
+							child {node[regular polygon,regular polygon sides=3,draw,color=red!70!black,thick] {}}
+							child {node[regular polygon,regular polygon sides=3,draw,color=blue!70!black,thick] {}}
+							child {node[regular polygon,regular polygon sides=3,draw,color=black,thick] {}};
+					\node[circle, draw] at(6.75,0) {$b$}
+						child {node[circle, draw, color=red] {$a$}
+							child {node[regular polygon,regular polygon sides=3,draw,color=green!70!black,thick] {}}
+							child {node[regular polygon,regular polygon sides=3,draw,color=red!70!black,thick] {}}}
+						child {node[circle, draw, color=red] {$c$}
+							child {node[regular polygon,regular polygon sides=3,draw,color=blue!70!black,thick] {}}
+							child {node[regular polygon,regular polygon sides=3,draw,color=black,thick] {}}};
+					\node at(4,-1.7) {\Huge $\approx$};
+				\end{tikzpicture}
+				\end{center}
+			\end{itemize}
+
+			\rem L'opération sur les ARN passant d'une représentation du 3-noeud à l'autre s'appelle rotation simple entre les noeuds $a$ et $b$ (ici abusivement identifiés par leur étiquette).
+
+			\rem Il est nécessaire d'avoir les noeuds $a$ et $c$ rouges dans la représentation du 4-noeud pour conserver le nombre de noeuds noirs entre les branches.
+				Le passage à l'ARN où $a$ et $c$ sont noirs correspond à la scission du 4-noeud racine.
+
+			On peut alors définir par analogie avec arbres 2-3-3 les opérations de scission de 4-noeuds et insertion (en exercice).
+
+		\subsection{Suppression dans un ARN}
+			TODO
+
 	\section{Hachage}
+		Les ABR et ARN nous ont permis d'implémenter le type abstrait ensemble / multi-ensemble / dictionnaire avec une complexité de recherche / suppression / insertion en temps logarithmique en le nombre d'éléments stockés. Les éléments étaient positionnés dans la structure en fonction de la valeur de leur clé relativement aux autres éléments dans l'arbre. Dans cette section, on envisage de positioner les éléments dans la structure en fontion de la seule valeur de leur clé, et non relativement à celles des autres, en vue d'avoir une procédure de recherche en temps constant, c'est-à-dire indépendante du nombre d'éléments dans la structure.
+
+		On suppose que l'on cherche à implémenter un ensemble dont les clés sont à valeurs dans $\mathcal{C}$. On se propose de stocker les éléments (ou du moins l'ensemble des données) dans un tableau $T$ de taille $m$, via une fonction de $\mathcal{C} \rightarrow \intsete{0,m}$, de sorte qu'un élément $c \in \mathcal{C}$ soit stocké dans la case $T[f(c)]$.
+
+		Une “bonne” fonction de hachage :
+		\begin{itemize}
+			\item est déterministe (la même clé donne la même case) ;
+			\item est efficace (opérations en temps constant)
+			\item doit répartir au mieux les différentes clés
+		\end{itemize}
+		Pour le dernier point, on peut en particulier chercher à minimiser l’une des quantités suivantes :
+		\begin{itemize}
+			\item $\mathop{\max}\limits_{i \in \intsete{0,m}} \card(f^{-1}({i}))$ (le nombre maximal de collisions dans une même case) ;
+			\item $\sum_{c \in \mathcal{C} } \card(f^{-1}(\set{f(c)}) \times \mathbb{P}(c)$ (nombre moyen de collisions, connaissant la distribution des clés modélisée par une probabilité $\mathbb{P}$ sur $\mathcal{C}$) ;
+			\item $\frac{1}{m}\sum_{i=0}^{m-1} \card(f^{-1}(i))$ (nombre moyen de collisions dans le cas d’une distribution uniforme).
+		\end{itemize}
+
 	\section{Implémentation des tas}
-		\subsection{Introdution}
+		Dans cette section, on cherche à implémenter le type abstrait tas (minimal) grâce à des arbres binaires. Devinant qu’il faut limiter la hauteur de ces arbres pour limiter la complexité pire cas de ses opérations, on se restreint à des arbres binaires parfaits, sachant qu’ils ont une hauteur en $\theta(\log(n))$ pour $n$ noeuds.
+
+		En vue d’avoir accès au minimum en temps constant, on maintiendra la clé minimale à la racine. Cependant, cette seule contrainte n’est pas suffisante car elle ne donne aucune information quant à la position du second minimum dans l’arbre, ce qui impliquerait au pire une recherche exhaustive lors de la suppression du minimum, et donc une complexité en $\theta(n)$. 		
+
+		Soit $t \in \mathscr{A}_B(E)$ où $E$ est totalement ordonné. On dit que $t$ est un \textbf{arbre tournoi} si et seulement si
+		$\forall (n, m) \in \mathrm{ch}(t)^2, m \text{ est fils de } n \Rightarrow  \mathrm{etiq}(t)(m) \geq \mathrm{etiq}(t)(n)$
+		
+		\rem On obtient une définition équivalente en remplaçant "fils" par "descendant".
+
 		\subsection{Opérations en pseudo-code}
+			L'accès au minimum se fait en temps constant : 
+
+			\begin{algorithm}[H]
+					\caption{Minimum d'un tas}
+					\Entree
+					{
+						$t \in \mathscr{A}_B(E)$ un arbre binaire complet tournoi (ABCT) à étiquettes dans $E$
+					}
+					\Sortie
+					{
+						Le plus petit élément de $E$ dans $t$
+					}
+					Renvoyer l'étiquette de la racine de $t$
+			\end{algorithm}
+
+			Pour l'insertion, on "trie" les noeuds par profondeur puis par valeur en base 2 (cela correspond à compter les noeuds dans le sens de lecture, c'est à dire de gauche à droite puis de haut en bas).
+
+			\begin{algorithm}[H]
+				\caption{Insertion dans un tas}
+				\Entree
+				{
+					$t \in \mathscr{A}_B(E)$ un ABPCT à étiquettes dans $E$, 
+					$e \in E$ l'élément à insérer dans $t$.
+				}
+				\Sortie
+				{
+					$t'$ un ABPT vérifiant 
+					\begin{itemize}
+						\item $\card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = e}) = \card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = e}) + 1$ 
+						\item $\forall x \in E\setminus\set{e}, \card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = x}) = \card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = x})$
+					\end{itemize}
+				}
+					Trouver $p$ le premier noeud ayant un fils vide \;
+					Ajouter un noeud $n$ d'étiquette $e$ en fils du père à la place du fils vide (ou d'un des fils vides s'il y en a deux) \;
+					\Tq{$n$ a un père \textit{\textbf{et}} l'étiquette de $n$ a une priorité plus petite que celle de son père $p$}
+					{
+						Échanger les étiquettes de $n$ et $p$ \;
+						$n \leftarrow p$
+					}
+			\end{algorithm}
+
+			\rem L'opération de recherche du premier noeud ayant un fils vide peut paraître coûteuse, mais elle peut se faire en temps constant en stockant dans la structure de tas la position de ce noeud. Si on ne fait que les opérations usuelles, sa mise à jour se fera aussi en temps constant. Cette astuce peut aussi être utilisée pour repérer le dernier noeud dans l'algorithme de suppression suivant :
+
+			\begin{algorithm}[H]
+				\caption{Suppression du minimum}
+				\Entree
+				{
+					$t \in \mathscr{A}_B(E)$ un ABCT non vide
+				}
+				\Sortie
+				{
+					En notant $e = \min\limits_{c \in \mathrm{ch}(t)} \set{\left(\mathrm{etiq}(t)\right)(c)}$,
+					modifie $t$ en un ABCT $t'$ vérifiant :
+					\begin{itemize}
+						\item $\card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = e}) = \card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = e}) - 1$ 
+						\item $\forall x \in E\setminus\set{e}, \card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = x}) = \card(\set{c \in \mathrm{ch}(t') \tq \left(\mathrm{etiq}(t')\right)(c) = x})$
+					\end{itemize}
+				}
+				Soit $n$ le dernier noeud de $t$ ; on note $v$ sa valeur \;
+				Remplacer $n$ par Vide dans $t$ \;
+				Remplacer l'étiquette de la racine par $v$ \;
+				$n \leftarrow$ racine de $t$ \;
+				\Tq{la priorité de l'étiquette $n$ est strictement supérieure à la priorité de l'étiquette de l'un de ses fils}
+				{
+					Échanger l'étiquette de $n$ et celle de son fils ayant l'étiquette de priorité minimale entre les deux fils \;
+					$n \leftarrow$ le fils avec lequel on a fait l'échange
+				}
+			\end{algorithm}
+
+			En utilisant ce pseudo-code, on peut facilement implémenter des tas : 
+			\begin{itemize}
+				\item par tableau, en retenant la première case vide tu tableau ;
+				\item avec des structures représentant les noeuds et un pointeur vers le champ correspondant au premier noeud vide.
+			\end{itemize}
+
+
 
 \end{document}
 	
