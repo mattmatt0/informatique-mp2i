@@ -166,6 +166,11 @@
 
 			\rem Un chemin admissible décrit la "position" d'un "noeud" dans l'arbre.
 
+			\rem Sans compter les étiquettes, il est possible de construire un arbre à partir de l'ensemble de ses chemins admissibles.
+
+			\exo Définir par induction une fonction qui prend en entrée l'ensemble des chemins admissibles d'un arbre et renvoie un arbre ayant le même ensemble des chemins admissibles, 
+				dont tous les noeuds sont étiquettés par 1.
+
 			\exo Donner une définition inductive de $s(t)$.
 
 			On appelle \textbf{étiquetage} d'un arbre non vide la fonction qui à un noeud de l'arbre associe son étiquette.
@@ -205,6 +210,10 @@
 
 			Soit $t \in \mathscr{A}_B(\mathcal{S})$, $\text{etiq}(t)$ est l'étiquetage de $t$.
 			Si $n \in \text{ch}(t)$, alors l'étiquette de $n$ dans $t$ est $\left(\text{etiq}(t)\right)(n)$
+
+			\rem Il est possible de reconstruire un arbre à partir de son ensemble des chemins admissibles et sa fonction d'étiquetage.
+
+			\exo Définir une fonction qui reconstruit un arbre à partir de son ensemble des chemins admissibles et sa fonction d'étiquetage.
 
 		
 		\subsection{Vocabulaire}
@@ -444,8 +453,174 @@
 			\end{demo}
 
 		\subsection{Suppression}
+			\begin{algorithm}[H]
+				\caption{Suppression dans un ABR}
+				\Entree
+				{
+					$t \in \mathscr{A}_B(E)$ un ABR, $e$ un élément de $E$ à supprimer de $t$. On suppose que $e$ est dans $t$ (dans ce cas $t \neq V$).
+				}
+				\Sortie
+				{
+					Un arbre binaire de recherche $t'$ avec pour chaque élément de $E$ le même nombre de noeuds étiquettés par cet élément que dans $t$,
+					sauf pour $e$ pour lequel il y en aura un de moins.
+				}
+				{
+					\eSi{$t = N(x,V,V)$ (nécessairement $x=e$)}
+					{
+						Renvoyer $V$
+					}
+					{
+						Poser $t = N(x,g,d)$ \;
+						\eSi{$x = e$}
+						{
+							Poser $m = g$ \;
+							\Tq{$m \neq V$}
+							{
+								Poser $m = N(x',g',d')$ \;
+								$m \leftarrow d'$
+							}
+							Supprimer $x'$ de $g$ ; on note $g'$ l'arbre obtenu \;
+							Renvoyer $N(x',g',d)$ 
+						}
+						{
+							\eSi{$x < e$}
+							{
+								Supprimer $e$ dans $g$ ; on note $g'$ l'arbre obtenu \;
+								Renvoyer $N(x,g',d)$
+							}
+							{
+								Supprimer $e$ dans $d$ ; on note $d'$ l'arbre obtenu \;
+								Renvoyer $N(x,g,d')$
+							}
+						}
+					}
+				}
+			\end{algorithm}
+
+			\prop{(Correction de l'algorithme de suppression) Si $t$ est un ABR contenant $e$ (i.e $e \in \mathrm{etiq}(t)(\mathrm{ch}(t))$),
+				alors l'arbre $t'$ obtenu après application de l'algorithme de suppression de $e$ à $t$ est aussi un ABR. 
+				De plus,  
+				\[
+					\mathrm{card}\set{c \in \mathrm{ch}(t') \tq \mathrm{etiq}(t)(c) = e} = \mathrm{card}\set{c \in \mathrm{ch}(t) \tq \mathrm{etiq}(t)(c) = e} - 1
+				\]
+				et pour tout $x \in E\setminus\set{e}$, 
+				\[
+					\mathrm{card}\set{c \in \mathrm{ch}(t') \tq \mathrm{etiq}(t)(c) = x} = \mathrm{card}\set{c \in \mathrm{ch}(t) \tq \mathrm{etiq}(t)(c) = x}.
+				\]
+				}
+			\begin{demo}
+				\item Par induction sur $t$ : c'est immédiat si $t = N(e,V,V)$. 
+					Soit alors $t = N(x,g,d)$ un ABR. $g$ et $d$ sont alors eux-mêmes des ABR.
+					Supposons que la propriété soit vraie pour $g$ et $d$.
+				\item Si $e < x$, comme $t$ est un ABR, on sait que le plus grand élément étiquetant un noeud de $g$ est plus petit que $x$, et que $x$ est dans $g$.
+					En notant $g'$ l'arbre obtenu en supprimant $e$ dans $g$ (qui est donc par hypothèse un ABR), 
+					celui-ci ne contiendra (toujours par hypothèse d'induction) que des éléments inférieurs à $x$ : ainsi $t' := N(x,g',d)$ est bien un ABR.
+					De plus, on a, pour tout $y \in E \setminus{x}$: 
+					\[
+						\mathrm{card}\set{c \in \mathrm{ch}(t') \tq \mathrm{etiq}(t')(c) = y} - \mathrm{card}\set{c \in \mathrm{ch}(t) \tq \mathrm{etiq}(t)(c) = y}
+					\]\[
+						= \mathrm{card}\set{c \in \mathrm{ch}(g') \tq \mathrm{etiq}(g')(c) = y} - \mathrm{card}\set{c \in \mathrm{ch}(g) \tq \mathrm{etiq}(g)(c) = y}
+					\]
+					(en séparant entre l'élément étiquetant la racine, les éléments dans $g$/$g'$ et dans $d$, ces derniers étant les mêmes dans $t$ comme dans $t'$).
+					On en déduit la seconde partie du résultat par hypothèse sur $g$. Le cas $e > x$ se traite de manière similaire.
+				\item Pour le cas $x = e$, il est clair par la structure d'ABR de $g$ que $x'$ désigne à la ligne 11 la valeur de la plus grande étiquette dans $g$.
+					À l'issue de la ligne 11, $g'$ est alors par hypothèse un ABR dont les étiquettes sont toutes inférieures ou égales à $x$. 
+					Par ailleurs, $t$ étant un ABR, pour tout $y$ étiquettant un noeud de $\mathscr{D}(\varepsilon)$ (soit un noeud du sous arbre-droit de $t$), $x' < y$ :
+					ainsi $t' = N(x',g',d)$ est bien un ABR. Le nombre de noeuds étiquetés par $x'$ diminue de 1 par hypothèse sur $g$ entre $g$ et $g'$,
+					mais augmente ensuite de 1 dans l'arbre renvoyé ($x'$ étiquette la racine). 
+					$e$ n'étiquettant alors plus la racine, il y a un noeud étiquetté par $e$ de moins entre $t$ et $t'$.
+					Les autres égalités sur les nombres de noeuds étiquettés par chaque élément de $E$ découlent immédiatement de l'hypothèse d'induction sur $g$.
+			\end{demo}
 		\subsection{Limitation de la hauteur}
 
+			Un arbre binaire est dit \textbf{localement complet} ou \textbf{strict} si et seulement si chaque noeud interne a 2 fils non vides.
+
+			\exemple
+			\begin{center}
+			\begin{tabularx}{0.9\linewidth}{Y | Y}
+				
+				\begin{tikzpicture}[
+					level 1/.style={sibling distance=10em}, 
+					level 2/.style={sibling distance=5em}, 
+					level 3/.style={sibling distance=2em}]
+					\node [circle,draw](a) {4}
+						child {node [circle,draw] (b) {2}
+							child {node (c) {$\times$}}
+							child {node (c) {$\times$}}}
+						child {node [circle,draw] (b) {3}
+							child {node [circle,draw] {4}
+								child  {node {$\times$}}
+								child  {node {$\times$}}}
+							child {node (d) {$\times$}}};
+				\end{tikzpicture}
+				&
+				\begin{tikzpicture}[
+					level 1/.style={sibling distance=10em}, 
+					level 2/.style={sibling distance=5em}, 
+					level 3/.style={sibling distance=2em}]
+					\node [circle,draw](a) {4}
+						child {node [circle,draw] (b) {2}
+							child {node (c) {$\times$}}
+							child {node (c) {$\times$}}}
+						child {node {$\times$}};
+				\end{tikzpicture}
+				\\
+				\textsc{Arbre localement complet} & \textsc{Arbre non localement complet}
+			\end{tabularx}
+			\end{center}
+
+			On dit qu'un arbre binaire $t$ de hauteur $h$ est \textbf{presque complet} ou \textbf{complet} si et seulement si $h < 1$ ou $h \geq 1$ et toutes les feuilles sont de profondeur $h$ ou $h-1$,
+			dont $2^{h-1}$ de profondeur $h-1$, et les noeuds de profondeur $h$ sont "le plus à gauche possible" 
+			(i.e il n'existe pas un chemin de longeur $h$ qui ne soit pas un noeud de $t$ dont la valeur en base 2 soit inférieure à celle d'un noeud de $t$ de profondeur $h$).
+
+			\rem On croise parfois l'appelation "arbre parfait" pour "arbre complet". Dans ce cours, un arbre parfait est arbre où toutes les racines ont la même profondeur.
+
+			\lemma{Un arbre binaire complet de hauteur $h \in \mathbb{N}^*$ a au moins $2^h$ noeuds}
+			\begin{demo}
+				\item Dans un arbre binaire $t$, si $c$ est un chemin admissible de $t$, alors tous les préfixes de $c$ sont des chemins de $t$.
+					Comme un arbre binaire complet a $2^{h-1}$ noeuds de profondeur $h-1$, tout mot de $\set{0,1}^{h-1}$ est un chemin admissible de $t$:
+					En comptant tous les préfixes de ces mots, il y a donc au moins $\sum_{k=0}^{h-1}2^k = 2^h-1$ noeuds dans $t$.
+					De plus, comme $t$ est de hauteur $h$, il existe au moins un noeud de hauteur $h$, non compté parmi les précédents : $t$ contient au moins $2^h$ noeuds.
+			\end{demo}
+
+			\prop{Aux étiquettes près, il existe pour tout entier $n \in \mathbb{N}^*$ un unique arbre binaire complet à $n$ noeuds
+				(i.e les ensembles des chemins admissibles pour deux arbres binaires complets avec le même nombre de noeuds sont identiques). 
+				Sa hauteur est $h=\floor{\log_2(n)}$ et $\forall k \in \intset{0,h-1}$, il y a $2^k$ noeuds de profondeur $k$,
+				et il y a $n - 2^h+1$ noeuds de profondeur $h$.}
+			\begin{demo}
+				\item Soit $n \in \mathbb{N}$. Soit $t$ un arbre binaire complet à $n$ noeuds. Notons $h$ sa hauteur.
+					Si $h = 0$, l'arbre est nécessairement réduit à la racine, et vérifie dans ce cas toutes les propriétés annoncées.
+					Sinon, $h \geq 1$ : dans ce cas, on sait que $2^h \leq n$ d'après le lemme, 
+					et $n < 2^{h+1}-1$. En prenant la partie entière du logarithme en base 2, il vient $h \leq \floor{\log_2(n)} \leq h$,
+					d'où $h = \floor{\log_2(n)}$.
+				\item D'après la remarque effectuée dans le lemme, en hautant $h$ la hauteur de $t$ l'arbre binaire complet étudié,
+					on sait que tous pour tout $k \in \intset{0,h-1}$, $\set{0,1}^k \subset \mathrm{ch}(t)$ : 
+					ainsi $t$ a exactement $2^k$ noeuds de profondeur $k$ pour $k \in \intset{0,h-1}$.
+				\item Tout noeud de $t$ est de profondeur au plus $h$ : le nombre de noeuds de profondeur $h$ de $t$ est donc égal au nombre total
+					de noeuds, moins le nombre de noeuds de profondeur inférieure ou égale à $h-1$ : ainsi d'après le résultat précédent,
+					il y a $n - \sum_{k=0}^{h-1}2^k = n - (2^h-1) = n-2^h+1$.
+				\item Soit $t$ un arbre binaire complet à $n$ noeuds. Notons $h$ sa hauteur. Pour tout $k \in \intset{0,h-1}$, $\set{0,1}^k \subset \mathrm{ch}(t)$.
+					Notons alors $C = \mathrm{ch}(t) \setminus \bigcup_{k=0}^{h-1}\set{0,1}^k$. Comme $t$ est de hauteur $h$, on a $C \subset \set{0,1}^h$.
+					En notant $p = n-2^h+1 = \card(C)$, il est immédiat d'après la définition d'un arbre binaire complet que $C$ est l'ensemble des écritures en base 2 à $h$ chiffres des nombres de $\intsete{0,p}$, d'où l'unicité de l'ensemble des chemins pour un arbre binaire complet à $n$ noeuds.
+			\end{demo}
+
+			\prop{L'arbre complet à $n$ noeuds minimise la somme des profondeurs les noeuds parmi les arbres binaires à $n$ noeuds.}
+			\begin{demo}
+				\item On sait qu'il y a au plus $2^p$ noeuds de profondeur $p$ dans un arbre binaire (c'est le cardinal de $\set{0,1}^p$).
+					De plus, on a intérêt à "remplir" tous les niveaux de profondeur : si pour un arbre binaire $t$ à $n$ noeuds et de hauteur $h$ noeuds il existe un chemin $c \in \set{0,1}^p\setminus\mathrm{ch}(t)$ (pour $p \in \intset{0,h-1}$), la somme des hauteurs de l'arbre obtenu en supprimant un noeud de profondeur $h$ de $t$ et en ajoutant le noeud $c$ à $t$, on obtient un arbre avec le même nombre de noeuds mais une somme des profondeurs strictement plus petite.
+					On établit alors une $B$ borne inférieure de la somme des profondeurs des noeuds d'un arbre binaire à $n$ noeuds, en notant $K = \min\set{p \in \mathbb{N} \tq \sum_{k=0}^p 2^p < n} = h-1$: 
+				\[
+					B = \sum_{k=0}^K 2^k\times k + (n-\sum_{k=0}^K 2^k)\times h = 2\left(x\mapsto \sum_{k=0}^K x^k\right)'(2) + nh - h\times(2^h - 1)
+				\]
+				en remarquant que $2^kk = 2 k 2^{k-1} = 2\left(x \mapsto x^k\right)'(2)$. Alors
+				\[
+					B = 2\left(x\mapsto \frac{x^h-1}{x-1} \right)'(2) + nh - h\times(2^h - 1) = 2\left(x\mapsto\frac{hx^{h-1}(x-1) - (x^h-1)}{(x-1)^2}\right)(2) + nh - h\times(2^h - 1)
+				\]
+				\[
+					= 2^hh-2^{h+1}+2 + nh - h2^h + h = (n+1)h - 2(2^h-1)
+				\]
+				Cette borne est atteinte pour un arbre binaire complet (en exercice), d'où le résultat.
+			\end{demo}
 	\section{Arbres 2-3-4}
 		\subsection{Définitions}
 		\subsection{Scission d'un 4-noeud}
