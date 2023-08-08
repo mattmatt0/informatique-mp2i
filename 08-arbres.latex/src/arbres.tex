@@ -972,7 +972,13 @@
 				\item avec des structures représentant les noeuds et un pointeur vers le champ correspondant au premier noeud vide.
 			\end{itemize}
 
+			\rem Dans le cadre d'une implémentation par tableau, il est possible de créer un tas à partir d'un tableau non trié en temps linéaire : pour cela,
+				on descend la racine du tas (c'est-à-dire que l'on échange la valeur de la racine avec celle de l'enfant ayant la plus petite priorité si celle-ci est plus petite que celle du noeud de la racine, puis on opère récursivement sur le fils avec lequel on a fait l'échange jusqu'à arriver en bas ou ne plus faire d'échange) engendré par chaque sous-noeud de l'avant-dernier niveau du tas (2 fois au besoin, une pour chaque fils), puis on fait la même chose sur le niveau au-dessus, et ainsi de suite jusqu'à la racine.
 
+			\exo Proposer une implémentation en $C$ d'un tas comme tableau (où les valeurs du tableau sont des entiers représentant la priorité de chaque noeud) avec les opérations d'insertion, suppression et accès au minimum (on pourra utiliser des tableaux dynamiques).
 
+			\exo Ajouter à l'implémentation précédente une fonction \texttt{void descend\_racine(Tas tas, int position)} qui implémente la descente de racine dans le sous-tas engendré par le noeud en position \texttt{position} dans \texttt{tas}. Implémenter alors la fonction \texttt{Tas cree\_tas(int taille, int *elements)} qui crée un tas à partir d'un tableau d'entiers non ordonné.
+
+			\exo Justifier que l'implémentation de la remarque de la création du tas s'exécute bien en temps linéaire.
 \end{document}
 	
