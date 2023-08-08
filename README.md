@@ -64,8 +64,10 @@ Notions fondamentales (0)
 Schémas de preuves (1)
 Codages des nombres (2)
 Complexité (3)
+Relations d'ordre (6)
 Induction (7)
 Schémas algorithmiques (12)
+Graphes (14)
 Algorithmique du texte (15)
 
 ### Vides
