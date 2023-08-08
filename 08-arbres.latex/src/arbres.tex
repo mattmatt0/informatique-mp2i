@@ -792,7 +792,57 @@
 			On peut alors définir par analogie avec arbres 2-3-3 les opérations de scission de 4-noeuds et insertion (en \exercice).
 
 		\subsection{Suppression dans un ARN}
-			TODO
+			L'algorithme de suppression dans un ABR peut être appliqué à un ARN, mais il peut perturber les conditions sur la couleur de la racine, les fils d'un noeud rouge ou le nombre de nouds noirs dans une branche. Il faut donc le "réparer" après. On peut pour cela appliquer l'algorithme suivant :
+
+			\begin{algorithm}[H]
+				\caption{Réparation post-suppression dans un ARN}
+				\Entree
+				{
+					$t$ un ARN auquel on a appliqué l'algorithme de suppression dans un ABR,
+					$x$ un noeud de $t$
+				}
+				\Sortie
+				{
+					Modifie $t$ à partir de $x$ en $t'$ un ARN contenant le même nombre de noeuds étiquettés par $e$ que $t$ pour tout $e \in E$.
+				}
+				\eSi{$x$ est rouge}
+				{
+					Rendre $x$ noir.
+				}
+				{
+					\Si{$x$ n'est pas racine ($x \neq \varepsilon$)}
+					{
+						$p \leftarrow$ père de $x$ \;
+						$f \leftarrow$ frère de $x$ (autre fils de $p$) \;
+						\Si{$f$ est rouge}
+						{
+							effectuer la rotation $p-f$ \;
+							rendre $p$ rouge \;
+							rendre $f$ noir
+							$f \leftarrow$ \textbf{nouveau} frère de $x$ (qui sera nécessairement noir car fils de $f$ rouge).
+						}
+						\eSi{$f$ est noir avec deux fils noirs}
+						{
+							rendre $f$ rouge \;
+							réparer $t$ à partir de $p$
+						}
+						{
+							\Si{$f$ est un fils noir avec 1 fils noir et un fils rouge $y$ tel que $x$ est le fils du même côté de $p$ que le côté $y$ en tant que fils de $f$}
+							{
+								effectuer la rotation $y-f$ \;
+								rendre $y$ noir \;
+								rendre $f$ rouge \;
+								$f \leftarrow$ \textbf{nouveau} frère de $x$ (i.e $f \leftarrow y$)
+							}
+							\Si{$f$ est noir avec un fils rouge $z$ tel que $x$ n'est pas le fils du même côté de $p$ que le côté de $z$ en tant que fils de $f$}
+							{
+								effectuer la rotation $p-w$ \;
+								rendre $z$ noir
+							}
+						}
+					}
+				}
+			\end{algorithm}
 
 	\section{Hachage}
 		Les ABR et ARN nous ont permis d'implémenter le type abstrait ensemble / multi-ensemble / dictionnaire avec une complexité de recherche / suppression / insertion en temps logarithmique en le nombre d'éléments stockés. Les éléments étaient positionnés dans la structure en fonction de la valeur de leur clé relativement aux autres éléments dans l'arbre. Dans cette section, on envisage de positioner les éléments dans la structure en fontion de la seule valeur de leur clé, et non relativement à celles des autres, en vue d'avoir une procédure de recherche en temps constant, c'est-à-dire indépendante du nombre d'éléments dans la structure.
