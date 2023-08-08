@@ -49,3 +49,27 @@ Les différentes commandes - définies dans `commands.mk` avec ce makefile sont 
 - `clean` supprime les fichiers pdf, log, aux, et les fichiers cache de minted. Si vous rencontrez des problèmes à la compilation du style `FancyVerb Error`, vous devriez essayer d'exécuter cette commande.
 
 
+## État des cours
+Certains chapitres comportent les polycopiés de Toky, qui ne sont pas modifiables car le code source n'est pas disponible : il seront supprimés à terme.
+
+# Complets
+Structures de données arborescentes (8)
+OCaml Impératif (9)
+Logique propositionnelle (10)
+Le problème SAT (11)
+Bases de données (13)
+
+# Pas encore complets
+Notions fondamentales (0)
+Schémas de preuves (1)
+Codages des nombres (2)
+Complexité (3)
+Induction (7)
+Schémas algorithmiques (12)
+Algorithmique du texte (15)
+
+# Vides
+Utilisation du shell (A1)
+Utilisation de VIM (A2)
+Utilisation de LaTeX (A3)
+Utilisation de Python (A4)
