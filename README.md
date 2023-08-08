@@ -52,14 +52,14 @@ Les différentes commandes - définies dans `commands.mk` avec ce makefile sont 
 ## État des cours
 Certains chapitres comportent les polycopiés de Toky, qui ne sont pas modifiables car le code source n'est pas disponible : il seront supprimés à terme.
 
-# Complets
+### Complets
 Structures de données arborescentes (8)
 OCaml Impératif (9)
 Logique propositionnelle (10)
 Le problème SAT (11)
 Bases de données (13)
 
-# Pas encore complets
+### Pas encore complets
 Notions fondamentales (0)
 Schémas de preuves (1)
 Codages des nombres (2)
@@ -68,7 +68,7 @@ Induction (7)
 Schémas algorithmiques (12)
 Algorithmique du texte (15)
 
-# Vides
+### Vides
 Utilisation du shell (A1)
 Utilisation de VIM (A2)
 Utilisation de LaTeX (A3)
