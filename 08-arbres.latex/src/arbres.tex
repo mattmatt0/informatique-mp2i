@@ -497,6 +497,13 @@
 				}
 			\end{algorithm}
 
+			\rem Les lignes 6 à 10 permettent de trouver le fils le plus à droit du sous-gauche droit du noeud supprimé, 
+				fils dont l'étiquette peut remplacer celle du noeud supprimé sans perturber le caractère "de recherche" de l'arbre.
+				On peut ensuite supprimer facilement ce fils en "remontant d'un cran" son sous-arbre gauche.
+
+			\rem Les opérations lignes 6 à 10 peuvent aussi consister à trouver le fils le plus à gauche du sous-arbre droit.
+				Le seul problème est que l'on pourra potentiellement passer plusieurs fois par $x'$ l'élément minimal du sous-arbre droit en descendant pour trouver le fils le plus à gauche, engendrant potentiellement bien plus d'appels récursifs et donnant une complexité en $\mathcal{O}(h^2)$ (prendre l'exemple d'un arbre étiqueté uniquement par $x$ contenant une racine avec à sa droite un peigne s'étendant sur la gauche et un noeud vide à sa gauche. Le cas symétrique n'est pas possible à cause de l'inégalité stricte imposée dans la définition d'un ABR).
+
 			\prop{(Correction de l'algorithme de suppression) Si $t$ est un ABR contenant $e$ (i.e $e \in \mathrm{etiq}(t)(\mathrm{ch}(t))$),
 				alors l'arbre $t'$ obtenu après application de l'algorithme de suppression de $e$ à $t$ est aussi un ABR. 
 				De plus,  
@@ -735,6 +742,7 @@
 				\item chaque noeud rouge a 2 fils noirs ou 2 fils vides ;
 				\item chaque branche contient exactement le même nombre de noeuds noirs que les autres.
 			\end{itemize}
+			On pourra stocker la couleur dans l'étiquette.
 
 			\rem La hauteur d'un ARN est logarithmique en le nombre de noeuds.
 
@@ -792,18 +800,19 @@
 			On peut alors définir par analogie avec arbres 2-3-3 les opérations de scission de 4-noeuds et insertion (en \exercice).
 
 		\subsection{Suppression dans un ARN}
-			L'algorithme de suppression dans un ABR peut être appliqué à un ARN, mais il peut perturber les conditions sur la couleur de la racine, les fils d'un noeud rouge ou le nombre de nouds noirs dans une branche. Il faut donc le "réparer" après. On peut pour cela appliquer l'algorithme suivant :
+			L'algorithme de suppression dans un ABR peut être appliqué à un ARN, mais il peut perturber les conditions sur la couleur de la racine, les fils d'un noeud rouge ou le nombre de nouds noirs dans une branche. Il faut donc le "réparer" après. Notons que cela n'est nécessaire que quand le noeud supprimé $x$ était noir (et qu'il n'était pas racine).
+			On peut ensuite appliquer l'algorithme suivant (où $x$ est le noeud supprimé):
 
 			\begin{algorithm}[H]
 				\caption{Réparation post-suppression dans un ARN}
 				\Entree
 				{
-					$t$ un ARN auquel on a appliqué l'algorithme de suppression dans un ABR,
-					$x$ un noeud de $t$
+					$t'$ un ARN auquel on a appliqué l'algorithme de suppression dans un ABR, obtenant un ABR $t$
+					$x$ un noeud de $t'$ (qu'on a éventuellement supprimé dans $t$)
 				}
 				\Sortie
 				{
-					Modifie $t$ à partir de $x$ en $t'$ un ARN contenant le même nombre de noeuds étiquettés par $e$ que $t$ pour tout $e \in E$.
+					Modifie $t$ à partir de $x$ en $t''$ un ARN contenant le même nombre de noeuds étiquettés par $e$ que $t$ pour tout $e \in E$.
 				}
 				\eSi{$x$ est rouge}
 				{
@@ -821,7 +830,7 @@
 							rendre $f$ noir
 							$f \leftarrow$ \textbf{nouveau} frère de $x$ (qui sera nécessairement noir car fils de $f$ rouge).
 						}
-						\eSi{$f$ est noir avec deux fils noirs}
+						\eSi{$f$ est noir avec deux fils noirs ou 2 fils vides}
 						{
 							rendre $f$ rouge \;
 							réparer $t$ à partir de $p$
@@ -843,6 +852,15 @@
 					}
 				}
 			\end{algorithm}
+
+			\rem Cet algorithme est assez difficile à appréhender. Une manière de le comprendre est de considérer qu'après la suppression d'un noeud noir, l'équilibre du nombre de noeuds noirs entre les branches de l'ARN est perturbé : toutes les branches qui passent par le noeud supprimé manquent un noeud noir, ce que l'on modélise par une "décharge" noire portée par ledit noeud.
+			On peut alors éliminer cette décharge de deux manières : en la faisant remonter jusqu'à la racine ou en l'éliminant (l.16-25 ou 22-25).
+
+			\rem Les cas traités par l'algorithme de réparation sont tous "symétriques" (on ne regarde pas la valeur des étiquettes, on n'a donc aucune raison de s'intéresser au fils gauche ou au fils droit en particulier).
+
+			\rem Le plus difficile est d'établir les différents cas à traiter et de discriminer les cas impossibles. Pour cela, on commencer par représenter tous les cas de déséquilibre possibles pour la section de l'arbre contenant $x$, son père et son frère, sans s'intéresser à la couleur de $x$ (ni le fait qu'il soit fils droit ou fils gauche), et atteignables en supprimant un noeud noir : on obtient 3 configurations. La configuration où le frère est rouge est facile à traiter, les deux autres (père rouge et frère noir, père noir et frère noir) sont plus retorses.
+
+
 
 	\section{Hachage}
 		Les ABR et ARN nous ont permis d'implémenter le type abstrait ensemble / multi-ensemble / dictionnaire avec une complexité de recherche / suppression / insertion en temps logarithmique en le nombre d'éléments stockés. Les éléments étaient positionnés dans la structure en fonction de la valeur de leur clé relativement aux autres éléments dans l'arbre. Dans cette section, on envisage de positioner les éléments dans la structure en fontion de la seule valeur de leur clé, et non relativement à celles des autres, en vue d'avoir une procédure de recherche en temps constant, c'est-à-dire indépendante du nombre d'éléments dans la structure.
