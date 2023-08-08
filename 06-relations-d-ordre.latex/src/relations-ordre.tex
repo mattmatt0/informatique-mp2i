@@ -8,12 +8,90 @@
 \input{\PATH/../include/math-tools.tex}
 \usepackage{lmodern}
 
-\title{Ordres et induction}
+\title{Ordres}
 \author{}
 \date{}
 
 \begin{document}
 	\maketitle
+	\section{Relations}
+		\subsection{En général}
+			\semidef Soit $X$ un ensemble non vide. Soit $n \in \mathbb{N}^*$.
+			$\mathcal{R}$ est une relation $n$-aire sur $X$ si et seulement si $\mathcal{R} \subset{X}^n$.
+			Pour $n=1$, on parle de relation unaire, pour $n=2$ de relation binaire, et $n=3$ de relation ternaire.
+
+			\semidef Soit $X$ un ensemble non vide. Soit $\mathcal{R}$ une relation binaire sur $X$.
+			Pour $(x,y) \in X^2$, on note $x\mathcal{R}y$ pour signifier $(x,y) \in \mathcal{R}$.
+			On dit alors que $x$ est en relation avec $y$.
+
+		\subsection{Relations binaires}
+			\semidef Une relation $\mathcal{R}$ binaire sur $X$ est:
+			\begin{itemize}
+				\item réflexive si et seulement si $x \mathcal{R} x$ pour tout $x \in \mathcal{R}$;
+				\item transitive si et seulement si $x \mathcal{R} y$ et $y \mathcal{R} z \Rightarrow x \mathcal{R} z$ pour tout $(x,y,z) \in X^3$;  
+				\item symétrique si et seulement si $x \mathcal{R} y \Rightarrow y \mathcal{R} x$ pour tout $(x,y) \in X^2$;
+				\item antisymétrique si et seulement si $x \mathcal{R} y$ et $y \mathcal{R} x \Rightarrow x = y$ pour tout $(x,y) \in X^2$. 
+			\end{itemize}
+
+			\prop{Soit $X$ un ensemble non vide. Soit $Y$ un sous-ensemble non vide de $X$.
+			Si $\mathcal{R}$ est une relation binaire sur $X$, alors $\mathcal{R}' = \mathcal{R} \cap Y^2$
+			est une relation binaire sur $Y$ qui a les mêmes propriété de transitivité, réflexivité, symétrie, antisymétrie que $\mathcal{R}$.}
+			\begin{demo}
+				\item En exercice.
+			\end{demo}
+
+			\semidef Pour $\mathcal{R}$ et $\mathcal{G}$ deux relations binaires sur $X$,
+				on appelle composée de $\mathcal{R}$ et $\mathcal{S}$ la relation binaire $\mathcal{R} \circ \mathcal{S}$ sur $X$ 
+				définie par
+				\[
+					\mathcal{S} \circ \mathcal{R} = \set{(x,z) \in X^2 \tq \exists y \in X: x \mathcal{S} y \text{ et } y \mathcal{R} z}
+				\]
+				On peut alors définir une "exponentiation" d'une relation binaire: 
+				$\mathcal{R}^1 = \mathcal{R}$ et $\forall n \in \mathbb{N}, \mathcal{R}^{n+1} = \mathcal{R} \circ \mathcal{R}^n$.
+				On pose aussi $\mathcal{R}^0 = \set{(x,x) \tq x \in X}$.
+				On vérifie facilement que pour tout $(n,m) \in \mathbb{N}^2$, $\mathcal{R}^{n+m} = \mathcal{R}^n\circ\mathcal{R}^m$.
+
+			\semidef On définit la clôture réflexive de $\mathcal{R}$ par $\mathcal{R}_R = \mathcal{R} \cup \set{(x,x) \tq x \in x} = \bigcup_{n \leq 1} R^n$.
+
+			\prop{$\mathcal{R}_R$ est la plus petite relation réflexive contenant $\mathcal{R}$ (au sens de l'inclusion en tant qu'ensemble).}
+			\begin{demo}
+				\item $\mathcal{R}_R$ est réflexive: en effet si $x \in X$ alors $(x,x) \in \mathcal{R}_R$ par définition d'où $x \mathcal{R}_R x$.
+				\item Soit $\mathcal{R}'$ une relation réflexive contenant $\mathcal{R}$.
+					Soit $(x,y) \in \mathcal{R}_R$. Alors soit $(x,y) \in \mathcal{R} \subset \mathcal{R}'$, 
+					soit $(x,y) \in \set{(x,x) \tq x \in x}$ et alors $y=x$ et par réflexivité, 
+					$x \mathcal{R}' y$ c'est-à-dire $(x,y) \in \mathcal{R}'$, d'où $\mathcal{R}' \subset \mathcal{R}$.
+			\end{demo}
+
+			\rem Une relation $\mathcal{R}$ est incluse dans une autre relation $\mathcal{R}'$ si et seulement si
+				tout couple $(x,y) \in X^2$ vérifiant $x \mathcal{R} y$ vérifie $x \mathcal{R'} y$.
+
+			\prop{Soit $n \in \mathbb{N}$. Soit $\mathcal{R}$ une relation binaire sur $X$. 
+				On a $x \mathcal{R}^n y \Leftrightarrow \exists (x_0,...x_n) \in X^{n+1}$ avec $x_0 = x, x_n = y$, 
+				et $\forall k \in \intsete{0,n}$, $x_k \mathcal{R} x_{k+1}$.}
+			\begin{demo}
+				\item Montrons le par récurrence sur $n \in \mathbb{N}^*$. $P(1)$ est vraie par définition de $\mathcal{R}$.
+				\item Soit $n \in \mathbb{N}$. Supposons $P(n)$.
+					Soit $z \in X$. $x \mathcal{R}^{n+1}z$ si et seulement si il existe $y \in X$ tel que $x \mathcal{R}^n y$ et $y \mathcal{R}z$,
+					ce qui est équivalent par $P(n)$ à l'existence d'une suite $(x_1,...x_{n+1})$ 
+					avec $x_1 = x$, $\forall k \in \intset{1,n}, x_k \mathcal{R} x_{k+1}$ et $x_{n+1} = y \mathcal{R} z$.
+					En posant $x_{n+2} = z$ cela montre $P(n+1)$.
+			\end{demo}
+
+			\semidef On définit la clôture transitive de $\mathcal{R}$ par $\mathcal{R}_T = \bigcup_{n\in\mathbb{N}^*} \mathcal{R}^n$,
+
+			\prop{$\mathcal{R}_T$ est la plus petite relation transitive contenant $\mathcal{R}$.}
+			\begin{demo}
+				\item $\mathcal{R}_T$ est transitive: si $x \mathcal{R} y$ et $y \mathcal{R} z$,
+					alors il existe $(n,m) \in (\mathbb{N}^*)^2$ tels que $x \mathcal{R}^n y$ et $y \mathcal{R}^m z$.
+					On a donc $x \mathcal{R}^{n+m} z$ donc $x \mathcal{R}_T z$.
+				\item Soit $\mathcal{R'}$ une relation transitive contenant $\mathcal{R}$.
+					Soit $(x,y) \in X^2$ tels que $x \mathcal{R}_T y$.
+					Il existe donc $(x_0, ..., x_n)$ avec $x_0 = x$ et $x_n = y$ vérifiant 
+					$\forall k \in \intsete{0,n}$, $x_k \mathcal{R} x_{k+1}$.
+					Par une récurrence immédiate, on a pour tout $k \in \intset{0,n}, x = x_0 \mathcal{R}' x_n$,
+					en particulier $x \mathcal{R}' y$, d'où $\mathcal{R}_T \subset \mathcal{R}'$.
+			\end{demo}
+
 	\section{Ordre}
 		\subsection{Élements particuliers}
 			Soit $x\in X$. On dit que:

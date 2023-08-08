@@ -18,6 +18,9 @@
 % Pour les dessins / images
 \usepackage{xcolor}
 \usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{shapes}
+\usetikzlibrary{arrows.meta}
 \usepackage{graphicx}
 
 % Tableaux et listes
@@ -70,9 +73,11 @@
 
 \newcommand{\prop}[1]{\plabel{Propriété :} \textsl{#1}}
 \newcommand{\lemma}[1]{\plabel{Lemme :} \textsl{#1}}
+\newcommand{\corro}[1]{\plabel{Corrolaire :} \textsl{#1}}
 \newcommand{\rem}{\plabel{Remarque :}}
 \newcommand{\exemple}{\plabel{Exemple :}}
 \newcommand{\exo}{\stepcounter{compteurExos}\plabel{Exercice \thecompteurExos :}}
+\newcommand{\exercice}{\stepcounter{compteurExos}exercice (\thecompteurExos)}
 \newcommand{\obs}{\plabel{Observation :} }
 
 \newenvironment{demo}{\begin{itemize}[label=$\triangleright$]}{\end{itemize}}
@@ -90,3 +95,4 @@
 \newcommand{\notecentrale}[1]{\begin{center}\textsl{#1}\end{center}}
 \newcommand{\warnwip}{\notecentrale{Ce cours n'est pas encore bien relu}}
 \newcommand{\warnwipnext}{\notecentrale{La suite de ce cours est encore en rédaction}\message}
+
