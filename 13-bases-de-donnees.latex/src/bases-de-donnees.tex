@@ -308,7 +308,7 @@
 			\end{tabular}};
 			\coordinate (main1) at ($(tableau1.north east) - (0,0.3)$);
 			\coordinate (main2) at ($(tableau2.north west) - (0,0.3)$);
-			\draw (main1) -- (main2) node[pos=0.05,above]{1..*} node[pos=0.5,above] {Propose une visite pour les malvoyants} node[pos=0.95,above] {0..*};
+			\draw (main1) -- (main2) node[pos=0.05,above]{0..*} node[pos=0.5,above] {Propose une visite pour les malvoyants} node[pos=0.95,above] {0..*};
 		\end{tikzpicture} \\
 		\end{center}
 		Pour éviter d'avoir à écrire cette relation, on va créer une nouvelle entité, \texttt{visite}:
@@ -374,9 +374,12 @@
 
 				\rem Les mots-clés sont ici écrits en majuscules. Même si ça n'est pas obligatoire, c'est recommandé pour des raisons de lisibilité
 				(les noms de colonnes/tables seront alors en minuscule).
+
+				\rem Il est possible d'insérer des commentaires sur une ligne avec des doubles-tirets (\texttt{-\-}) ou des dièses (\texttt{\#}).
+					On préfèrera néanmoins les commentaires multi-lignes comme en C : \texttt{/* ... */} (voir \url{https://sql.sh/cours/commentaires}).
 				
 				\rem Si il y a plusieurs tables dans notre base de données contenant des colonnes portant le même nom,
-				on pourra les distinguer en écrivant \texttt{tableau1.colonneA} et \texttt{tableau2.colonneB}.
+				on pourra les distinguer en écrivant \texttt{table1.colonneA} et \texttt{table2.colonneB}.
 				
 				\semidef On peut récupérer les colonnes sous un nom modifié grâce au mot-clé \texttt{AS}:
 				\begin{code}{sql} 
@@ -385,7 +388,7 @@
 				\end{code}
 				récupérera la colonne \texttt{<nom\_colonne>} sous le nom \texttt{<nouveau\_nom>}.
 
-				Il est aussi possible de faire certaines opérations sur les éléments d'une même ligne (en spécifiant les colonnes de chaque élemnt), avant de récupérer le résultat:
+				Il est aussi possible de faire certaines opérations sur les éléments d'une même ligne (en spécifiant les colonnes de chaque élément), avant de récupérer le résultat:
 				\begin{code}{sql}
 					SELECT <nom_colonne> + 20 AS colonnePlus20, fin-debut AS duree
 				\end{code}
@@ -432,7 +435,7 @@
 
 				On peut sélectionner des lignes ayant deux valeurs distinctes sur des colonnes différentes via le mot-clé \texttt{DISTINCT}
 				(attention cela-dit: cela supprime certains éléments, on ne sait pas lesquels!). 
-				La distinction se fera alors sur \textsl{toutes} les colonnes spécifiées, pas seulement la première.
+				La distinction se fera alors sur \textsl{toutes} les colonnes spécifiées, pas seulement la première (si on veut procéder uniquement sur la première, il faudra utiliser une sous-requête - voir plus loin).
 
 				\exemple Si on a une table \texttt{personnes} contenant une colonne \texttt{prenom} et une colonne \texttt{pays}, 
 				et que l'on veut lister - sans doublon - les noms des personnes en France:
@@ -535,7 +538,9 @@
 					ON pers.pays = pays.capitale
 				\end{code}
 
-				\rem Il est tout à fait possible de chaîner les appels à \texttt{JOIN}.
+				\rem On peut là aussi utiliser \texttt{AS} après \texttt{JOIN} pour renommer la table.
+
+				\rem Il est tout à fait possible de chaîner les appels à \texttt{JOIN}. On ne pourra cependant mettre les \texttt{WHERE} qu'à la fin de la chaîne.
 
 			\subsubsection{Jointure gauche}
 				\semidef Imaginons que l'on gère une liste de clients enregistrés dans une table \texttt{clients}, 
@@ -562,6 +567,34 @@
 				\rem \texttt{LEFT JOIN} permet de s'assurer que tous les éléments de la colonne gauche (la première sélectionnée) 
 				apparaîssent après la jonction. Il y a de la même façon le mot clé \texttt{RIGHT JOIN} qui s'assure que
 				tous les éléments de la table droite (celle qui a été jointe) apparaîssent.
+
+			\subsubsection{Concaténation}
+				\semidef Si on travaille avec des chaînes de caractères, une autre jointure possible est la concaténation, via l'opérateur \texttt{||}.
+				Par exemple, si l'on a une liste de noms et de prénoms, pour obtenir un seul champ contenant le nom et le prénom séparés d'un espace :
+				\begin{code}{sql}
+					SELECT nom || " " || prenom
+					FROM clients
+				\end{code}
+
+				\rem On peut aussi utiliser la fonction \texttt{CONCAT} (supporté par le standard SQL, MySQL, mais pas SQLite: il faudra utiliser l'opérateur précédent):
+				\begin{code}{sql}
+					SELECT CONCAT(nom," ",prenom)
+					FROM clients
+				\end{code}
+
+				\rem Plus généralement, on peut regrouper deux colonnes en une de manières différentes, en utilisant un opérateur spécifique.
+				Par exemple, pour regrouper deux colonnes d'entiers en les additionnant, il suffit d'utiliser l'opérateur \texttt{+}.
+
+			\subsubsection{Union}
+				Si l'on a plusieurs tables comportant le même type de données (mettons des noms de pays), on peut chercher à renvoyer la liste de tous les pays mentionnés dans toutes les tables de la base de données. Une manière de le faire est avec la commande \texttt{UNION} : 
+				\begin{code}{sql}
+					SELECT liste_pays FROM departs
+					UNION
+					SELECT liste_pays FROM destinations
+				\end{code}
+
+				\rem \texttt{UNION} fonctionne comme une union d'ensembles : il n'y aura pas de multiplicité des éléments (comme si on avait utilisé \texttt{DISTINCT}).
+					Si l'on veut récupérer l'union avec multiplicités, il faudra utiliser \texttt{UNION ALL}. 
 		
 		\subsection{Sous-requêtes}
 			Il peut parfois être nécessaire, pour des raisons de lisibilité ou à cause des limites de certaines commandes, 
@@ -581,5 +614,5 @@
 				)
 				ON achats.tarif == depense_min OR achats.tarif == depense_max
 			\end{code}
-		
+
 \end{document}
